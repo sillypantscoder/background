@@ -1,6 +1,7 @@
 package com.sillypantscoder.background;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
@@ -11,24 +12,27 @@ public class Box {
 		FIXED,
 		PHYSICS
 	}
-	public Game world;
+	public ArrayList<Box> world;
 	public Rect rect;
 	public PhysicsState physics;
 	public boolean touchingGround;
 	public double vx;
 	public double vy;
-	public Box(Game world, Rect rect, PhysicsState physics) {
+	public Box(ArrayList<Box> world, Rect rect, PhysicsState physics) {
 		this.world = world;
 		this.rect = rect;
 		this.physics = physics;
 		this.vx = 0;
 		this.vy = 0;
 	}
-	public void draw(Surface s) {
-		double cameraX = world.cameraX;
-		double cameraY = world.cameraY;
-		Rect drawRect = this.rect.move(-cameraX, -cameraY);
-		s.drawRect(Color.BLACK, drawRect);
+	public void spawn() {
+		this.world.add(this);
+	}
+	public void remove() {
+		this.world.remove(this);
+	}
+	public void draw(Surface s, Rect drawRect, double brightness) {
+		s.drawRect(new Color((int)(brightness), (int)(brightness), (int)(brightness)), drawRect);
 	}
 	public Rect getFeet() {
 		final int padding = 5;
@@ -41,8 +45,8 @@ public class Box {
 	public void checkTouchingGround() {
 		Rect feet = getFeet();
 		this.touchingGround = false;
-		for (int i = 0; i < world.boxes.size(); i++) {
-			Box box = world.boxes.get(i);
+		for (int i = 0; i < world.size(); i++) {
+			Box box = world.get(i);
 			if (box == this) continue;
 			if (box.physics == PhysicsState.NONE) continue;
 			if (feet.colliderect(box.rect)) {
@@ -76,8 +80,8 @@ public class Box {
 	public void collideX() {
 		Rect newRect = this.rect.move(this.vx, 0);
 		boolean canContinue = true;
-		for (int i = 0; i < world.boxes.size(); i++) {
-			Box box = world.boxes.get(i);
+		for (int i = 0; i < world.size(); i++) {
+			Box box = world.get(i);
 			if (box == this) continue;
 			// Check for collision
 			if (! box.rect.colliderect(newRect)) continue;
@@ -97,8 +101,8 @@ public class Box {
 	public void collideY() {
 		Rect newRect = this.rect.move(0, this.vy);
 		boolean canContinue = true;
-		for (int i = 0; i < world.boxes.size(); i++) {
-			Box box = world.boxes.get(i);
+		for (int i = 0; i < world.size(); i++) {
+			Box box = world.get(i);
 			if (box == this) continue;
 			// Check for collision
 			if (! box.rect.colliderect(newRect)) continue;
@@ -120,15 +124,15 @@ public class Box {
 		}
 	}
 	public void fallVoid() {
-		this.world.boxes.remove(this);
+		this.remove();
 	}
 	public void cancelFromCollision() {
-		for (int i = 0; i < world.boxes.size(); i++) {
-			Box box = world.boxes.get(i);
+		for (int i = 0; i < world.size(); i++) {
+			Box box = world.get(i);
 			if (box == this) continue;
 			// Check for collision
 			if (box.rect.colliderect(this.rect)) {
-				world.boxes.remove(this);
+				world.remove(this);
 				return;
 			}
 		}

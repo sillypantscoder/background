@@ -1,6 +1,7 @@
 package com.sillypantscoder.background;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.utils.Utils;
@@ -8,14 +9,13 @@ import com.sillypantscoder.windowlib.Surface;
 
 public class Boxes {
 	public static class Player extends Box {
-		public Player(Game world, double x, double y) {
-			super(world, new Rect(x, y, 50, 50), PhysicsState.PHYSICS);
+		public Game game;
+		public Player(Game game, double x, double y) {
+			super(game.getLayer(0), new Rect(x, y, 50, 50), PhysicsState.PHYSICS);
+			this.game = game;
 		}
-		public void draw(Surface s) {
-			double cameraX = world.cameraX;
-			double cameraY = world.cameraY;
-			Rect drawRect = this.rect.move(-cameraX, -cameraY);
-			if (this == world.getPlayer()) {
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			if (this == game.getPlayer()) {
 				s.drawRect(Color.BLACK, drawRect);
 			} else {
 				s.drawRect(Color.BLACK, drawRect, 2);
@@ -28,63 +28,34 @@ public class Boxes {
 			this.rect.y = -400;
 			this.vx = 0;
 			// Instant camera
-			world.cameraX += this.rect.x - oldX;
-			world.cameraY += this.rect.y - oldY;
+			game.cameraX += this.rect.x - oldX;
+			game.cameraY += this.rect.y - oldY;
 		}
 	}
 	public static class Wall extends Box {
-		public Wall(Game world, Rect rect) {
+		public Wall(ArrayList<Box> world, Rect rect) {
 			super(world, rect, PhysicsState.FIXED);
 		}
 	}
 	public static class PhysicsObject extends Box {
-		public PhysicsObject(Game world, Rect rect) {
+		public PhysicsObject(ArrayList<Box> world, Rect rect) {
 			super(world, rect.move(0, -1), PhysicsState.PHYSICS);
 		}
 	}
 	public static class Ball extends PhysicsObject {
-		public Ball(Game world, double x, double y, double size) {
+		public Ball(ArrayList<Box> world, double x, double y, double size) {
 			super(world, new Rect(x, y, size, size));
 		}
-		public void draw(Surface s) {
-			double cameraX = world.cameraX;
-			double cameraY = world.cameraY;
-			Rect drawRect = this.rect.move(-cameraX, -cameraY);
+		public void draw(Surface s, Rect drawRect) {
 			s.drawCircle(Color.BLACK, drawRect);
 		}
 		public void hzDamp() {}
-	}
-	public static class Cannon extends Box {
-		public Cannon(Game world, double x, double y) {
-			super(world, new Rect(x, y + 40, 50, 10), PhysicsState.NONE);
-		}
-		public void draw(Surface s) {
-			double cameraX = world.cameraX;
-			double cameraY = world.cameraY;
-			Rect drawRect = new Rect(rect.x, rect.y - 40, rect.w, rect.h + 40).move(-cameraX, -cameraY);
-			s.drawRect(Color.BLACK, drawRect);
-		}
-		public void tick() {
-			super.tick();
-			// Add ball
-			Ball b = new Ball(world, this.rect.centerX(), this.rect.centerY() - 40, 10);
-			world.boxes.add(b);
-			b.cancelFromCollision();
-			// Accelerate ball
-			double diffX = b.rect.centerX() - world.getPlayer().rect.centerX();
-			double diffY = b.rect.centerY() - world.getPlayer().rect.centerY();
-			double dist = Math.sqrt((diffX * diffX) + (diffY * diffY));
-			diffX /= dist;
-			diffY /= dist;
-			b.vx = diffX * -15;
-			b.vy = diffY * -15;
-		}
 	}
 	public static class Button extends Box {
 		public boolean pressed;
 		public int length;
 		public SwitchHandler handler;
-		public Button(Game world, double x, double y, SwitchHandler handler) {
+		public Button(ArrayList<Box> world, double x, double y, SwitchHandler handler) {
 			super(world, new Rect(x - 25, y, 50, 0), PhysicsState.FIXED);
 			this.handler = handler;
 		}
@@ -93,9 +64,9 @@ public class Boxes {
 			// Check for pressing
 			boolean oldState = this.pressed;
 			this.pressed = false;
-			for (int i = 0; i < world.boxes.size(); i++) {
-				if (world.boxes.get(i).physics != Box.PhysicsState.PHYSICS) continue;
-				if (world.boxes.get(i).getFeet().colliderect(getHead())) {
+			for (int i = 0; i < world.size(); i++) {
+				if (world.get(i).physics != Box.PhysicsState.PHYSICS) continue;
+				if (world.get(i).getFeet().colliderect(getHead())) {
 					this.pressed = true;
 				}
 			}
@@ -133,7 +104,7 @@ public class Boxes {
 		public double newY;
 		public double amt;
 		public boolean activated;
-		public Door(Game world, Rect rect, double newX, double newY) {
+		public Door(ArrayList<Box> world, Rect rect, double newX, double newY) {
 			super(world, rect, PhysicsState.FIXED);
 			oldX = rect.x;
 			oldY = rect.y;
@@ -165,24 +136,23 @@ public class Boxes {
 		}
 	}
 	public static class Target extends Box {
-		public Target(Game world, Rect rect) {
-			super(world, rect, PhysicsState.NONE);
+		public Game game;
+		public Target(Game game, Rect rect) {
+			super(game.getLayer(0), rect, PhysicsState.NONE);
+			this.game = game;
 		}
-		public void draw(Surface s) {
-			double cameraX = world.cameraX;
-			double cameraY = world.cameraY;
-			Rect drawRect = this.rect.move(-cameraX, -cameraY);
-			for (int offset : new int[] { -20, -10, 0, 0, 0, 0, 0, 10, 20 }) {
-				s.drawRect(new Color(0, 0, 0, 50), drawRect.move(offset, offset));
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			for (int offset : new int[] { -10, 0, 0, 0, 0, 0, 10 }) {
+				s.drawRect(new Color(0, 0, 0, 50), drawRect.move(offset, offset * 2));
 			}
 		}
 		public void tick() {
 			super.tick();
 			// Check for win
-			if (world.endingAnimation == 0) {
-				if (world.player1.rect.colliderect(rect)) {
-					if (world.player2.rect.colliderect(rect)) {
-						world.endingAnimation = 1;
+			if (game.endingAnimation == 0) {
+				if (game.player1.rect.colliderect(rect)) {
+					if (game.player2.rect.colliderect(rect)) {
+						game.endingAnimation = 1;
 					}
 				}
 			}
