@@ -1,16 +1,22 @@
 package com.sillypantscoder.background;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.sillypantscoder.background.Box.PhysicsState;
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 import com.sillypantscoder.windowlib.Window;
 
 public class Game extends Window {
+	public static final boolean CHEAT = false;
+	public static final boolean SHOW_TIMER = false;
 	public static void main(String[] args) {
 		new Game().open("Background", 750, 550);
 	}
@@ -23,7 +29,8 @@ public class Game extends Window {
 	public double cameraY;
 	public int endingAnimation;
 	public boolean levelCompleted;
-	public int level = 5;
+	public int level = 0;
+	public int timer;
 	public Game() {
 		keys = new HashSet<String>();
 		layers = new ArrayList<ArrayList<Box>>();
@@ -57,11 +64,15 @@ public class Game extends Window {
 		levels.add(Levels::level2);
 		levels.add(Levels::level3);
 		levels.add(Levels::level4);
+		levels.add(Levels::level5);
+		levels.add(Levels::level6);
+		levels.add(Levels::level7);
 		if (level >= levels.size()) {
 			Levels.levelErr(this);
 		} else {
 			levels.get(level).accept(this);
 		}
+		timer = 0;
 	}
 	public Boxes.Player getPlayer() { return switchedPlayer ? player2 : player1; }
 	public double getTargetCameraX(int width) { return getPlayer().rect.centerX() - (width / 2d); }
@@ -125,13 +136,25 @@ public class Game extends Window {
 		if (keys.contains("Right")) {
 			player.vx += 0.014;
 		}
+		if (! this.levelCompleted) this.timer += 1;
 		if (this.endingAnimation == 0) {
+			if (SHOW_TIMER) s.blit(Surface.renderText(30, (timer / 60) + ":" + Math.round(timer % 60), Color.RED), 0, 0);
 			return s;
 		} else {
 			// Ending animation!
 			int anim = this.endingAnimation;
 			this.endingAnimation += 1;
 			if (this.endingAnimation == 80) {
+				try {
+					double time = Math.round((this.timer / 60d) * 100d) / 100d;
+					File outFile = new File("levels.txt");
+					FileWriter f = new FileWriter(outFile, true);
+					f.write("Level " + level + ": " + (levelCompleted ? "completed" : "reset") + " after " +
+						time + " seconds\n");
+					f.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				if (levelCompleted) {
 					this.level += 1;
 					levelCompleted = false;
@@ -158,8 +181,44 @@ public class Game extends Window {
 			overlay.drawRect(Color.BLACK, 0, 0, borderX, height);
 			overlay.drawRect(Color.BLACK, width - borderX, 0, borderX, height);
 			s.blit(overlay, 0, 0);
+			// Timer
+			if (SHOW_TIMER) s.blit(Surface.renderText(30, (timer / 60) + ":" + Math.round(timer % 60), Color.RED), 0, 0);
 			return s;
 		}
+	}
+	public Box mouseCarrying = null;
+	public void mouseMoved(int x, int y) {
+		if (mouseCarrying != null) {
+			mouseCarrying.rect.x = ((x + cameraX) / 50) - (mouseCarrying.rect.w / 2);
+			mouseCarrying.rect.y = ((y + cameraY) / 50) - (mouseCarrying.rect.h / 2);
+			mouseCarrying.vx = 0;
+			mouseCarrying.vy = 0;
+		}
+	}
+	public void mouseDown(int x, int y) {
+		if (! CHEAT) return;
+		Rect mouseRect = new Rect((x + cameraX) / 50, (y + cameraY) / 50, 0.01, 0.01);
+		for (ArrayList<Box> list : this.layers) {
+			for (Box b : list) {
+				if (b.physics != PhysicsState.PHYSICS) continue;
+				if (b.rect.colliderect(mouseRect)) {
+					mouseCarrying = b;
+				}
+			}
+		}
+		// If still null check static objects
+		if (mouseCarrying == null) {
+			for (ArrayList<Box> list : this.layers) {
+				for (Box b : list) {
+					if (b.rect.colliderect(mouseRect)) {
+						mouseCarrying = b;
+					}
+				}
+			}
+		}
+	}
+	public void mouseUp(int x, int y) {
+		mouseCarrying = null;
 	}
 	public void keyDown(String key) {
 		keys.add(key);

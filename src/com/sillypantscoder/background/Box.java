@@ -1,6 +1,7 @@
 package com.sillypantscoder.background;
 
 import java.awt.Color;
+import java.util.HashSet;
 import java.util.List;
 
 import com.sillypantscoder.utils.Rect;
@@ -43,6 +44,17 @@ public class Box {
 	public Rect getHead() {
 		final double padding = 1/10d;
 		return new Rect(rect.left() + padding, rect.top() - padding, rect.width() - padding, padding * 2);
+	}
+	public HashSet<Box> getAbovePhysicsBoxes(boolean recursive) {
+		HashSet<Box> boxes = new HashSet<Box>();
+		for (Box b : world) {
+			if (b.physics != PhysicsState.PHYSICS) continue;
+			if (b.getFeet().colliderect(this.getHead())) {
+				boxes.add(b);
+				if (recursive) boxes.addAll(b.getAbovePhysicsBoxes(true));
+			}
+		}
+		return boxes;
 	}
 	public void checkTouchingGround() {
 		Rect feet = getFeet();

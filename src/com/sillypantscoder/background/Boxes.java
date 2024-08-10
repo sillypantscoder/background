@@ -1,6 +1,7 @@
 package com.sillypantscoder.background;
 
 import java.awt.Color;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -45,8 +46,8 @@ public class Boxes {
 			this.vx = 0;
 			// Instant camera
 			if (this == game.getPlayer()) {
-				game.cameraX += this.rect.x - oldX;
-				game.cameraY += this.rect.y - oldY;
+				game.cameraX += (this.rect.x - oldX) * 50;
+				game.cameraY += (this.rect.y - oldY) * 50;
 			}
 		}
 		public void setrespawn() {
@@ -76,10 +77,17 @@ public class Boxes {
 	public static class Button extends Box {
 		public boolean pressed;
 		public int length;
-		public SwitchHandler handler;
+		public SwitchHandler[] handlers;
 		public Button(List<Box> world, double x, double y, SwitchHandler handler) {
 			super(world, new Rect(x - 0.5, y, 1, 1d/64), PhysicsState.FIXED);
-			this.handler = handler;
+			this.handlers = new SwitchHandler[] {
+				handler
+			};
+			if (handler == null) this.handlers = new SwitchHandler[0];
+		}
+		public Button(List<Box> world, double x, double y, SwitchHandler[] handlers) {
+			super(world, new Rect(x - 0.5, y, 1, 1d/64), PhysicsState.FIXED);
+			this.handlers = handlers;
 		}
 		public void tick() {
 			super.tick();
@@ -93,7 +101,7 @@ public class Boxes {
 				}
 			}
 			// Handler
-			if (handler != null) {
+			for (SwitchHandler handler : this.handlers) {
 				if (this.pressed != oldState) {
 					if (this.pressed) handler.activate();
 					else handler.deactivate();
@@ -145,10 +153,23 @@ public class Boxes {
 					this.amt -= 1/32d;
 				}
 			}
+			// Get list of entities to move
+			double previousX = this.rect.x;
+			double previousY = this.rect.y;
+			HashSet<Box> moving = this.getAbovePhysicsBoxes(true);
 			// Set pos
 			double anim_amt = Utils.ease_in_out(this.amt);
 			this.rect.x = this.oldX + ((this.newX - this.oldX) * anim_amt);
 			this.rect.y = this.oldY + ((this.newY - this.oldY) * anim_amt);
+			// Move entities
+			if (this.rect.y < previousY) {
+				double diffX = this.rect.x - previousX;
+				double diffY = this.rect.y - previousY;
+				for (Box b : moving) {
+					b.rect.x += diffX;
+					b.rect.y += diffY;
+				}
+			}
 		}
 		public void activate() {
 			this.activated = true;
@@ -224,7 +245,7 @@ public class Boxes {
 		public void tick() {
 			super.tick();
 			// Move objects
-			Rect r = new Rect(this.rect.centerX(), this.rect.y, 0, this.rect.h);
+			Rect r = new Rect(this.rect.x + 0.5, this.rect.y + 0.5, this.rect.w - 1, this.rect.h - 1);
 			for (Box box : world) {
 				if (box.physics != PhysicsState.PHYSICS) continue;
 				if (box.rect.colliderect(r)) {

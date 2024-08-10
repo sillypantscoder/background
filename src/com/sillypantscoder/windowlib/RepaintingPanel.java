@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -25,10 +26,11 @@ public class RepaintingPanel extends JPanel {
 	private static final long serialVersionUID = 7148504528835036003L;
 	protected static JFrame frame;
 	public BiFunction<Integer, Integer, BufferedImage> painter;
-	// public Consumer<MouseEvent> mouseClicked;
-	// public Consumer<MouseEvent> mouseMoved;
 	public Consumer<String> keyDown;
 	public Consumer<String> keyUp;
+	public BiConsumer<Integer, Integer> mouseMoved;
+	public BiConsumer<Integer, Integer> mouseDown;
+	public BiConsumer<Integer, Integer> mouseUp;
 	/**
 	* Called by the runtime system whenever the panel needs painting.
 	*/
@@ -104,11 +106,13 @@ class myMouseListener implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// srcPanel.mouseClicked.accept(arg0);
+		srcPanel.mouseDown.accept(arg0.getX(), arg0.getY());
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) { }
+	public void mouseReleased(MouseEvent arg0) {
+		srcPanel.mouseUp.accept(arg0.getX(), arg0.getY());
+	}
 
 }
 class mouseMotionListener implements MouseMotionListener {
@@ -122,6 +126,6 @@ class mouseMotionListener implements MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		// srcPanel.mouseMoved.accept(arg0);
+		srcPanel.mouseMoved.accept(arg0.getX(), arg0.getY());
 	}
 }

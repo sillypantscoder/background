@@ -9,6 +9,9 @@ public abstract class Window {
 		panel.painter = this::painter;
 		panel.keyDown = this::keyDown;
 		panel.keyUp = this::keyUp;
+		panel.mouseMoved = this::mouseMoved;
+		panel.mouseDown = this::mouseDown;
+		panel.mouseUp = this::mouseUp;
 	}
 	public abstract Surface getIcon();
 	public void open(String title, int width, int height) {
@@ -20,4 +23,7 @@ public abstract class Window {
 	public abstract Surface frame(int width, int height);
 	public abstract void keyDown(String e);
 	public abstract void keyUp(String e);
+	public abstract void mouseMoved(int x, int y);
+	public abstract void mouseDown(int x, int y);
+	public abstract void mouseUp(int x, int y);
 }
