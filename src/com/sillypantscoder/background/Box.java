@@ -1,7 +1,7 @@
 package com.sillypantscoder.background;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.List;
 
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
@@ -12,13 +12,14 @@ public class Box {
 		FIXED,
 		PHYSICS
 	}
-	public ArrayList<Box> world;
+	public List<Box> world;
 	public Rect rect;
 	public PhysicsState physics;
 	public boolean touchingGround;
 	public double vx;
 	public double vy;
-	public Box(ArrayList<Box> world, Rect rect, PhysicsState physics) {
+	public boolean ticked;
+	public Box(List<Box> world, Rect rect, PhysicsState physics) {
 		this.world = world;
 		this.rect = rect;
 		this.physics = physics;
@@ -31,8 +32,9 @@ public class Box {
 	public void remove() {
 		this.world.remove(this);
 	}
+	public static Color getColor(double brightness) { return new Color((int)(brightness), (int)(brightness), (int)(brightness)); }
 	public void draw(Surface s, Rect drawRect, double brightness) {
-		s.drawRect(new Color((int)(brightness), (int)(brightness), (int)(brightness)), drawRect);
+		s.drawRect(getColor(brightness), drawRect);
 	}
 	public Rect getFeet() {
 		final int padding = 5;
@@ -77,14 +79,16 @@ public class Box {
 	public void hzDamp() {
 		this.vx *= 0.9;
 	}
+	public List<Box> getInteractions() {
+		return world;
+	}
 	public void collideX() {
 		Rect newRect = this.rect.move(this.vx, 0);
 		boolean canContinue = true;
-		for (int i = 0; i < world.size(); i++) {
-			Box box = world.get(i);
+		for (Box box : getInteractions()) {
 			if (box == this) continue;
 			// Check for collision
-			if (! box.rect.colliderect(newRect)) continue;
+			if (! box.rect.colliderect_strict(newRect)) continue;
 			if (box.physics == PhysicsState.PHYSICS) {
 				this.vx /= 2;
 				box.vx += this.vx;
@@ -101,19 +105,16 @@ public class Box {
 	public void collideY() {
 		Rect newRect = this.rect.move(0, this.vy);
 		boolean canContinue = true;
-		for (int i = 0; i < world.size(); i++) {
-			Box box = world.get(i);
+		for (Box box : getInteractions()) {
 			if (box == this) continue;
 			// Check for collision
-			if (! box.rect.colliderect(newRect)) continue;
+			if (! box.rect.colliderect_strict(newRect)) continue;
 			if (box.physics == PhysicsState.PHYSICS) {
 				canContinue = false;
 				this.vy /= 2;
 				box.vy += this.vy;
 				// Align X motion
-				double diff = (this.vx - box.vx) / 8;
-				this.vx -= diff;
-				box.vx += diff;
+				this.vx += box.vx / 8;
 			} else if (box.physics == PhysicsState.FIXED) {
 				this.vy = 0;
 				canContinue = false;
@@ -130,6 +131,7 @@ public class Box {
 		for (int i = 0; i < world.size(); i++) {
 			Box box = world.get(i);
 			if (box == this) continue;
+			if (box.physics == PhysicsState.NONE) continue;
 			// Check for collision
 			if (box.rect.colliderect(this.rect)) {
 				world.remove(this);

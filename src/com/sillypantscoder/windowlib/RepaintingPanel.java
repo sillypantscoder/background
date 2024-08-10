@@ -62,11 +62,12 @@ public class RepaintingPanel extends JPanel {
 		};
 		sw.execute();
 	}
-	public void run(String title, int width, int height) {
+	public void run(String title, Surface icon, int width, int height) {
 		frame = new JFrame(title);
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(this, BorderLayout.CENTER);
+		frame.setIconImage(icon.img);
 		frame.setVisible(true);
 		startAnimation();
 		// Start mouse listener

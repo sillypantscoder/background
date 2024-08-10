@@ -10,8 +10,9 @@ public abstract class Window {
 		panel.keyDown = this::keyDown;
 		panel.keyUp = this::keyUp;
 	}
+	public abstract Surface getIcon();
 	public void open(String title, int width, int height) {
-		panel.run(title, width, height);
+		panel.run(title, getIcon(), width, height);
 	}
 	public BufferedImage painter(int width, int height) {
 		return this.frame(width, height).img;

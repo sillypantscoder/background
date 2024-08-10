@@ -3,11 +3,14 @@ package com.sillypantscoder.windowlib;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -157,6 +160,15 @@ public class Surface {
 	public static Surface renderText(int size, String text, Color color) {
 		// Measure the text
 		Font font = new Font("SansSerif", Font.BOLD, size);
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("OpenSans-Bold.ttf")).deriveFont((float)(size));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Surface measure = new Surface(1, 1, Color.BLACK);
 		Graphics2D big = (Graphics2D)(measure.img.getGraphics());
 		big.setFont(font);
