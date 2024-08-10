@@ -12,7 +12,7 @@ import com.sillypantscoder.windowlib.Window;
 
 public class Game extends Window {
 	public static void main(String[] args) {
-		new Game().open("Game", 750, 550);
+		new Game().open("Background", 750, 550);
 	}
 	public Boxes.Player player1;
 	public Boxes.Player player2;
@@ -22,7 +22,8 @@ public class Game extends Window {
 	public double cameraX;
 	public double cameraY;
 	public int endingAnimation;
-	public int level = 0;
+	public boolean levelCompleted;
+	public int level = 2;
 	public Game() {
 		keys = new HashSet<String>();
 		layers = new ArrayList<ArrayList<Box>>();
@@ -55,6 +56,7 @@ public class Game extends Window {
 		levels.add(Levels::level1);
 		levels.add(Levels::level2);
 		levels.add(Levels::level3);
+		levels.add(Levels::level4);
 		if (level >= levels.size()) {
 			Levels.levelErr(this);
 		} else {
@@ -130,7 +132,10 @@ public class Game extends Window {
 			int anim = this.endingAnimation;
 			this.endingAnimation += 1;
 			if (this.endingAnimation == 80) {
-				this.level += 1;
+				if (levelCompleted) {
+					this.level += 1;
+					levelCompleted = false;
+				}
 				this.layers = new ArrayList<ArrayList<Box>>();
 				this.switchedPlayer = false;
 				generateLevel();
@@ -158,8 +163,11 @@ public class Game extends Window {
 	}
 	public void keyDown(String key) {
 		keys.add(key);
-		if (key == "Space") {
+		if (key.equals("Space")) {
 			this.switchedPlayer = !switchedPlayer;
+		}
+		if (key.equals("R")) {
+			this.endingAnimation = 40;
 		}
 	}
 	public void keyUp(String key) {

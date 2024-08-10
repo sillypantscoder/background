@@ -157,9 +157,9 @@ public class Boxes {
 			this.activated = false;
 		}
 	}
-	public static class Target extends Box {
+	public static class End extends Box {
 		public Game game;
-		public Target(Game game, Rect rect) {
+		public End(Game game, Rect rect) {
 			super(game.getLayer(0), rect, PhysicsState.NONE);
 			this.game = game;
 		}
@@ -174,7 +174,8 @@ public class Boxes {
 			if (game.endingAnimation == 0) {
 				if (game.player1.rect.colliderect_strict(rect)) {
 					if (game.player2.rect.colliderect_strict(rect)) {
-						game.endingAnimation = 1;
+						game.levelCompleted = true;
+						game.endingAnimation = 30;
 					}
 				}
 			}
@@ -199,6 +200,37 @@ public class Boxes {
 				Box b = supplier.get();
 				b.spawn();
 				b.cancelFromCollision();
+			}
+		}
+	}
+	public static class Wind extends Box {
+		public double amtX;
+		public double amtY;
+		public Wind(List<Box> world, Rect rect, double amtX, double amtY) {
+			super(world, rect, PhysicsState.NONE);
+			this.amtX = amtX;
+			this.amtY = amtY;
+		}
+		public static Color getColor(double brightness, double multiplier) {
+			int realbrightness = (int)(255 - ((255 - brightness) * multiplier));
+			return new Color(realbrightness, realbrightness, realbrightness, realbrightness);
+		}
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			s.drawRect(getColor(brightness, 1/4d), drawRect, 7);
+			s.drawRect(getColor(brightness, 2/4d), drawRect, 5);
+			s.drawRect(getColor(brightness, 3/4d), drawRect, 3);
+			s.drawRect(getColor(brightness, 4/4d), drawRect, 1);
+		}
+		public void tick() {
+			super.tick();
+			// Move objects
+			Rect r = new Rect(this.rect.centerX(), this.rect.y, 0, this.rect.h);
+			for (Box box : world) {
+				if (box.physics != PhysicsState.PHYSICS) continue;
+				if (box.rect.colliderect(r)) {
+					box.vx += amtX;
+					box.vy += amtY;
+				}
 			}
 		}
 	}

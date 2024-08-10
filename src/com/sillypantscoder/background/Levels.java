@@ -6,6 +6,7 @@ import java.util.List;
 import com.sillypantscoder.background.Box.PhysicsState;
 import com.sillypantscoder.utils.ListCombination;
 import com.sillypantscoder.utils.Rect;
+import com.sillypantscoder.windowlib.Surface;
 
 public class Levels {
 	public static void levelErr(Game game) {
@@ -21,7 +22,7 @@ public class Levels {
 		new Boxes.Wall(game.getLayer(0), new Rect(150, 100, 250, 50)).spawn();
 		new Boxes.PhysicsObject(game.getLayer(0), new Rect(200, -300, 50, 50)).spawn();
 		new Boxes.Wall(game.getLayer(0), new Rect(550, -100, 250, 50)).spawn();
-		new Boxes.Target(game, new Rect(500, -350, 100, 100)).spawn();
+		new Boxes.End(game, new Rect(500, -350, 100, 100)).spawn();
 		// Decoration
 		new Boxes.Wall(game.getLayer(1), new Rect(-100, 100, 500, 200)).spawn();
 		new Boxes.Text(game.getLayer(2), -75, -25, "BACKGROUND", 100).spawn();
@@ -55,7 +56,7 @@ public class Levels {
 		new Boxes.Wall(game.getLayer(0), new Rect(900, -150, 50, 50)).spawn();
 		new Boxes.Wall(game.getLayer(0), new Rect(350, -300, 150, 50)).spawn();
 		new Boxes.Wall(game.getLayer(0), new Rect(100, -450, 150, 50)).spawn();
-		new Boxes.Target(game, new Rect(100, -600, 100, 100)).spawn();
+		new Boxes.End(game, new Rect(100, -600, 100, 100)).spawn();
 		// Background
 		for (int i = 1; i < 5; i++) {
 			new Boxes.Wall(game.getLayer(i), new Rect(-100, 250, 250, 50)).spawn();
@@ -79,8 +80,8 @@ public class Levels {
 			bothLayerC.add(game.getLayer(1));
 			bothLayer = new ListCombination<Box>(bothLayerC);
 		}
-		new Boxes.Wall(bothLayer, new Rect(-100, 250, 250, 50)).spawn(); // Starting platform
-		new Boxes.Wall(game.getLayer(1), new Rect(200, 250, 250, 50)).spawn();
+		new Boxes.Wall(game.getLayer(0), new Rect(-100, 250, 250, 50)).spawn(); // Starting platform
+		new Boxes.Wall(game.getLayer(1), new Rect(-100, 250, 550, 50)).spawn();
 		new Boxes.PhysicsObject(bothLayer, new Rect(200, 0, 50, 50)).spawn();
 		new Boxes.Wall(game.getLayer(0), new Rect(500, 100, 50, 50)).spawn();
 		new Boxes.Wall(game.getLayer(1), new Rect(450, 200, 450, 50)).spawn();
@@ -94,7 +95,7 @@ public class Levels {
 		}
 		new Boxes.Wall(game.getLayer(0), new Rect(600, 0, 100, 50)).spawn();
 		new Boxes.Wall(game.getLayer(1), new Rect(675, 50, 100, 50)).spawn();
-		new Boxes.Target(game, new Rect(625, -125, 100, 100)).spawn();
+		new Boxes.End(game, new Rect(625, -125, 100, 100)).spawn();
 		// Player Setup
 		game.player1 = new Boxes.Player(game, game.getLayer(0), -50, 0);
 		game.player1.spawn();
@@ -149,7 +150,7 @@ public class Levels {
 		new Boxes.Wall(game.getLayer(0), new Rect(900, 100, 100, 225)).spawn();
 		new Boxes.Wall(game.getLayer(1), new Rect(900, 325, 100, 75)).spawn();
 		// End
-		new Boxes.Target(game, new Rect(1200, 375, 100, 100)).spawn();
+		new Boxes.End(game, new Rect(1200, 375, 100, 100)).spawn();
 		// Player Setup
 		game.player1 = new Boxes.Player(game, game.getLayer(0), -25, 175);
 		game.player1.spawn();
@@ -157,5 +158,54 @@ public class Levels {
 		game.player2 = new Boxes.Player(game, game.getLayer(1), 75, 175);
 		game.player2.spawn();
 		game.player2.setrespawn();
+	}
+	public static void level4(Game game) {
+		new Boxes.Text(game.getLayer(1), 100, 325, "4", 80).spawn();
+		// Create both layer
+		ListCombination<Box> bothLayer;
+		{
+			ArrayList<ArrayList<Box>> bothLayerC = new ArrayList<ArrayList<Box>>();
+			bothLayerC.add(game.getLayer(0));
+			bothLayerC.add(game.getLayer(1));
+			bothLayer = new ListCombination<Box>(bothLayerC);
+		}
+		// Platform
+		new Boxes.Wall(game.getLayer(0), new Rect(-100, 250, 550, 50)).spawn();
+		new Boxes.Wall(game.getLayer(1), new Rect(-100, 250, 350, 50)).spawn();
+		(new Boxes.PhysicsObject(bothLayer, new Rect(150, 200, 50, 50)) {
+			public void tick() {
+				this.vy -= 0.4;
+				super.tick();
+				if (this.touchingGround == false) this.vx *= 1.1;
+				else this.vx *= 0.95;
+			}
+		}).spawn();
+		// Dip
+		new Boxes.Wall(game.getLayer(1), new Rect(250, 125, 50, 50)).spawn(); // floating block
+		new Boxes.Wall(game.getLayer(1), new Rect(200, 250, 50, 150)).spawn(); // left wall
+		new Boxes.Wall(game.getLayer(1), new Rect(200, 350, 300, 50)).spawn(); // floor
+		new Boxes.Wall(game.getLayer(1), new Rect(450, 200, 50, 200)).spawn(); // right wall
+		// Platforms middle
+		new Boxes.Wall(bothLayer, new Rect(450, 200, 150, 200)).spawn();
+		new Boxes.Wall(bothLayer, new Rect(550, 350, 450, 50)).spawn(); // ground
+		new Boxes.Wall(bothLayer, new Rect(1000, 0, 350, 400)).spawn(); // right wall
+		new Boxes.Wind(game.getLayer(1), new Rect(800, -50, 50, 450), 0, -1.5).spawn();
+		new Boxes.Wall(game.getLayer(1), new Rect(675, 0, 100, 50)).spawn(); // floating block
+		(new Boxes.Wind(game.getLayer(1), new Rect(800, -500, 150, 250), 0, 0.5) {
+			public void draw(Surface s, Rect drawRect, double brightness) {}
+		}).spawn();
+		new Boxes.Wind(game.getLayer(1), new Rect(950, 300, 50, 50), -1, 0).spawn();
+		// Door
+		{
+			Boxes.Door door = new Boxes.Door(game.getLayer(1), new Rect(1400, -350, 250, 50), 1450, 0);
+			door.spawn();
+			new Boxes.Button(game.getLayer(0), 1100, 0, door).spawn();
+		}
+		new Boxes.End(game, new Rect(1700, -125, 100, 100)).spawn();
+		// Player Setup
+		game.player1 = new Boxes.Player(game, game.getLayer(1), -50, 175);
+		game.player1.spawn();
+		game.player2 = new Boxes.Player(game, game.getLayer(1), 50, 175);
+		game.player2.spawn();
 	}
 }
