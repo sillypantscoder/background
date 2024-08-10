@@ -17,6 +17,7 @@ import com.sillypantscoder.windowlib.Window;
 public class Game extends Window {
 	public static final boolean CHEAT = false;
 	public static final boolean SHOW_TIMER = false;
+	public static final boolean SAVE_TIMES = false;
 	public static void main(String[] args) {
 		new Game().open("Background", 750, 550);
 	}
@@ -75,8 +76,8 @@ public class Game extends Window {
 		timer = 0;
 	}
 	public Boxes.Player getPlayer() { return switchedPlayer ? player2 : player1; }
-	public double getTargetCameraX(int width) { return getPlayer().rect.centerX() - (width / 2d); }
-	public double getTargetCameraY(int height) { return getPlayer().rect.centerY() - (height / 2d); }
+	public double getTargetCameraX(int width) { return (getPlayer().rect.centerX() * 50) - (width / 2d); }
+	public double getTargetCameraY(int height) { return (getPlayer().rect.centerY() * 50) - (height / 2d); }
 	public void updateCameraPos(int width, int height) {
 		// X
 		this.cameraX = ((this.cameraX * 9) + getTargetCameraX(width)) / 10;
@@ -145,15 +146,18 @@ public class Game extends Window {
 			int anim = this.endingAnimation;
 			this.endingAnimation += 1;
 			if (this.endingAnimation == 80) {
-				try {
-					double time = Math.round((this.timer / 60d) * 100d) / 100d;
-					File outFile = new File("levels.txt");
-					FileWriter f = new FileWriter(outFile, true);
-					f.write("Level " + level + ": " + (levelCompleted ? "completed" : "reset") + " after " +
-						time + " seconds\n");
-					f.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (SAVE_TIMES) {
+					try {
+						double time = Math.round((this.timer / 60d) * 100d) / 100d;
+						// Save time to file
+						File outFile = new File("levels.txt");
+						FileWriter f = new FileWriter(outFile, true);
+						f.write("Level " + level + ": " + (levelCompleted ? "completed" : "reset") + " after " +
+							time + " seconds\n");
+						f.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				if (levelCompleted) {
 					this.level += 1;

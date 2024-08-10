@@ -22,6 +22,7 @@ import java.awt.RenderingHints;
 import java.awt.FontMetrics;
 
 public class Surface {
+	public static Font FONT = null;
 	public BufferedImage img;
 	public Surface(int width, int height, Color color) {
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -157,18 +158,26 @@ public class Surface {
 			e.printStackTrace();
 		}
 	}
+	public static Font getFont(int size) {
+		// Get base font
+		if (FONT == null) {
+			FONT = new Font("SansSerif", Font.BOLD, 30);
+			try {
+				FONT = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("Segoe UI Bold.ttf"));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (FontFormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// Derive font of specific size
+		return FONT.deriveFont((float)(size));
+	}
 	public static Surface renderText(int size, String text, Color color) {
 		// Measure the text
-		Font font = new Font("SansSerif", Font.BOLD, size);
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("OpenSans-Bold.ttf")).deriveFont((float)(size));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (FontFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Font font = getFont(size);
 		Surface measure = new Surface(1, 1, Color.BLACK);
 		Graphics2D big = (Graphics2D)(measure.img.getGraphics());
 		big.setFont(font);

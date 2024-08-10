@@ -33,11 +33,11 @@ public class Levels {
 		// Instructions
 		new Boxes.Text(game.getLayer(1), -1, 6, "Arrow keys", 30).spawn();
 		new Boxes.Text(game.getLayer(1), -0.5, 6.6, "to move", 30).spawn();
-		new Boxes.Text(game.getLayer(1), 13, -0.5, "Press space to", 30).spawn();
-		new Boxes.Text(game.getLayer(1), 13.5, -0.1, "switch players", 30).spawn();
-		new Boxes.Text(game.getLayer(2), 5.6, -7, "Both players", 20).spawn();
-		new Boxes.Text(game.getLayer(2), 6, -6.6, "must be touching", 20).spawn();
-		new Boxes.Text(game.getLayer(2), 5.4, -6.2, "the end to continue", 20).spawn();
+		new Boxes.Text(game.getLayer(1), 13, -0.6, "Press space to", 30).spawn();
+		new Boxes.Text(game.getLayer(1), 13.5, 0.2, "switch players", 30).spawn();
+		new Boxes.Text(game.getLayer(2), 5.2, -6.5, "Both players", 20).spawn();
+		new Boxes.Text(game.getLayer(2), 5.6, -6, "must be touching", 20).spawn();
+		new Boxes.Text(game.getLayer(2), 5, -5.5, "the end to continue", 20).spawn();
 		// Player Setup
 		game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 0);
 		game.player1.spawn();
