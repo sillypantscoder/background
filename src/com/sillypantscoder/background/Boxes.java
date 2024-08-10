@@ -12,7 +12,7 @@ public class Boxes {
 	public static class Text extends Box {
 		public String text;
 		public int textSize;
-		public Text(List<Box> world, int x, int y, String text, int textSize) {
+		public Text(List<Box> world, double x, double y, String text, int textSize) {
 			super(world, new Rect(x, y, 0, 0), PhysicsState.NONE);
 			this.text = text;
 			this.textSize = textSize;
@@ -24,10 +24,10 @@ public class Boxes {
 	}
 	public static class Player extends Box {
 		public Game game;
-		public double respawnX = 50;
-		public double respawnY = -400;
+		public double respawnX = 1;
+		public double respawnY = -8;
 		public Player(Game game, List<Box> world, double x, double y) {
-			super(world, new Rect(x, y, 50, 50), PhysicsState.PHYSICS);
+			super(world, new Rect(x, y, 1, 1), PhysicsState.PHYSICS);
 			this.game = game;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
@@ -78,7 +78,7 @@ public class Boxes {
 		public int length;
 		public SwitchHandler handler;
 		public Button(List<Box> world, double x, double y, SwitchHandler handler) {
-			super(world, new Rect(x - 25, y, 50, 0), PhysicsState.FIXED);
+			super(world, new Rect(x - 0.5, y, 1, 1d/64), PhysicsState.FIXED);
 			this.handler = handler;
 		}
 		public void tick() {
@@ -103,14 +103,14 @@ public class Boxes {
 			if (pressed) {
 				if (length > 1) {
 					length--;
-					this.rect.y += 1;
-					this.rect.h -= 1;
+					this.rect.y += 1d/64;
+					this.rect.h -= 1d/64;
 				}
 			} else {
 				if (length < 10) {
 					length++;
-					this.rect.y -= 1;
-					this.rect.h += 1;
+					this.rect.y -= 1d/64;
+					this.rect.h += 1d/64;
 				}
 			}
 		}
@@ -233,5 +233,11 @@ public class Boxes {
 				}
 			}
 		}
+	}
+	public static class InvisibleWind extends Wind {
+		public InvisibleWind(List<Box> world, Rect rect, double amtX, double amtY) {
+			super(world, rect, amtX, amtY);
+		}
+		public void draw(Surface s, Rect drawRect, double brightness) {}
 	}
 }

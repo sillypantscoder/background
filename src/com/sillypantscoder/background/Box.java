@@ -37,11 +37,11 @@ public class Box {
 		s.drawRect(getColor(brightness), drawRect);
 	}
 	public Rect getFeet() {
-		final int padding = 5;
+		final double padding = 1/10d;
 		return new Rect(rect.left() + padding, rect.bottom(), rect.width() - padding, padding);
 	}
 	public Rect getHead() {
-		final int padding = 5;
+		final double padding = 1/10d;
 		return new Rect(rect.left() + padding, rect.top() - padding, rect.width() - padding, padding * 2);
 	}
 	public void checkTouchingGround() {
@@ -59,8 +59,8 @@ public class Box {
 	public void tick() {
 		if (this.physics == PhysicsState.PHYSICS) {
 			// V
-			this.vy += 0.5;
-			this.vy *= 0.98;
+			this.vy += 0.012;
+			this.vy *= 0.99;
 			this.hzDamp();
 			// Touching ground?
 			checkTouchingGround();
@@ -72,7 +72,7 @@ public class Box {
 			this.rect = this.rect.move(this.vx, this.vy);
 		}
 		// Too low!
-		if (rect.top() > 1000) {
+		if (rect.top() > 20) {
 			fallVoid();
 		}
 	}

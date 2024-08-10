@@ -23,7 +23,7 @@ public class Game extends Window {
 	public double cameraY;
 	public int endingAnimation;
 	public boolean levelCompleted;
-	public int level = 2;
+	public int level = 5;
 	public Game() {
 		keys = new HashSet<String>();
 		layers = new ArrayList<ArrayList<Box>>();
@@ -98,10 +98,10 @@ public class Game extends Window {
 				Box box = layers.get(i).get(j);
 				// Get rect
 				Rect drawRect = new Rect(
-					box.rect.x - cameraX,
-					box.rect.y - cameraY,
-					box.rect.w,
-					box.rect.h
+					(box.rect.x * 50) - cameraX,
+					(box.rect.y * 50) - cameraY,
+					box.rect.w * 50,
+					box.rect.h * 50
 				);
 				drawRect = new Rect(
 					(drawRect.x * zoom) + ((width / 2d) * (1 - zoom)),
@@ -116,14 +116,14 @@ public class Game extends Window {
 		// Player Movement
 		if (keys.contains("Up")) {
 			if (player.touchingGround) {
-				player.vy = -15;
+				player.vy = -0.3;
 			}
 		}
 		if (keys.contains("Left")) {
-			player.vx -= 0.7;
+			player.vx -= 0.014;
 		}
 		if (keys.contains("Right")) {
-			player.vx += 0.7;
+			player.vx += 0.014;
 		}
 		if (this.endingAnimation == 0) {
 			return s;
