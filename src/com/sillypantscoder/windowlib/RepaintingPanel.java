@@ -72,60 +72,29 @@ public class RepaintingPanel extends JPanel {
 		frame.setIconImage(icon.img);
 		frame.setVisible(true);
 		startAnimation();
-		// Start mouse listener
-		myMouseListener ml = new myMouseListener(this);
-		this.addMouseListener(ml);
-		mouseMotionListener mml = new mouseMotionListener(this);
-		this.addMouseMotionListener(mml);
+		addEventListeners(this, frame);
+	}
+	public static void addEventListeners(RepaintingPanel panel, JFrame frame) {
+		// Add mouse listener
+		MouseListener ml = new MouseListener() {
+			public void mouseClicked(MouseEvent arg0) { }
+			public void mouseEntered(MouseEvent arg0) { }
+			public void mouseExited(MouseEvent arg0) { }
+			public void mousePressed(MouseEvent arg0) { panel.mouseDown.accept(arg0.getX(), arg0.getY()); }
+			public void mouseReleased(MouseEvent arg0) { panel.mouseUp.accept(arg0.getX(), arg0.getY()); }
+		};
+		panel.addMouseListener(ml);
+		// Add mouse motion listener
+		MouseMotionListener mml = new MouseMotionListener() {
+			public void mouseDragged(MouseEvent arg0) { panel.mouseMoved.accept(arg0.getX(), arg0.getY()); }
+			public void mouseMoved(MouseEvent arg0) { panel.mouseMoved.accept(arg0.getX(), arg0.getY()); }
+		};
+		panel.addMouseMotionListener(mml);
 		// Add keyboard listener
-		RepaintingPanel thePanel = this;
 		frame.addKeyListener(new KeyListener() {
-			@Override
-			public void keyPressed(KeyEvent e){ thePanel.keyDown.accept(KeyEvent.getKeyText(e.getKeyCode())); }
-			@Override
-			public void keyReleased(KeyEvent e) { thePanel.keyUp.accept(KeyEvent.getKeyText(e.getKeyCode())); }
-			@Override
+			public void keyPressed(KeyEvent e){ panel.keyDown.accept(KeyEvent.getKeyText(e.getKeyCode())); }
+			public void keyReleased(KeyEvent e) { panel.keyUp.accept(KeyEvent.getKeyText(e.getKeyCode())); }
 			public void keyTyped(KeyEvent e) { }
 		});
-	}
-}
-class myMouseListener implements MouseListener {
-	protected RepaintingPanel srcPanel;
-	public myMouseListener(RepaintingPanel p) {
-		srcPanel = p;
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) { }
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) { }
-
-	@Override
-	public void mouseExited(MouseEvent arg0) { }
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		srcPanel.mouseDown.accept(arg0.getX(), arg0.getY());
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		srcPanel.mouseUp.accept(arg0.getX(), arg0.getY());
-	}
-
-}
-class mouseMotionListener implements MouseMotionListener {
-	protected RepaintingPanel srcPanel;
-	public mouseMotionListener(RepaintingPanel p) {
-		srcPanel = p;
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent arg0) { }
-
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		srcPanel.mouseMoved.accept(arg0.getX(), arg0.getY());
 	}
 }

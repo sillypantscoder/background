@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -127,12 +128,24 @@ public class Surface {
 	public void drawCircle(Color color, Rect rect) {
 		drawCircle(color, rect.centerX(), rect.centerY(), (rect.w + rect.h) / 4);
 	}
+	public Surface scaleValues(float amount) {
+		RescaleOp op = new RescaleOp(new float[] { amount, amount, amount, amount }, new float[] { 0, 0, 0, 0 }, null);
+		BufferedImage newImg = op.filter(this.img, null);
+		return new Surface(newImg);
+	}
 	public Surface scale_size(int amount) {
 		int newWidth = this.img.getWidth() * amount;
 		int newHeight = this.img.getHeight() * amount;
 		BufferedImage newImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = newImg.createGraphics();
 		g2d.drawImage(this.img, 0, 0, newWidth, newHeight, 0, 0, this.img.getWidth(), this.img.getHeight(), null);
+		g2d.dispose();
+		return new Surface(newImg);
+	}
+	public Surface crop(int x, int y, int w, int h) {
+		BufferedImage newImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = newImg.createGraphics();
+		g2d.drawImage(this.img, 0, 0, w, h, x, y, x + w, y + h, null);
 		g2d.dispose();
 		return new Surface(newImg);
 	}

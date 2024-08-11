@@ -224,28 +224,20 @@ public class Boxes {
 			}
 		}
 	}
-	public static class Wind extends Box {
+	public static class InvisibleWind extends Box {
 		public double amtX;
 		public double amtY;
-		public Wind(List<Box> world, Rect rect, double amtX, double amtY) {
+		public InvisibleWind(List<Box> world, Rect rect, double amtX, double amtY) {
 			super(world, rect, PhysicsState.NONE);
 			this.amtX = amtX;
 			this.amtY = amtY;
 		}
-		public static Color getColor(double brightness, double multiplier) {
-			int realbrightness = (int)(255 - ((255 - brightness) * multiplier));
-			return new Color(realbrightness, realbrightness, realbrightness, realbrightness);
-		}
-		public void draw(Surface s, Rect drawRect, double brightness) {
-			s.drawRect(getColor(brightness, 1/4d), drawRect, 7);
-			s.drawRect(getColor(brightness, 2/4d), drawRect, 5);
-			s.drawRect(getColor(brightness, 3/4d), drawRect, 3);
-			s.drawRect(getColor(brightness, 4/4d), drawRect, 1);
-		}
+		public void draw(Surface s, Rect drawRect, double brightness) {}
 		public void tick() {
 			super.tick();
 			// Move objects
-			Rect r = new Rect(this.rect.x + 0.5, this.rect.y + 0.5, this.rect.w - 1, this.rect.h - 1);
+			double padding = 0.3;
+			Rect r = new Rect(this.rect.x + padding, this.rect.y + padding, this.rect.w - (padding * 2), this.rect.h - (padding * 2));
 			for (Box box : world) {
 				if (box.physics != PhysicsState.PHYSICS) continue;
 				if (box.rect.colliderect(r)) {
@@ -255,10 +247,41 @@ public class Boxes {
 			}
 		}
 	}
-	public static class InvisibleWind extends Wind {
-		public InvisibleWind(List<Box> world, Rect rect, double amtX, double amtY) {
+	public static class Wind extends InvisibleWind {
+		public static int gridSize = 5;
+		public double offsetX;
+		public double offsetY;
+		public Surface bg;
+		public Wind(List<Box> world, Rect rect, double amtX, double amtY) {
 			super(world, rect, amtX, amtY);
+			// Create bg image
+			bg = new Surface((int)(rect.w * 50) + (gridSize * 2), (int)(rect.h * 50) + (gridSize * 2), new Color(0, 0, 0, 0));
+			for (int x = 0; x < bg.get_width(); x += 2) {
+				for (int y = 0; y < bg.get_height(); y += 2) {
+					bg.drawRect(Color.WHITE, x * gridSize, y * gridSize, gridSize, gridSize);
+					// bg.drawRect(Color.WHITE, (x + 1) * gridSize, (y + 1) * gridSize, gridSize, gridSize);
+				}
+			}
+			offsetX = 0.1d * gridSize;
+			offsetY = 0.1d * gridSize;
 		}
-		public void draw(Surface s, Rect drawRect, double brightness) {}
+		public static Color getColor(double brightness, double multiplier) {
+			int realbrightness = (int)(255 - ((255 - brightness) * multiplier));
+			return new Color(realbrightness, realbrightness, realbrightness, 255);
+		}
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			s.blit(
+				bg.crop((int)(offsetX + gridSize), (int)(offsetY + gridSize), (int)(drawRect.w), (int)(drawRect.h))
+				.scaleValues(getColor(brightness, 1/4d).getRed() / 255f)
+			, (int)(drawRect.x), (int)(drawRect.y));
+			s.drawRect(getColor(brightness, 2/4d), drawRect, 3);
+		}
+		public void tick() {
+			super.tick();
+			offsetX -= amtX * 20;
+			offsetY -= amtY * 20;
+			offsetX %= gridSize * 2;
+			offsetY %= gridSize * 2;
+		}
 	}
 }
