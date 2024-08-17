@@ -39,11 +39,11 @@ public class Box {
 	}
 	public Rect getFeet() {
 		final double padding = 1/10d;
-		return new Rect(rect.left() + padding, rect.bottom(), rect.width() - padding, padding);
+		return new Rect(rect.left(), rect.bottom(), rect.width(), padding);
 	}
 	public Rect getHead() {
 		final double padding = 1/10d;
-		return new Rect(rect.left() + padding, rect.top() - padding, rect.width() - padding, padding * 2);
+		return new Rect(rect.left(), rect.top() - padding, rect.width(), padding * 2);
 	}
 	public HashSet<Box> getAbovePhysicsBoxes(boolean recursive) {
 		HashSet<Box> boxes = new HashSet<Box>();

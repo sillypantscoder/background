@@ -31,7 +31,7 @@ public class Game extends Window {
 	public int endingAnimation;
 	public boolean levelCompleted;
 	public int level = 0;
-	public int timer;
+	public int timer = 0;
 	public Game() {
 		keys = new HashSet<String>();
 		layers = new ArrayList<ArrayList<Box>>();
