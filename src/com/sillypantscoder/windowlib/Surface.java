@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.sillypantscoder.utils.AssetLoader;
 import com.sillypantscoder.utils.Rect;
 
 import java.util.ArrayList;
@@ -176,7 +177,7 @@ public class Surface {
 		if (FONT == null) {
 			FONT = new Font("SansSerif", Font.BOLD, 30);
 			try {
-				FONT = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("Segoe UI Bold.ttf"));
+				FONT = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(AssetLoader.getResourceLocation("Segoe UI Bold.ttf")));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (FontFormatException e) {

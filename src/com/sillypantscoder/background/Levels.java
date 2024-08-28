@@ -94,7 +94,7 @@ public class Levels {
 		{
 			Boxes.Door door = new Boxes.Door(bothLayer, new Rect(11, -2.5, 1, 8), 11, 2);
 			door.spawn();
-			new Boxes.Button(bothLayer, 9.5, 7, door).spawn();
+			new Boxes.Button(bothLayer, 9.3, 7, door).spawn();
 		}
 		new Boxes.Wall(game.getLayer(0), new Rect(12, 0, 2, 1)).spawn();
 		new Boxes.Wall(game.getLayer(1), new Rect(13.5, 1, 2, 1)).spawn();
@@ -179,7 +179,7 @@ public class Levels {
 			public void tick() {
 				this.vy -= 0.01;
 				super.tick();
-				if (this.touchingGround == false) this.vx *= 1.1;
+				if (this.touchingGround == false) this.vx *= 1.09;
 				else this.vx *= 0.95;
 			}
 		}).spawn();
@@ -197,12 +197,13 @@ public class Levels {
 		new Boxes.InvisibleWind(game.getLayer(1), new Rect(16, -15, 3, 10), 0, 0.01).spawn(); // deceleration zone
 		new Boxes.Wind(game.getLayer(1), new Rect(12.5, 6, 1, 1), 0.02, 0).spawn(); // softlock prevention I
 		new Boxes.Wind(game.getLayer(1), new Rect(18.5, 6, 1, 1), -0.02, 0).spawn(); // softlock prevention II
-		new Boxes.InvisibleWind(game.getLayer(0), new Rect(21, -8, 3, 7), -0.0003, 0).spawn(); // anger prevention
+		new Boxes.InvisibleWind(game.getLayer(0), new Rect(18.5, -13, 3, 11), 0.0005, 0).spawn(); // anger prevention attempt
+		new Boxes.Wind(game.getLayer(0), new Rect(21, -1, 1, 1), 0, -0.008).spawn(); // anger prevention real
 		// Door
 		{
 			Boxes.Door door = new Boxes.Door(game.getLayer(1), new Rect(29, -7, 5, 1), 29, 0);
 			door.spawn();
-			new Boxes.Button(game.getLayer(0), 22.5, 0, door).spawn();
+			new Boxes.Button(game.getLayer(0), 23, 0, door).spawn();
 		}
 		new Boxes.End(game, new Rect(34, -2.5, 2, 2)).spawn();
 		// Player Setup
@@ -278,14 +279,14 @@ public class Levels {
 		new Boxes.PhysicsObject(game.getLayer(0), new Rect(-1, -6, 1, 1)).spawn(); // block top
 		{
 			// Far left platform middle part
-			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-15.5, 6, 3, 1), -15.5, -1);
+			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-15.5, -7, 3, 1), -15.5, -1);
 			door.spawn();
 			// button (floor 2 extra platform)
 			new Boxes.Button(game.getLayer(0), 5, -4, door).spawn();
 		}
 		{
 			// Far left platform right part
-			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-12.5, 6, 3, 1), -12.5, -1);
+			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-12.5, -7, 3, 1), -12.5, -1);
 			door.spawn();
 			// button (left part)
 			new Boxes.Button(game.getLayer(0), -17, -1, door).spawn();
@@ -343,7 +344,7 @@ public class Levels {
 		new Boxes.Wall(threeLayer, new Rect(8, 8, 4, 1)).spawn(); // bottom right hole bottom
 		new Boxes.Wall(threeLayer, new Rect(11, 7, 4, 1)).spawn(); // bottom far right platform
 		{
-			Boxes.Door doorTopLeft = new Boxes.Door(threeLayer, new Rect(-6, 6, 2, 1), -6, -1.5);
+			Boxes.Door doorTopLeft = new Boxes.Door(threeLayer, new Rect(-6.5, 6, 2, 1), -6.5, -1.5);
 			doorTopLeft.spawn();
 			Boxes.Door doorBottomRight = new Boxes.Door(game.getLayer(2), new Rect(7.5, -5, 1, 1), 7.5, 4);
 			doorBottomRight.spawn();
@@ -351,13 +352,12 @@ public class Levels {
 				doorTopLeft, doorBottomRight
 			}).spawn();
 		}
-		// new Boxes.PhysicsObject(bothLayerBack, new Rect(-3, -3, 1, 1)).spawn(); // another top left block?
 		new Boxes.PhysicsObject(bothLayerBack, new Rect(7.5, -6, 1, 1)).spawn(); // top right block
-		new Boxes.Wall(threeLayer, new Rect(-8, -1, 2, 1)).spawn(); // top far left platform
+		new Boxes.Wall(threeLayer, new Rect(-9, -1, 2, 1)).spawn(); // top far left platform
 		{
-			Boxes.Door door = new Boxes.Door(threeLayer, new Rect(-1, -8, 3, 1), -1, -4);
+			Boxes.Door door = new Boxes.Door(threeLayer, new Rect(-2, -7.5, 4, 1), -2, -4);
 			door.spawn(); // top left on top of roof
-			new Boxes.Button(game.getLayer(2), -7, -1, door).spawn();
+			new Boxes.Button(game.getLayer(2), -8, -1, door).spawn();
 		}
 		new Boxes.End(game, new Rect(13, 3.5, 2, 2)).spawn();
 		// Player Setup
