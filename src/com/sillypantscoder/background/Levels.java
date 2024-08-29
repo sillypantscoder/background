@@ -21,23 +21,47 @@ public class Levels {
 		game.player2.spawn();
 	}
 	public static void level0(Game game) {
-		new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 5, 1)).spawn();
-		new Boxes.Wall(game.getLayer(0), new Rect(3, 2, 5, 1)).spawn();
-		new Boxes.PhysicsObject(game.getLayer(0), new Rect(4, -6, 1, 1)).spawn();
-		new Boxes.Wall(game.getLayer(0), new Rect(11, -2, 5, 1)).spawn();
-		new Boxes.End(game, new Rect(10, -6, 2, 2)).spawn();
-		// Decoration
-		new Boxes.Wall(game.getLayer(1), new Rect(-2, 2, 10, 4)).spawn();
-		new Boxes.Text(game.getLayer(2), -1.5, -0.5, "BACKGROUND", 100).spawn();
-		new Boxes.Wall(game.getLayer(3), new Rect(3, -2, 13, 5)).spawn();
-		// Instructions
-		new Boxes.Text(game.getLayer(1), -1, 6, "Arrow keys", 30).spawn();
-		new Boxes.Text(game.getLayer(1), -0.5, 6.6, "to move", 30).spawn();
-		new Boxes.Text(game.getLayer(1), 13, -0.6, "Press space to", 30).spawn();
-		new Boxes.Text(game.getLayer(1), 13.5, 0.2, "switch players", 30).spawn();
-		new Boxes.Text(game.getLayer(2), 5.2, -6.5, "Both players", 20).spawn();
-		new Boxes.Text(game.getLayer(2), 5.6, -6, "must be touching", 20).spawn();
-		new Boxes.Text(game.getLayer(2), 5, -5.5, "the end to continue", 20).spawn();
+		// decoration left
+		new Boxes.Wall(game.getLayer(2), new Rect(-2, 5, 10, 4)).spawn(); // terrain box
+		new Boxes.Text(game.getMultilayer(new int[] { 1, 2, 3, 4, 5, 6, 7 }), -3.5, 0.5, "BACKGROUND", 100).spawn();
+		new Boxes.Wall(game.getLayer(3), new Rect(5, 0, 4, 5)).spawn(); // text box middle
+		new Boxes.Wall(game.getLayer(2), new Rect(7, -1, 3, 3)).spawn(); // text box right
+		// arrow key instructions
+		new Boxes.Text(game.getLayer(0), -1, 6, "Arrow keys", 30).spawn();
+		new Boxes.Text(game.getLayer(0), -0.5, 6.6, "to move", 30).spawn();
+		new Boxes.Text(game.getLayer(1), -1, 7.5, "(up arrow to jump)", 20).spawn();
+		// platforms left
+		new Boxes.Wall(game.getLayer(0), new Rect(-2, 4, 5, 1)).spawn(); // starting platform
+		new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(6, 6, 11, 1)).spawn(); // bottom middle platform
+		// switch players instructions
+		new Boxes.Text(game.getLayer(0), 9.5, 7, "Press space to", 30).spawn();
+		new Boxes.Text(game.getLayer(0), 10, 7.8, "switch players", 30).spawn();
+		// button instructions
+		new Boxes.Text(game.getLayer(1), 15, 2, "You can press", 30).spawn();
+		new Boxes.Text(game.getLayer(1), 15.5, 2.8, "buttons to move", 30).spawn();
+		new Boxes.Text(game.getLayer(1), 16, 3.6, "platforms", 30).spawn();
+		// button + door
+		{
+			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(22.5, 2, 1, 4), 22.5, -1);
+			door.spawn();
+			new Boxes.Button(game.getLayer(0), 18, 8, door).spawn();
+		}
+		// moving block
+		new Boxes.Text(game.getLayer(1), 24.5, 2.5, "Some objects", 30).spawn();
+		new Boxes.Text(game.getLayer(1), 25, 3.3, "can be pushed", 30).spawn();
+		new Boxes.PhysicsObject(game.getLayer(0), new Rect(25, 0, 1, 1)).spawn();
+		new Boxes.Wall(game.getLayer(2), new Rect(16, 5, 10, 4)).spawn(); // background box right
+		// hole
+		new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(16, 6, 1, 3)).spawn(); // hole left
+		new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(16, 8, 4, 1)).spawn(); // hole bottom
+		new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(19, 6, 1, 3)).spawn(); // hole right
+		new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(19, 6, 23, 1)).spawn(); // bottom right platform
+		// end instructions
+		new Boxes.Text(game.getLayer(2), 35.2, 3.5, "Both players", 20).spawn();
+		new Boxes.Text(game.getLayer(2), 35.6, 4, "must be touching", 20).spawn();
+		new Boxes.Text(game.getLayer(2), 35, 4.5, "the end to continue", 20).spawn();
+		new Boxes.End(game, new Rect(40, 3.5, 2, 2)).spawn();
+		new Boxes.Wall(game.getLayer(3), new Rect(33, 0.5, 11, 8)).spawn(); // background box far right
 		// Player Setup
 		game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 0);
 		game.player1.spawn();
@@ -75,14 +99,8 @@ public class Levels {
 	}
 	public static void level2(Game game) {
 		new Boxes.Text(game.getLayer(1), -3.5, 4, "2", 80).spawn();
-		// Create both layer
-		ListCombination<Box> bothLayer;
-		{
-			ArrayList<ArrayList<Box>> bothLayerC = new ArrayList<ArrayList<Box>>();
-			bothLayerC.add(game.getLayer(0));
-			bothLayerC.add(game.getLayer(1));
-			bothLayer = new ListCombination<Box>(bothLayerC);
-		}
+		ListCombination<Box> bothLayer = game.getMultilayer(new int[] { 0, 1 });
+		// Platforms
 		new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 5, 1)).spawn(); // Starting platform
 		new Boxes.Wall(game.getLayer(1), new Rect(-2, 5, 11, 1)).spawn();
 		new Boxes.PhysicsObject(bothLayer, new Rect(4, 0, 1, 1)).spawn();
@@ -108,13 +126,7 @@ public class Levels {
 	public static void level3(Game game) {
 		new Boxes.Text(game.getLayer(1), 6, 4, "3", 80).spawn();
 		// Create both layer
-		ListCombination<Box> bothLayer;
-		{
-			ArrayList<ArrayList<Box>> bothLayerC = new ArrayList<ArrayList<Box>>();
-			bothLayerC.add(game.getLayer(0));
-			bothLayerC.add(game.getLayer(1));
-			bothLayer = new ListCombination<Box>(bothLayerC);
-		}
+		ListCombination<Box> bothLayer = game.getMultilayer(new int[] { 0, 1 });
 		// Platform
 		new Boxes.Wall(bothLayer, new Rect(-2, 5, 5, 1)).spawn(); // starting platform
 		new Box(bothLayer, new Rect(-2, 5, 5, 6), PhysicsState.NONE).spawn(); // to cover the opening
@@ -165,13 +177,7 @@ public class Levels {
 	public static void level4(Game game) {
 		new Boxes.Text(game.getLayer(1), 2, 6.5, "4", 80).spawn();
 		// Create both layer
-		ListCombination<Box> bothLayer;
-		{
-			ArrayList<ArrayList<Box>> bothLayerC = new ArrayList<ArrayList<Box>>();
-			bothLayerC.add(game.getLayer(0));
-			bothLayerC.add(game.getLayer(1));
-			bothLayer = new ListCombination<Box>(bothLayerC);
-		}
+		ListCombination<Box> bothLayer = game.getMultilayer(new int[] { 0, 1 });
 		// Platform
 		new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 11, 1)).spawn();
 		new Boxes.Wall(game.getLayer(1), new Rect(-2, 5, 7, 1)).spawn();
@@ -307,28 +313,7 @@ public class Levels {
 	public static void level7(Game game) {
 		new Boxes.Text(game.getLayer(1), -2, -1, "7", 80).spawn();
 		// Create multilayer objects
-		ListCombination<Box> bothLayerFront;
-		{
-			ArrayList<ArrayList<Box>> bothLayerC = new ArrayList<ArrayList<Box>>();
-			bothLayerC.add(game.getLayer(0));
-			bothLayerC.add(game.getLayer(1));
-			bothLayerFront = new ListCombination<Box>(bothLayerC);
-		}
-		ListCombination<Box> bothLayerBack;
-		{
-			ArrayList<ArrayList<Box>> bothLayerC = new ArrayList<ArrayList<Box>>();
-			bothLayerC.add(game.getLayer(1));
-			bothLayerC.add(game.getLayer(2));
-			bothLayerBack = new ListCombination<Box>(bothLayerC);
-		}
-		ListCombination<Box> threeLayer;
-		{
-			ArrayList<ArrayList<Box>> bothLayerC = new ArrayList<ArrayList<Box>>();
-			bothLayerC.add(game.getLayer(0));
-			bothLayerC.add(game.getLayer(1));
-			bothLayerC.add(game.getLayer(2));
-			threeLayer = new ListCombination<Box>(bothLayerC);
-		}
+		ListCombination<Box> threeLayer = game.getMultilayer(new int[] { 0, 1, 2 });
 		// Platforms
 		new Boxes.Wall(threeLayer, new Rect(-4, -2, 6, 1)).spawn(); // top left starting platform
 		new Boxes.Wall(threeLayer, new Rect(1, 7, 8, 1)).spawn(); // bottom right starting platform
@@ -340,7 +325,7 @@ public class Levels {
 		new Boxes.Wall(threeLayer, new Rect(5, -5, 1, 10)).spawn(); // right wall
 		new Boxes.Wind(game.getLayer(2), new Rect(2, -2, 1, 9), 0, -0.1).spawn(); // left wind
 		// Objects
-		new Boxes.PhysicsObject(bothLayerBack, new Rect(-3, -3, 1, 1)).spawn(); // top left block
+		new Boxes.PhysicsObject(game.getMultilayer(new int[] { 1, 2 }), new Rect(-3, -3, 1, 1)).spawn(); // top left block
 		new Boxes.Wall(threeLayer, new Rect(8, 8, 4, 1)).spawn(); // bottom right hole bottom
 		new Boxes.Wall(threeLayer, new Rect(11, 7, 4, 1)).spawn(); // bottom far right platform
 		{
@@ -352,7 +337,7 @@ public class Levels {
 				doorTopLeft, doorBottomRight
 			}).spawn();
 		}
-		new Boxes.PhysicsObject(bothLayerBack, new Rect(7.5, -6, 1, 1)).spawn(); // top right block
+		new Boxes.PhysicsObject(game.getMultilayer(new int[] { 1, 2 }), new Rect(7.5, -6, 1, 1)).spawn(); // top right block
 		new Boxes.Wall(threeLayer, new Rect(-9, -1, 2, 1)).spawn(); // top far left platform
 		{
 			Boxes.Door door = new Boxes.Door(threeLayer, new Rect(-2, -7.5, 4, 1), -2, -4);
@@ -361,10 +346,10 @@ public class Levels {
 		}
 		new Boxes.End(game, new Rect(13, 3.5, 2, 2)).spawn();
 		// Player Setup
-		game.player1 = new Boxes.Player(game, bothLayerFront, -1, -5);
+		game.player1 = new Boxes.Player(game, game.getMultilayer(new int[] { 0, 1 }), -1, -5);
 		game.player1.spawn();
 		game.player1.setrespawn();
-		game.player2 = new Boxes.Player(game, bothLayerFront, 6, 5);
+		game.player2 = new Boxes.Player(game, game.getMultilayer(new int[] { 0, 1 }), 6, 5);
 		game.player2.spawn();
 		game.player2.setrespawn();
 	}

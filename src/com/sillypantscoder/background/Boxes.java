@@ -14,7 +14,7 @@ public class Boxes {
 		public String text;
 		public int textSize;
 		public Text(List<Box> world, double x, double y, String text, int textSize) {
-			super(world, new Rect(x, y, 0, 0), PhysicsState.NONE);
+			super(world, new Rect(x, y, Surface.renderText(textSize, text, Color.BLACK).get_width() / 50d, Surface.renderText(textSize, text, Color.BLACK).get_height() / 50d), PhysicsState.NONE);
 			this.text = text;
 			this.textSize = textSize;
 		}
@@ -162,7 +162,7 @@ public class Boxes {
 			this.rect.x = this.oldX + ((this.newX - this.oldX) * anim_amt);
 			this.rect.y = this.oldY + ((this.newY - this.oldY) * anim_amt);
 			// Move entities
-			if (this.rect.y < previousY) {
+			if (this.rect.y <= previousY) {
 				double diffX = this.rect.x - previousX;
 				double diffY = this.rect.y - previousY;
 				for (Box b : moving) {

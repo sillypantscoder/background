@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.sillypantscoder.background.Box.PhysicsState;
+import com.sillypantscoder.utils.ListCombination;
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 import com.sillypantscoder.windowlib.Window;
@@ -43,6 +44,13 @@ public class Game extends Window {
 			layers.add(new ArrayList<Box>());
 		}
 		return layers.get(layer);
+	}
+	public ListCombination<Box> getMultilayer(int[] layers) {
+		ArrayList<ArrayList<Box>> layerList = new ArrayList<ArrayList<Box>>();
+		for (int i = 0; i < layers.length; i++) {
+			layerList.add(this.getLayer(layers[i]));
+		}
+		return new ListCombination<Box>(layerList);
 	}
 	public int getLayer(ArrayList<Box> layer) {
 		for (int i = 0; i < layers.size(); i++) {
@@ -193,10 +201,23 @@ public class Game extends Window {
 	public Box mouseCarrying = null;
 	public void mouseMoved(int x, int y) {
 		if (mouseCarrying != null) {
-			mouseCarrying.rect.x = ((x + cameraX) / 50) - (mouseCarrying.rect.w / 2);
-			mouseCarrying.rect.y = ((y + cameraY) / 50) - (mouseCarrying.rect.h / 2);
 			mouseCarrying.vx = 0;
 			mouseCarrying.vy = 0;
+			// Find mouse pos
+			double precision = 4;
+			double realMouseX = (x + cameraX) / 50;
+			double realMouseY = (y + cameraY) / 50;
+			// Find new box pos
+			double targetX = realMouseX - (mouseCarrying.rect.w / 2);
+			double targetY = realMouseY - (mouseCarrying.rect.h / 2);
+			double newX = Math.round(targetX * precision) / precision;
+			double newY = Math.round(targetY * precision) / precision;
+			// update pos
+			if (newX != mouseCarrying.rect.x || newY != mouseCarrying.rect.y) {
+				mouseCarrying.rect.x = newX;
+				mouseCarrying.rect.y = newY;
+				System.out.println("moved object to x: " + newX + " y: " + newY);
+			}
 		}
 	}
 	public void mouseDown(int x, int y) {
