@@ -134,12 +134,14 @@ public class Boxes {
 		public double newY;
 		public double amt;
 		public boolean activated;
+		public HashSet<Box> attached;
 		public Door(List<Box> world, Rect rect, double newX, double newY) {
 			super(world, rect, PhysicsState.FIXED);
 			oldX = rect.x;
 			oldY = rect.y;
 			this.newX = newX;
 			this.newY = newY;
+			this.attached = new HashSet<Box>();
 		}
 		public void tick() {
 			super.tick();
@@ -153,22 +155,37 @@ public class Boxes {
 					this.amt -= 1/32d;
 				}
 			}
-			// Get list of entities to move
+			// Remember previous position
 			double previousX = this.rect.x;
 			double previousY = this.rect.y;
-			HashSet<Box> moving = this.getAbovePhysicsBoxes(true);
+			HashSet<Box> aboveBoxes = this.getAbovePhysicsBoxes(true);
+			HashSet<Box> belowBoxes = this.getBelowPhysicsBoxes();
 			// Set pos
 			double anim_amt = Utils.ease_in_out(this.amt);
 			this.rect.x = this.oldX + ((this.newX - this.oldX) * anim_amt);
 			this.rect.y = this.oldY + ((this.newY - this.oldY) * anim_amt);
-			// Move entities
+			// Find which entities to move
+			HashSet<Box> moving = new HashSet<Box>();
 			if (this.rect.y <= previousY) {
-				double diffX = this.rect.x - previousX;
-				double diffY = this.rect.y - previousY;
-				for (Box b : moving) {
-					b.rect.x += diffX;
-					b.rect.y += diffY;
+				moving.addAll(aboveBoxes);
+				for (Box b : attached) {
+					moving.addAll(b.getAbovePhysicsBoxes(true));
 				}
+			} else {
+				moving.addAll(belowBoxes);
+				for (Box b : attached) {
+					moving.addAll(b.getBelowPhysicsBoxes());
+				}
+			}
+			for (Box b : attached) {
+				moving.add(b);
+			}
+			// Move entities
+			double diffX = this.rect.x - previousX;
+			double diffY = this.rect.y - previousY;
+			for (Box b : moving) {
+				b.rect.x += diffX;
+				b.rect.y += diffY;
 			}
 		}
 		public void activate() {

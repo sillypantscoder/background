@@ -12,7 +12,7 @@ def checkfolder(folder: str):
 		if os.path.isdir(newname):
 			checkfolder(newname)
 		else:
-			if newname.split(".")[-1] in ["java", "html", "css", "js", "xml"]:
+			if newname.split(".")[-1] in ["java", "html", "css", "js", "xml", "ttf"]:
 				files.append(newname)
 checkfolder("src")
 
@@ -35,10 +35,10 @@ print("Saving...")
 if not WINDOWS:
 	f = open("compiled_output/manifest", "w")
 	f.write(f"""Manifest-Version: 1.0
-	Created-By: 17.0.3 (GraalVM Community)
-	Main-Class: com.sillypantscoder.spcgames.Main
+Created-By: 17.0.3 (GraalVM Community)
+Main-Class: com.sillypantscoder.background.Game
 
-	""")
+""")
 	f.close()
 	subprocess.run(["jar", "-c", "-v", "-f", "compiled.jar", "-m", "compiled_output/manifest", "-C", "compiled_output/", "."])
 	subprocess.run(["rm", "-r", "compiled_output"])

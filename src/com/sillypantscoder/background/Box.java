@@ -56,6 +56,16 @@ public class Box {
 		}
 		return boxes;
 	}
+	public HashSet<Box> getBelowPhysicsBoxes() {
+		HashSet<Box> boxes = new HashSet<Box>();
+		for (Box b : world) {
+			if (b.physics != PhysicsState.PHYSICS) continue;
+			if (b.getHead().colliderect(this.getFeet())) {
+				boxes.add(b);
+			}
+		}
+		return boxes;
+	}
 	public void checkTouchingGround() {
 		Rect feet = getFeet();
 		this.touchingGround = false;

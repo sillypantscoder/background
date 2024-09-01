@@ -353,4 +353,89 @@ public class Levels {
 		game.player2.spawn();
 		game.player2.setrespawn();
 	}
+	public static void level8(Game game) {
+		new Boxes.Text(game.getLayer(1), 0, 2, "8", 80).spawn();
+		// Platforms
+		new Boxes.Wall(game.getLayer(0), new Rect(-3.5, 5, 8, 1)).spawn();
+		new Boxes.Wall(game.getLayer(0), new Rect(-3.5, 1, 8, 1)).spawn();
+		new Boxes.Wall(game.getLayer(0), new Rect(0, -6, 1, 7)).spawn();
+		// Elevator left
+		{
+			// Wall outside
+			Boxes.Wall wallOutside = new Boxes.Wall(game.getLayer(0), new Rect(-10, 1, 1, 5));
+			wallOutside.spawn();
+			// Wall inside
+			Boxes.Wall wallInsideTop = new Boxes.Wall(game.getLayer(0), new Rect(-5, -5, 1, 7));
+			wallInsideTop.spawn();
+			Boxes.Wall wallInsideBottom = new Boxes.Wall(game.getLayer(0), new Rect(-5, 5, 1, 7));
+			wallInsideBottom.spawn();
+			// Floor
+			Boxes.Door floor = new Boxes.Door(game.getLayer(0), new Rect(-9, 5, 5, 1), -9, 1);
+			floor.spawn();
+			// Ceiling
+			Boxes.Door ceiling = new Boxes.Door(game.getLayer(0), new Rect(-9, 1, 5, 1), -9, -3);
+			ceiling.spawn();
+			// Button
+			Boxes.Button btn = new Boxes.Button(game.getLayer(0), -5, 5, new Boxes.Button.SwitchHandler[] {
+				floor, ceiling
+			});
+			btn.spawn();
+			floor.attached.add(btn);
+			floor.attached.add(wallOutside);
+			floor.attached.add(wallInsideTop);
+			floor.attached.add(wallInsideBottom);
+			// Button on top of elevator
+			{
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(2, -5, 1, 1), 2, -2);
+				door.spawn();
+				Boxes.Button btn2 = new Boxes.Button(game.getLayer(0), -8, 1, door);
+				btn2.spawn();
+				floor.attached.add(btn2);
+			}
+		}
+		// Elevator right
+		{
+			// Wall outside
+			Boxes.Wall wallOutside = new Boxes.Wall(game.getLayer(0), new Rect(10, 1, 1, 5));
+			wallOutside.spawn();
+			// Wall inside
+			Boxes.Wall wallInsideTop = new Boxes.Wall(game.getLayer(0), new Rect(5, -5, 1, 7));
+			wallInsideTop.spawn();
+			Boxes.Wall wallInsideBottom = new Boxes.Wall(game.getLayer(0), new Rect(5, 5, 1, 7));
+			wallInsideBottom.spawn();
+			// Floor
+			Boxes.Door floor = new Boxes.Door(game.getLayer(0), new Rect(5, 5, 5, 1), 5, 1);
+			floor.spawn();
+			// Ceiling
+			Boxes.Door ceiling = new Boxes.Door(game.getLayer(0), new Rect(5, 1, 5, 1), 5, -3);
+			ceiling.spawn();
+			// Button
+			Boxes.Button btn = new Boxes.Button(game.getLayer(0), 9, 5, new Boxes.Button.SwitchHandler[] {
+				floor, ceiling
+			});
+			btn.spawn();
+			floor.attached.add(btn);
+			floor.attached.add(wallOutside);
+			floor.attached.add(wallInsideTop);
+			floor.attached.add(wallInsideBottom);
+		}
+		{
+			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-1.5, -5, 1, 1), -1.5, -1);
+			door.spawn();
+			new Boxes.Button(game.getLayer(0), 2, 1, door).spawn();
+		}
+		// Platform far left
+		new Boxes.Wall(game.getLayer(0), new Rect(-16, 3, 5, 1)).spawn();
+		new Boxes.End(game, new Rect(-17, -1, 2, 2)).spawn();
+		// Decoration
+		new Boxes.Wall(game.getLayer(1), new Rect(-9.5, 1, 20, 5)).spawn();
+		new Boxes.Wall(game.getLayer(2), new Rect(-9.5, -3, 20, 5)).spawn();
+		new Boxes.Wall(game.getLayer(3), new Rect(-9.5, -7, 20, 5)).spawn();
+		new Boxes.Wall(game.getLayer(2), new Rect(-18.25, -3.75, 10, 10)).spawn();
+		// Player Setup
+		game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 2);
+		game.player1.spawn();
+		game.player2 = new Boxes.Player(game, game.getLayer(0), 1, 2);
+		game.player2.spawn();
+	}
 }
