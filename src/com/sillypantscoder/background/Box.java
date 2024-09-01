@@ -73,7 +73,7 @@ public class Box {
 			Box box = world.get(i);
 			if (box == this) continue;
 			if (box.physics == PhysicsState.NONE) continue;
-			if (feet.colliderect(box.rect)) {
+			if (feet.colliderect(box.rect) && (box.touchingGround == true || box.physics == PhysicsState.FIXED)) {
 				this.touchingGround = true;
 			}
 		}

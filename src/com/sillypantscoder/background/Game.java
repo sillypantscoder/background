@@ -31,7 +31,7 @@ public class Game extends Window {
 	public double cameraY;
 	public int endingAnimation;
 	public boolean levelCompleted;
-	public int level = 8;
+	public int level = 0;
 	public int timer = 0;
 	public Game() {
 		keys = new HashSet<String>();
@@ -77,6 +77,7 @@ public class Game extends Window {
 		levels.add(Levels::level6);
 		levels.add(Levels::level7);
 		levels.add(Levels::level8);
+		levels.add(Levels::level9);
 		if (level >= levels.size()) {
 			Levels.levelErr(this);
 		} else {

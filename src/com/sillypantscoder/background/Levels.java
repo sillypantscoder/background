@@ -354,7 +354,7 @@ public class Levels {
 		game.player2.setrespawn();
 	}
 	public static void level8(Game game) {
-		new Boxes.Text(game.getLayer(1), 0, 2, "8", 80).spawn();
+		new Boxes.Text(game.getLayer(1), 0, 6, "8", 80).spawn();
 		// Platforms
 		new Boxes.Wall(game.getLayer(0), new Rect(-3.5, 5, 8, 1)).spawn();
 		new Boxes.Wall(game.getLayer(0), new Rect(-3.5, 1, 8, 1)).spawn();
@@ -437,5 +437,43 @@ public class Levels {
 		game.player1.spawn();
 		game.player2 = new Boxes.Player(game, game.getLayer(0), 1, 2);
 		game.player2.spawn();
+	}
+	public static void level9(Game game) {
+		new Boxes.Text(game.getLayer(1), -2, 2, "9", 80).spawn();
+		// Platforms
+		new Boxes.Wall(game.getLayer(0), new Rect(-3, 5, 6, 1)).spawn(); // starting platform
+		new Boxes.Wall(game.getLayer(0), new Rect(-4, 1, 1, 5)).spawn(); // left wall
+		new Boxes.Wall(game.getLayer(0), new Rect(-8, 1, 5, 1)).spawn(); // left platform
+		new Boxes.PhysicsObject(game.getMultilayer(new int[] { 0, 1 }), new Rect(-6, 0, 1, 1)).spawn();
+		{
+			Boxes.Door doorLeft = new Boxes.Door(game.getLayer(0), new Rect(4, 6, 1, 1), 8, 0);
+			doorLeft.spawn();
+			Boxes.Door doorRight = new Boxes.Door(game.getLayer(0), new Rect(8, 6.5, 1, 1), 4, 0.5);
+			doorRight.spawn();
+			new Boxes.Button(game.getLayer(0), -7, 1, new Boxes.Button.SwitchHandler[] {
+				doorLeft, doorRight
+			}).spawn();
+		}
+		new Boxes.Wall(game.getLayer(0), new Rect(14.5, 3.5, 3, 1)).spawn(); // right bottom
+		new Boxes.Wall(game.getLayer(0), new Rect(14.5, 0.5, 4, 1)).spawn(); // right middle
+		new Boxes.Wall(game.getLayer(0), new Rect(12.5, -2.5, 6, 1)).spawn(); // right top
+		new Boxes.Wall(game.getLayer(0), new Rect(-7, -4, 11, 1)).spawn(); // top middle
+		new Boxes.Wall(game.getLayer(0), new Rect(-8.5, -6, 1, 4)).spawn(); // top left
+		{
+			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(6, -8, 1, 1), 6, 6.25);
+			door.spawn();
+			new Boxes.Button(game.getLayer(0), -3, -4, door).spawn();
+		}
+		new Boxes.End(game, new Rect(-9, -11, 2, 2)).spawn();
+		// Decoration
+		new Boxes.Wall(game.getLayer(2), new Rect(-8, -4, 11, 10)).spawn();
+		new Boxes.Wall(game.getLayer(1), new Rect(14.5, -2.5, 3, 7)).spawn();
+		// Player Setup
+		game.player1 = new Boxes.Player(game, game.getLayer(0), -1, -2);
+		game.player1.spawn();
+		game.player1.setrespawn();
+		game.player2 = new Boxes.Player(game, game.getLayer(0), 1, -2);
+		game.player2.spawn();
+		game.player2.setrespawn();
 	}
 }
