@@ -77,7 +77,7 @@ public class Game extends Window {
 		levels.add(Levels::level6);
 		levels.add(Levels::level7);
 		levels.add(Levels::level8);
-		// levels.add(Levels::level9);
+		levels.add(Levels::level9);
 		if (level >= levels.size()) {
 			Levels.levelErr(this);
 		} else {
@@ -218,7 +218,9 @@ public class Game extends Window {
 			if (newX != mouseCarrying.rect.x || newY != mouseCarrying.rect.y) {
 				mouseCarrying.rect.x = newX;
 				mouseCarrying.rect.y = newY;
-				System.out.println("moved object to x: " + newX + " y: " + newY);
+				if (mouseCarrying.physics != PhysicsState.PHYSICS) {
+					System.out.println("moved object to x: " + newX + " y: " + newY);
+				}
 			}
 		}
 	}
