@@ -9,7 +9,13 @@ import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.utils.Utils;
 import com.sillypantscoder.windowlib.Surface;
 
+/**
+ * This class contains a bunch of classes to help you create boxes easier.
+ */
 public class Boxes {
+	/**
+	 * Non-solid text.
+	 */
 	public static class Text extends Box {
 		public String text;
 		public int textSize;
@@ -23,6 +29,9 @@ public class Boxes {
 			s.blit(t, (int)(drawRect.x), (int)(drawRect.y));
 		}
 	}
+	/**
+	 * The player.
+	 */
 	public static class Player extends Box {
 		public Game game;
 		public double respawnX = 1;
@@ -55,16 +64,26 @@ public class Boxes {
 			respawnY = this.rect.y;
 		}
 	}
+	/**
+	 * A fixed wall.
+	 */
 	public static class Wall extends Box {
 		public Wall(List<Box> world, Rect rect) {
 			super(world, rect, PhysicsState.FIXED);
 		}
 	}
+	/**
+	 * A moveable physics object.
+	 */
 	public static class PhysicsObject extends Box {
 		public PhysicsObject(List<Box> world, Rect rect) {
 			super(world, rect.move(0, -1), PhysicsState.PHYSICS);
 		}
 	}
+	/**
+	 * (Unused) This class is supposed to represent a ball, by drawing a circle instead of a
+	 *  square, and removing friction. However, the physics still treats it as a box.
+	 */
 	public static class Ball extends PhysicsObject {
 		public Ball(List<Box> world, double x, double y, double size) {
 			super(world, new Rect(x, y, size, size));
@@ -74,6 +93,9 @@ public class Boxes {
 		}
 		public void hzDamp() {}
 	}
+	/**
+	 * A button that can open one or more doors.
+	 */
 	public static class Button extends Box {
 		public boolean pressed;
 		public int length;
@@ -122,11 +144,18 @@ public class Boxes {
 				}
 			}
 		}
+		/**
+		 * This interface represents anything that can be activated and deactivated.
+		 */
 		public static interface SwitchHandler {
 			public void activate();
 			public void deactivate();
 		}
 	}
+	/**
+	 * A moving platform. Its normal position is described by the provided rect,
+	 *  and its new position is passed into the constructor.
+	 */
 	public static class Door extends Box implements Button.SwitchHandler {
 		public double oldX;
 		public double oldY;
@@ -195,10 +224,13 @@ public class Boxes {
 			this.activated = false;
 		}
 	}
+	/**
+	 * The end of a level.
+	 */
 	public static class End extends Box {
 		public Game game;
-		public End(Game game, Rect rect) {
-			super(game.getLayer(0), rect, PhysicsState.NONE);
+		public End(Game game, double x, double y) {
+			super(game.getLayer(0), new Rect(x, y, 2, 2), PhysicsState.NONE);
 			this.game = game;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
@@ -219,6 +251,9 @@ public class Boxes {
 			}
 		}
 	}
+	/**
+	 * An invisible object that spawns another object every `frames` frames.
+	 */
 	public static class Spawner extends Box {
 		public int ticks;
 		public int maxTicks;
@@ -241,6 +276,9 @@ public class Boxes {
 			}
 		}
 	}
+	/**
+	 * An invisible wind zone.
+	 */
 	public static class InvisibleWind extends Box {
 		public double amtX;
 		public double amtY;
@@ -264,6 +302,9 @@ public class Boxes {
 			}
 		}
 	}
+	/**
+	 * A visible wind zone.
+	 */
 	public static class Wind extends InvisibleWind {
 		public static int gridSize = 5;
 		public double offsetX;

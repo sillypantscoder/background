@@ -3,6 +3,10 @@ package com.sillypantscoder.utils;
 import java.util.AbstractList;
 import java.util.List;
 
+/**
+ * This object represents a combination of multiple lists.
+ * Elements added to or removed from this list will be added to or removed from each of the composing lists.
+ */
 public class ListCombination<T> extends AbstractList<T> {
 	public List<T>[] lists;
 	public ListCombination(List<T>[] lists) {
@@ -11,7 +15,6 @@ public class ListCombination<T> extends AbstractList<T> {
 	@SuppressWarnings("unchecked")
 	public ListCombination(List<? extends List<T>> lists) {
 		this.lists = new List[lists.size()];
-		// whyyyyyyyyyy
 		for (int i = 0; i < lists.size(); i++) {
 			this.lists[i] = lists.get(i);
 		}

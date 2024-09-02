@@ -20,7 +20,7 @@ public class AssetLoader {
 		try {
 			return new File(AssetLoader.class.getProtectionDomain().getCodeSource().getLocation()
 				.toURI()).getPath();
-		} catch(URISyntaxException e) {
+		} catch (URISyntaxException e) {
 			return "";
 		}
 	}
@@ -53,9 +53,9 @@ public class AssetLoader {
 			} else {
 				return getRootLocation();
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			return "";
-		} catch(InterruptedException e) {
+		} catch (InterruptedException e) {
 			return "";
 		}
 	}

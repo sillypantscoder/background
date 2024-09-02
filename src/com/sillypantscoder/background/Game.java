@@ -15,6 +15,9 @@ import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 import com.sillypantscoder.windowlib.Window;
 
+/**
+ * This class contains all of the data needed to run the game.
+ */
 public class Game extends Window {
 	public static final boolean CHEAT = false;
 	public static final boolean SHOW_TIMER = false;
@@ -39,12 +42,19 @@ public class Game extends Window {
 		// Level
 		generateLevel();
 	}
+	/**
+	 * Get the layer with the specified number.
+	 * Creates the layer if it does not exist.
+	 */
 	public ArrayList<Box> getLayer(int layer) {
 		while (layers.size() <= layer) {
 			layers.add(new ArrayList<Box>());
 		}
 		return layers.get(layer);
 	}
+	/**
+	 * Get a ListCombination that behaves as if it is on multiple layers.
+	 */
 	public ListCombination<Box> getMultilayer(int[] layers) {
 		ArrayList<ArrayList<Box>> layerList = new ArrayList<ArrayList<Box>>();
 		for (int i = 0; i < layers.length; i++) {
@@ -52,20 +62,9 @@ public class Game extends Window {
 		}
 		return new ListCombination<Box>(layerList);
 	}
-	public int getLayer(ArrayList<Box> layer) {
-		for (int i = 0; i < layers.size(); i++) {
-			if (layers.get(i) == layer) {
-				return i;
-			}
-		}
-		throw new Error("Layer is not in world");
-	}
-	public void addBox(Box box, int layer) {
-		getLayer(layer).add(box);
-	}
-	public void addBox(Box box) {
-		box.world.add(box);
-	}
+	/**
+	 * Generate the level by finding the appropriate method in Levels.
+	 */
 	public void generateLevel() {
 		ArrayList<Consumer<Game>> levels = new ArrayList<Consumer<Game>>();
 		levels.add(Levels::level0);
@@ -85,16 +84,26 @@ public class Game extends Window {
 		}
 		timer = 0;
 	}
+	/**
+	 * Get the currently active player.
+	 */
 	public Boxes.Player getPlayer() { return switchedPlayer ? player2 : player1; }
 	public double getTargetCameraX(int width) { return (getPlayer().rect.centerX() * 50) - (width / 2d); }
 	public double getTargetCameraY(int height) { return (getPlayer().rect.centerY() * 50) - (height / 2d); }
+	/**
+	 * Step the camera towards its target position.
+	 */
 	public void updateCameraPos(int width, int height) {
 		// X
 		this.cameraX = ((this.cameraX * 9) + getTargetCameraX(width)) / 10;
 		// Y
 		this.cameraY = ((this.cameraY * 9) + getTargetCameraY(height)) / 10;
 	}
+	/**
+	 * Run one frame.
+	 */
 	public Surface frame(int width, int height) {
+		// Update the camera
 		Boxes.Player player = getPlayer();
 		updateCameraPos(width, height);
 		// Tick the boxes
@@ -147,6 +156,7 @@ public class Game extends Window {
 		if (keys.contains("Right")) {
 			player.vx += 0.014;
 		}
+		// Check for ending animation
 		if (! this.levelCompleted) this.timer += 1;
 		if (this.endingAnimation == 0) {
 			if (SHOW_TIMER) s.blit(Surface.renderText(30, (timer / 60) + ":" + Math.round(timer % 60), Color.RED), 0, 0);
@@ -200,6 +210,9 @@ public class Game extends Window {
 			return s;
 		}
 	}
+	/**
+	 * If cheating mode is enabled, stores the currently selected box.
+	 */
 	public Box mouseCarrying = null;
 	public void mouseMoved(int x, int y) {
 		if (mouseCarrying != null) {

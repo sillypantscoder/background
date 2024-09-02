@@ -7,15 +7,30 @@ import java.util.List;
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 
+/**
+ * A box in the world.
+ */
 public class Box {
 	public static enum PhysicsState {
 		NONE,
 		FIXED,
 		PHYSICS
 	}
+	/**
+	 * The world that this box is a part of.
+	 */
 	public List<Box> world;
+	/**
+	 * A rect object describing the position and size of this box.
+	 */
 	public Rect rect;
+	/**
+	 * Whether this object has physics or interacts with other boxes.
+	 */
 	public PhysicsState physics;
+	/**
+	 * Whether this box is on stable ground.
+	 */
 	public boolean touchingGround;
 	public double vx;
 	public double vy;
@@ -34,6 +49,12 @@ public class Box {
 		this.world.remove(this);
 	}
 	public static Color getColor(double brightness) { return new Color((int)(brightness), (int)(brightness), (int)(brightness)); }
+	/**
+	 * Draw this box to the screen.
+	 * @param s The surface to draw to.
+	 * @param drawRect The rectangle that should be drawn.
+	 * @param brightness
+	 */
 	public void draw(Surface s, Rect drawRect, double brightness) {
 		s.drawRect(getColor(brightness), drawRect);
 	}
@@ -45,6 +66,10 @@ public class Box {
 		final double padding = 1/10d;
 		return new Rect(rect.left(), rect.top() - padding, rect.width(), padding * 2);
 	}
+	/**
+	 * Get the boxes that are supported by this box.
+	 * @param recursive
+	 */
 	public HashSet<Box> getAbovePhysicsBoxes(boolean recursive) {
 		HashSet<Box> boxes = new HashSet<Box>();
 		for (Box b : world) {
@@ -56,6 +81,9 @@ public class Box {
 		}
 		return boxes;
 	}
+	/**
+	 * Get the boxes that are supporting this box.
+	 */
 	public HashSet<Box> getBelowPhysicsBoxes() {
 		HashSet<Box> boxes = new HashSet<Box>();
 		for (Box b : world) {
@@ -66,6 +94,9 @@ public class Box {
 		}
 		return boxes;
 	}
+	/**
+	 * Check whether this box is touching the ground.
+	 */
 	public void checkTouchingGround() {
 		Rect feet = getFeet();
 		this.touchingGround = false;
@@ -78,6 +109,9 @@ public class Box {
 			}
 		}
 	}
+	/**
+	 * Move one step ahead in the physics simulation.
+	 */
 	public void tick() {
 		if (this.physics == PhysicsState.PHYSICS) {
 			// V
@@ -98,12 +132,21 @@ public class Box {
 			fallVoid();
 		}
 	}
+	/**
+	 * Apply air friction.
+	 */
 	public void hzDamp() {
 		this.vx *= 0.9;
 	}
+	/**
+	 * Get a list of all the boxes that this box can interact with.
+	 */
 	public List<Box> getInteractions() {
 		return world;
 	}
+	/**
+	 * Handle collisions on the X axis.
+	 */
 	public void collideX() {
 		Rect newRect = this.rect.move(this.vx, 0);
 		boolean canContinue = true;
@@ -124,6 +167,9 @@ public class Box {
 			this.rect = newRect;
 		}
 	}
+	/**
+	 * Handle collisions on the Y axis.
+	 */
 	public void collideY() {
 		Rect newRect = this.rect.move(0, this.vy);
 		boolean canContinue = true;
@@ -146,9 +192,15 @@ public class Box {
 			this.rect = newRect;
 		}
 	}
+	/**
+	 * This method is called when the box falls into the void.
+	 */
 	public void fallVoid() {
 		this.remove();
 	}
+	/**
+	 * Check whether the box is colliding with anything, and remove this box if so.
+	 */
 	public void cancelFromCollision() {
 		for (int i = 0; i < world.size(); i++) {
 			Box box = world.get(i);

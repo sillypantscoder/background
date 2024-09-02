@@ -1,5 +1,8 @@
 package com.sillypantscoder.utils;
 
+/**
+ * A rectangle.
+ */
 public class Rect {
 	public double x;
 	public double y;
