@@ -77,7 +77,7 @@ public class Game extends Window {
 		levels.add(Levels::level6);
 		levels.add(Levels::level7);
 		levels.add(Levels::level8);
-		levels.add(Levels::level9);
+		// levels.add(Levels::level9);
 		if (level >= levels.size()) {
 			Levels.levelErr(this);
 		} else {
@@ -136,7 +136,7 @@ public class Game extends Window {
 			}
 		}
 		// Player Movement
-		if (keys.contains("Up")) {
+		if (keys.contains("Up") || keys.contains("Space")) {
 			if (player.touchingGround) {
 				player.vy = -0.3;
 			}
@@ -249,7 +249,7 @@ public class Game extends Window {
 	}
 	public void keyDown(String key) {
 		keys.add(key);
-		if (key.equals("Space")) {
+		if (key.equals("Z")) {
 			this.switchedPlayer = !switchedPlayer;
 		}
 		if (key.equals("R")) {
