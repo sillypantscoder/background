@@ -464,12 +464,12 @@ public class Levels {
 			}).spawn();
 		}
 		new Boxes.Wind(game.getLayer(0), new Rect(2, -2.5, 10, 3), -0.1, 0).spawn();
-		new Boxes.Wall(game.getLayer(0), new Rect(14, 5.5, 3.5, 1)).spawn(); // right extra bottom
+		new Boxes.Wall(game.getLayer(0), new Rect(13, 5.5, 4.5, 1)).spawn(); // right extra bottom
 		new Boxes.Wall(game.getLayer(0), new Rect(14.5, 2.5, 3, 1)).spawn(); // right bottom
 		new Boxes.Wall(game.getLayer(0), new Rect(15.5, -0.5, 3.5, 1)).spawn(); // right middle
-		new Boxes.Wall(game.getLayer(0), new Rect(20, -2, 1, 1)).spawn(); // far right top
+		new Boxes.Wall(game.getLayer(0), new Rect(20, -2, 3, 1)).spawn(); // far right top
 		new Boxes.Wall(game.getLayer(0), new Rect(12.5, -4.5, 6, 1)).spawn(); // right extra top
-		new Boxes.Wall(game.getLayer(0), new Rect(-7, -6, 11, 1)).spawn(); // top middle
+		new Boxes.Wall(game.getLayer(0), new Rect(-12, -6, 16, 1)).spawn(); // top middle
 		new Boxes.Wall(game.getLayer(0), new Rect(-8.5, -8, 1, 4)).spawn(); // top left
 		{
 			Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(6, -10, 1, 1), 6, 6.25);
