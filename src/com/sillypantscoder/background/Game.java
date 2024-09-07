@@ -1,6 +1,5 @@
 package com.sillypantscoder.background;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,19 +11,14 @@ import java.util.function.Consumer;
 import com.sillypantscoder.background.Box.PhysicsState;
 import com.sillypantscoder.utils.ListCombination;
 import com.sillypantscoder.utils.Rect;
-import com.sillypantscoder.windowlib.Surface;
-import com.sillypantscoder.windowlib.Window;
 
 /**
  * This class contains all of the data needed to run the game.
  */
-public class Game extends Window {
-	public static final boolean CHEAT = false;
+public class Game {
+	public static final boolean CHEAT = true;
 	public static final boolean SHOW_TIMER = false;
 	public static final boolean SAVE_TIMES = false;
-	public static void main(String[] args) {
-		new Game().open("Background", 750, 550);
-	}
 	public Boxes.Player player1;
 	public Boxes.Player player2;
 	public boolean switchedPlayer;
@@ -100,10 +94,7 @@ public class Game extends Window {
 		// Y
 		this.cameraY = ((this.cameraY * 9) + getTargetCameraY(height)) / 10;
 	}
-	/**
-	 * Run one frame.
-	 */
-	public Surface frame(int width, int height) {
+	public void tick(int width, int height) {
 		// Update the camera
 		Boxes.Player player = getPlayer();
 		updateCameraPos(width, height);
@@ -121,30 +112,6 @@ public class Game extends Window {
 				box.ticked = false;
 			}
 		}
-		// Draw
-		Surface s = new Surface(width, height, Color.WHITE);
-		for (int i = layers.size() - 1; i >= 0; i--) {
-			double zoom = 14d / (i + 14);
-			double brightness = 256 - Math.pow(2, 8 - i);
-			for (int j = 0; j < layers.get(i).size(); j++) {
-				Box box = layers.get(i).get(j);
-				// Get rect
-				Rect drawRect = new Rect(
-					(box.rect.x * 50) - cameraX,
-					(box.rect.y * 50) - cameraY,
-					box.rect.w * 50,
-					box.rect.h * 50
-				);
-				drawRect = new Rect(
-					(drawRect.x * zoom) + ((width / 2d) * (1 - zoom)),
-					(drawRect.y * zoom) + ((height / 2d) * (1 - zoom)),
-					drawRect.w * zoom,
-					drawRect.h * zoom
-				);
-				// Draw
-				box.draw(s, drawRect, brightness);
-			}
-		}
 		// Player Movement
 		if (keys.contains("Up") || keys.contains("Space")) {
 			if (player.touchingGround) {
@@ -157,14 +124,11 @@ public class Game extends Window {
 		if (keys.contains("Right")) {
 			player.vx += 0.014;
 		}
-		// Check for ending animation
+		// Ending animation & timer
 		if (! this.levelCompleted) this.timer += 1;
 		if (this.endingAnimation == 0) {
-			if (SHOW_TIMER) s.blit(Surface.renderText(30, (timer / 60) + ":" + Math.round(timer % 60), Color.RED), 0, 0);
-			return s;
 		} else {
 			// Ending animation!
-			int anim = this.endingAnimation;
 			this.endingAnimation += 1;
 			if (this.endingAnimation == 80) {
 				if (SAVE_TIMES) {
@@ -188,27 +152,9 @@ public class Game extends Window {
 				this.switchedPlayer = false;
 				generateLevel();
 			}
-			if (this.endingAnimation > 80) {
-				anim = 80+80 - this.endingAnimation;
-			}
 			if (this.endingAnimation > 80+80) {
 				this.endingAnimation = 0;
 			}
-			double borderSize = Math.pow(anim / 80d, 8) / 2;
-			int borderX = (int)(borderSize * width);
-			int borderY = (int)(borderSize * height);
-			// Draw border
-			Surface overlay = new Surface(width, height, new Color(0, 0, 0, 0));
-			// (top, bottom)
-			overlay.drawRect(Color.BLACK, 0, 0, width, borderY);
-			overlay.drawRect(Color.BLACK, 0, height - borderY, width, borderY);
-			// (left, right)
-			overlay.drawRect(Color.BLACK, 0, 0, borderX, height);
-			overlay.drawRect(Color.BLACK, width - borderX, 0, borderX, height);
-			s.blit(overlay, 0, 0);
-			// Timer
-			if (SHOW_TIMER) s.blit(Surface.renderText(30, (timer / 60) + ":" + Math.round(timer % 60), Color.RED), 0, 0);
-			return s;
 		}
 	}
 	/**
@@ -274,12 +220,5 @@ public class Game extends Window {
 	}
 	public void keyUp(String key) {
 		keys.remove(key);
-	}
-	public Surface getIcon() {
-		Surface s = new Surface(32, 32, new Color(0, 0, 0, 0));
-		int sw = s.get_width() / 4;
-		s.drawRect(new Color(128, 128, 128), 1*sw, 1*sw, 3*sw, 3*sw);
-		s.drawRect(new Color(64, 64, 64), 0, 0, 3*sw, 3*sw);
-		return s;
 	}
 }

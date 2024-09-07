@@ -12,10 +12,14 @@ public abstract class Window {
 		panel.mouseMoved = this::mouseMoved;
 		panel.mouseDown = this::mouseDown;
 		panel.mouseUp = this::mouseUp;
+		panel.mouseWheel = this::mouseWheel;
 	}
 	public abstract Surface getIcon();
 	public void open(String title, int width, int height) {
 		panel.run(title, getIcon(), width, height);
+	}
+	public void close() {
+		panel.closeWindow();
 	}
 	public BufferedImage painter(int width, int height) {
 		return this.frame(width, height).img;
@@ -26,4 +30,5 @@ public abstract class Window {
 	public abstract void mouseMoved(int x, int y);
 	public abstract void mouseDown(int x, int y);
 	public abstract void mouseUp(int x, int y);
+	public abstract void mouseWheel(int amount);
 }
