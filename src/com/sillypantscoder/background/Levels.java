@@ -535,18 +535,18 @@ public class Levels {
 		public String getName() { return "Timing Challenge"; }
 		public String getTagline() { return "good luck"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), -2, 1, "10", 80).spawn();
-			new Boxes.Text(game.getLayer(3), -2.5, 3.5, "CHALLENGE", 30).spawn();
+			new Boxes.Text(game.getLayer(1), -0, 1, "10", 80).spawn();
+			new Boxes.Text(game.getLayer(3), -0.5, 3.5, "CHALLENGE", 30).spawn();
 			// Platforms
-			new Boxes.Wall(game.getLayer(0), new Rect(-3, 5, 10, 1)).spawn(); // starting platform
+			new Boxes.Wall(game.getLayer(0), new Rect(-1, 5, 10, 1)).spawn(); // starting platform
 			{
-				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(7, -5, 5, 1), 7, 5);
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(9, -5, 5, 1), 9, 5); // 2nd platform (right)
 				door.spawn();
-				Boxes.Door door2 = new Boxes.Door(game.getLayer(0), new Rect(-8, -5, 5, 1), -3, -5);
+				Boxes.Door door2 = new Boxes.Door(game.getLayer(0), new Rect(-6, -5, 5, 1), -1, -5); // 3rd platform (center top)
 				door2.spawn();
-				Boxes.Door door3 = new Boxes.Door(game.getLayer(0), new Rect(-16, -12, 5, 1), -16, -5);
+				Boxes.Door door3 = new Boxes.Door(game.getLayer(0), new Rect(-16, -12, 5, 1), -16, -5); // 4th platform (left top)
 				door3.spawn();
-				new Boxes.Button(game.getLayer(0), 6, 5, new Boxes.Button.SwitchHandler[] {
+				new Boxes.Button(game.getLayer(0), 7, 5, new Boxes.Button.SwitchHandler[] {
 					door, door2, door3
 				}).spawn();
 			}
@@ -554,9 +554,9 @@ public class Levels {
 			new Boxes.Wall(game.getLayer(0), new Rect(-17, -12, 1, 25)).spawn(); // left wall right
 			new Boxes.Wall(game.getLayer(0), new Rect(-28, 5, 12, 1)).spawn(); // left floor
 			{
-				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-4, 5, 1, 1), -15, 5);
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-2, 5, 1, 1), -15.5, 5); // horizontal
 				door.spawn();
-				Boxes.Door door2 = new Boxes.Door(game.getLayer(0), new Rect(-10, -12, 1, 1), -10, 2);
+				Boxes.Door door2 = new Boxes.Door(game.getLayer(0), new Rect(-9, -12, 1, 1), -9, 2); // vertical
 				door2.spawn();
 				new Boxes.Button(game.getLayer(0), -23, 5, new Boxes.Button.SwitchHandler[] {
 					door, door2
@@ -564,10 +564,10 @@ public class Levels {
 			}
 			new Boxes.End(game, game.getLayer(0), -24, -1).spawn();
 			// Player Setup
-			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, -2);
+			game.player1 = new Boxes.Player(game, game.getLayer(0), 1, -2);
 			game.player1.spawn();
 			game.player1.setrespawn();
-			game.player2 = new Boxes.Player(game, game.getLayer(0), 1, -2);
+			game.player2 = new Boxes.Player(game, game.getLayer(0), 3, -2);
 			game.player2.spawn();
 			game.player2.setrespawn();
 		}

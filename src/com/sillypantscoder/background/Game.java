@@ -13,7 +13,7 @@ import com.sillypantscoder.utils.Rect;
  * This class contains all of the data needed to run the game.
  */
 public class Game {
-	public static final boolean CHEAT = true;
+	public static final boolean CHEAT = false;
 	public static final boolean SHOW_TIMER = false;
 	public static final boolean SAVE_TIMES = false;
 	public GameScreen screen;

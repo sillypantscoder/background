@@ -2,7 +2,8 @@ package com.sillypantscoder.background;
 
 import java.awt.Color;
 
-import com.sillypantscoder.background.screen.MapScreen;
+import com.sillypantscoder.background.screen.GameScreen;
+import com.sillypantscoder.background.screen.OpeningAnimation;
 import com.sillypantscoder.background.screen.Screen;
 import com.sillypantscoder.windowlib.Surface;
 import com.sillypantscoder.windowlib.Window;
@@ -10,7 +11,9 @@ import com.sillypantscoder.windowlib.Window;
 public class MainWindow extends Window {
 	public Screen screen;
 	public MainWindow() {
-		this.screen = new MapScreen(this, 0);
+		OpeningAnimation anim = new OpeningAnimation(this, new GameScreen(this, 0));
+		anim.maxTime *= 2;
+		this.screen = anim;
 		// Open the window
 		this.open("Background", 750, 550);
 	}
