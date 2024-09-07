@@ -114,4 +114,7 @@ public class Rect {
 			centerY + (tx * sin + ty * cos)
 		};
 	}
+	public static Rect fromCenter(double centerX, double centerY, double width, double height) {
+		return new Rect(centerX - (width / 2), centerY - (height / 2), width, height);
+	}
 }

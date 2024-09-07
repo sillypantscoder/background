@@ -5,18 +5,17 @@ import java.awt.Color;
 import com.sillypantscoder.windowlib.Surface;
 
 public class OpeningAnimation extends Screen {
-	public MainWindow win;
 	public Screen nextScreen;
 	public int animation;
-	public OpeningAnimation(MainWindow win, Screen nextScreen) {
-		this.win = win;
+	public OpeningAnimation(MainWindow window, Screen nextScreen) {
+		super(window);
 		this.nextScreen = nextScreen;
 	}
 	public Surface frame(int width, int height) {
 		// update animation
 		animation += 1;
 		if (animation >= 80) {
-			win.screen = nextScreen;
+			navigate(nextScreen);
 		}
 		// get subsurface
 		Surface s = getDisplayScreen().frame(width, height);

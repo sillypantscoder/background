@@ -7,8 +7,9 @@ import com.sillypantscoder.windowlib.Surface;
 
 public class GameScreen extends Screen {
 	public Game game;
-	public GameScreen(Game game) {
-		this.game = game;
+	public GameScreen(MainWindow window, int level) {
+		super(window);
+		this.game = new Game(this, level);
 	}
 	public Surface frame(int width, int height) {
 		game.tick(width, height);
@@ -43,7 +44,14 @@ public class GameScreen extends Screen {
 		return s;
 	}
 	public void keyDown(String e) {
-		game.keyDown(e);
+		if (e.equals("R")) {
+			GameScreen newScreen = new GameScreen(window, game.level);
+			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
+		} else if (e.equals("Escape")) {
+			navigate(new MapScreen(window, game.level));
+		} else {
+			game.keyDown(e);
+		}
 	}
 	public void keyUp(String e) {
 		game.keyUp(e);

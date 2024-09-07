@@ -241,10 +241,11 @@ public class Boxes {
 		public void tick() {
 			super.tick();
 			// Check for win
-			if (game.window.screen instanceof GameScreen gamescreen) {
+			MainWindow window = game.screen.window;
+			if (window.screen instanceof GameScreen gamescreen) {
 				if (game.player1.rect.colliderect_strict(rect)) {
 					if (game.player2.rect.colliderect_strict(rect)) {
-						game.window.screen = new EndingAnimation(game.window, gamescreen, new OpeningAnimation(game.window, new GameScreen(new Game(game.window, game.level + 1))));
+						window.screen = new EndingAnimation(window, gamescreen, new OpeningAnimation(window, new GameScreen(window, game.level + 1)));
 					}
 				}
 			}

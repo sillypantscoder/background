@@ -3,7 +3,6 @@ package com.sillypantscoder.background;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import com.sillypantscoder.background.Box.PhysicsState;
 import com.sillypantscoder.utils.ListCombination;
@@ -16,7 +15,7 @@ public class Game {
 	public static final boolean CHEAT = false;
 	public static final boolean SHOW_TIMER = false;
 	public static final boolean SAVE_TIMES = false;
-	public MainWindow window;
+	public GameScreen screen;
 	public Boxes.Player player1;
 	public Boxes.Player player2;
 	public boolean switchedPlayer;
@@ -27,8 +26,8 @@ public class Game {
 	public boolean levelCompleted;
 	public int level;
 	public int timer = 0;
-	public Game(MainWindow window, int level) {
-		this.window = window;
+	public Game(GameScreen screen, int level) {
+		this.screen = screen;
 		keys = new HashSet<String>();
 		layers = new ArrayList<ArrayList<Box>>();
 		// Level
@@ -59,22 +58,10 @@ public class Game {
 	 * Generate the level by finding the appropriate method in Levels.
 	 */
 	public void generateLevel() {
-		ArrayList<Consumer<Game>> levels = new ArrayList<Consumer<Game>>();
-		levels.add(Levels::level0);
-		levels.add(Levels::level1);
-		levels.add(Levels::level2);
-		levels.add(Levels::level3);
-		levels.add(Levels::level4);
-		levels.add(Levels::level5);
-		levels.add(Levels::level6);
-		levels.add(Levels::level7);
-		levels.add(Levels::level8);
-		levels.add(Levels::level9);
-		levels.add(Levels::level10);
-		if (level >= levels.size()) {
-			Levels.levelErr(this);
+		if (level >= Levels.levels.length) {
+			System.err.println("Error getting next level");
 		} else {
-			levels.get(level).accept(this);
+			Levels.levels[level].build(this);
 		}
 		timer = 0;
 	}
