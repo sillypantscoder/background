@@ -1,7 +1,11 @@
-package com.sillypantscoder.background;
+package com.sillypantscoder.background.screen;
 
 import java.awt.Color;
 
+import com.sillypantscoder.background.Game;
+import com.sillypantscoder.background.Level;
+import com.sillypantscoder.background.Levels;
+import com.sillypantscoder.background.MainWindow;
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 
@@ -75,9 +79,12 @@ public class MapScreen extends Screen {
 			targetCameraX -= 1;
 		} else if (x > rightX) {
 			targetCameraX += 1;
-		} else if (targetCameraX == 0 || Levels.levels[targetCameraX - 1].completed) {
-			GameScreen newScreen = new GameScreen(window, this.targetCameraX);
-			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
+		} else {
+			boolean canContinue = targetCameraX == 0 || Levels.levels[targetCameraX - 1].completed;
+			if (canContinue || Game.CHEAT) {
+				LevelTitleScreen newScreen = new LevelTitleScreen(window, this.targetCameraX);
+				navigate(new EndingAnimation(window, this, newScreen));
+			}
 		}
 	}
 	public void mouseWheel(int amount) {}

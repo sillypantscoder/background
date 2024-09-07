@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sillypantscoder.background.Box.PhysicsState;
+import com.sillypantscoder.background.screen.GameScreen;
 import com.sillypantscoder.utils.ListCombination;
 import com.sillypantscoder.utils.Rect;
 

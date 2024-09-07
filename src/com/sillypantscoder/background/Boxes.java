@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.sillypantscoder.background.screen.EndingAnimation;
+import com.sillypantscoder.background.screen.GameScreen;
+import com.sillypantscoder.background.screen.MapScreen;
+import com.sillypantscoder.background.screen.OpeningAnimation;
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.utils.Utils;
 import com.sillypantscoder.windowlib.Surface;

@@ -1,4 +1,6 @@
-package com.sillypantscoder.background;
+package com.sillypantscoder.background.screen;
+
+import com.sillypantscoder.background.MainWindow;
 
 public class EndingAnimation extends OpeningAnimation {
 	public Screen prevScreen;

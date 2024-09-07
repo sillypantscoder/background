@@ -1,26 +1,29 @@
-package com.sillypantscoder.background;
+package com.sillypantscoder.background.screen;
 
 import java.awt.Color;
 
+import com.sillypantscoder.background.MainWindow;
 import com.sillypantscoder.windowlib.Surface;
 
 public class OpeningAnimation extends Screen {
+	public int maxTime;
 	public Screen nextScreen;
 	public int animation;
 	public OpeningAnimation(MainWindow window, Screen nextScreen) {
 		super(window);
 		this.nextScreen = nextScreen;
+		this.maxTime = 80;
 	}
 	public Surface frame(int width, int height) {
 		// update animation
 		animation += 1;
-		if (animation >= 80) {
+		if (animation >= this.maxTime) {
 			navigate(nextScreen);
 		}
 		// get subsurface
 		Surface s = getDisplayScreen().frame(width, height);
 		// Find animation amount
-		double borderSize = Math.pow(getAnimationValue() / 80d, 8) / 2;
+		double borderSize = Math.pow(getAnimationValue() / (double)(this.maxTime), 8) / 2;
 		int borderX = (int)(borderSize * width);
 		int borderY = (int)(borderSize * height);
 		// Draw border
@@ -35,7 +38,7 @@ public class OpeningAnimation extends Screen {
 		return s;
 	}
 	public Screen getDisplayScreen() { return nextScreen; }
-	public int getAnimationValue() { return 80 - animation; }
+	public int getAnimationValue() { return maxTime - animation; }
 	public void keyDown(String e) {
 		getDisplayScreen().keyDown(e);
 	}

@@ -62,7 +62,7 @@ public class Surface {
 		return img.getHeight();
 	}
 	public Surface copy() {
-		Surface r = new Surface(get_width(), get_height(), Color.BLACK);
+		Surface r = new Surface(get_width(), get_height(), new Color(0, 0, 0, 0));
 		r.blit(this, 0, 0);
 		return r;
 	}
@@ -157,6 +157,9 @@ public class Surface {
 	public Surface scale_size(int amount) {
 		int newWidth = this.img.getWidth() * amount;
 		int newHeight = this.img.getHeight() * amount;
+		return this.resize(newWidth, newHeight);
+	}
+	public Surface resize(int newWidth, int newHeight) {
 		BufferedImage newImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = newImg.createGraphics();
 		g2d.drawImage(this.img, 0, 0, newWidth, newHeight, 0, 0, this.img.getWidth(), this.img.getHeight(), null);
@@ -210,6 +213,7 @@ public class Surface {
 		return FONT.deriveFont((float)(size));
 	}
 	public static Surface renderText(int size, String text, Color color) {
+		if (text.length() == 0) return new Surface(1, 1, new Color(0, 0, 0, 0));
 		// Measure the text
 		Font font = getFont(size);
 		Surface measure = new Surface(1, 1, Color.BLACK);
@@ -231,6 +235,34 @@ public class Surface {
 		// Finish
 		return ret;
 	}
+	public static Surface renderWrappedText(int size, String text, Color color, int maxWidth) {
+		// Get font
+		Font font = getFont(size);
+		// Measure the text
+		Surface measure = new Surface(1, 1, Color.BLACK);
+		Graphics2D big = (Graphics2D)(measure.img.getGraphics());
+		big.setFont(font);
+		FontMetrics fm = big.getFontMetrics();
+		// Draw the text
+		ArrayList<Surface> surfaces = new ArrayList<Surface>();
+		String[] words = text.split(" ");
+		String line = "";
+		for (int j = 0; j < words.length; j++) {
+			String word = words[j];
+			if (fm.stringWidth(line + " " + word) > maxWidth) {
+				surfaces.add(renderText(size, line, color));
+				line = word;
+			} else {
+				if (line.length() == 0) {
+					line = word;
+				} else {
+					line += " " + word;
+				}
+			}
+		}
+		surfaces.add(renderText(size, line, color));
+		return combineVertically(surfaces, new Color(0, 0, 0, 0));
+	}
 	public static Surface combineVertically(Surface[] surfaces, Color background) {
 		int width = 1;
 		for (int i = 0; i < surfaces.length; i++) { int w = surfaces[i].get_width(); if (w > width) { width = w; } }
@@ -239,7 +271,8 @@ public class Surface {
 		Surface total = new Surface(width, height, background);
 		int cum_y = 0;
 		for (int i = 0; i < surfaces.length; i++) {
-			total.blit(surfaces[i], 0, cum_y);
+			int imgX = (width / 2) - (surfaces[i].get_width() / 2);
+			total.blit(surfaces[i], imgX, cum_y);
 			cum_y += surfaces[i].get_height();
 		}
 		return total;

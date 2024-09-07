@@ -1,7 +1,10 @@
-package com.sillypantscoder.background;
+package com.sillypantscoder.background.screen;
 
 import java.awt.Color;
 
+import com.sillypantscoder.background.Box;
+import com.sillypantscoder.background.Game;
+import com.sillypantscoder.background.MainWindow;
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 
@@ -48,7 +51,8 @@ public class GameScreen extends Screen {
 			GameScreen newScreen = new GameScreen(window, game.level);
 			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
 		} else if (e.equals("Escape")) {
-			navigate(new MapScreen(window, game.level));
+			MapScreen newScreen = new MapScreen(window, game.level);
+			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
 		} else {
 			game.keyDown(e);
 		}

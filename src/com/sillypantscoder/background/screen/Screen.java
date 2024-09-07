@@ -1,5 +1,6 @@
-package com.sillypantscoder.background;
+package com.sillypantscoder.background.screen;
 
+import com.sillypantscoder.background.MainWindow;
 import com.sillypantscoder.windowlib.Surface;
 
 public abstract class Screen {

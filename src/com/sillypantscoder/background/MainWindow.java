@@ -2,6 +2,8 @@ package com.sillypantscoder.background;
 
 import java.awt.Color;
 
+import com.sillypantscoder.background.screen.MapScreen;
+import com.sillypantscoder.background.screen.Screen;
 import com.sillypantscoder.windowlib.Surface;
 import com.sillypantscoder.windowlib.Window;
 

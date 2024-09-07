@@ -78,8 +78,8 @@ public class Levels {
 		}
 	}
 	public static class Level1 extends Level {
-		public String getName() { return ""; }
-		public String getTagline() { return ""; }
+		public String getName() { return "U-Turn"; }
+		public String getTagline() { return "practice"; }
 		public void build(Game game) {
 			new Boxes.Text(game.getLayer(1), -1, 2, "1", 80).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 5, 1)).spawn();
@@ -142,7 +142,7 @@ public class Levels {
 	}
 	public static class Level3 extends Level {
 		public String getName() { return "Conveyor Belt"; }
-		public String getTagline() { return ""; }
+		public String getTagline() { return "welcome to the factory"; }
 		public void build(Game game) {
 			new Boxes.Text(game.getLayer(1), 6, 4, "3", 80).spawn();
 			// Create both layer
@@ -344,8 +344,8 @@ public class Levels {
 		}
 	}
 	public static class Level7 extends Level {
-		public String getName() { return ""; }
-		public String getTagline() { return ""; }
+		public String getName() { return "The Elevator"; }
+		public String getTagline() { return "around and around"; }
 		public void build(Game game) {
 		new Boxes.Text(game.getLayer(1), -2, -1, "7", 80).spawn();
 			// Create multilayer objects
@@ -391,8 +391,8 @@ public class Levels {
 		}
 	}
 	public static class Level8 extends Level {
-		public String getName() { return ""; }
-		public String getTagline() { return ""; }
+		public String getName() { return "Some More Elevators"; }
+		public String getTagline() { return "some elevators are more usable than other elevators"; }
 		public void build(Game game) {
 			new Boxes.Text(game.getLayer(1), 0, 6, "8", 80).spawn();
 			// Platforms
@@ -480,8 +480,8 @@ public class Levels {
 		}
 	}
 	public static class Level9 extends Level {
-		public String getName() { return ""; }
-		public String getTagline() { return ""; }
+		public String getName() { return "Swap Game"; }
+		public String getTagline() { return "you can do it"; }
 		public void build(Game game) {
 			new Boxes.Text(game.getLayer(1), -2, 2, "9", 80).spawn();
 			// Platforms
@@ -532,11 +532,11 @@ public class Levels {
 		}
 	}
 	public static class Level10 extends Level {
-		public String getName() { return ""; }
-		public String getTagline() { return ""; }
+		public String getName() { return "Timing Challenge"; }
+		public String getTagline() { return "good luck"; }
 		public void build(Game game) {
 			new Boxes.Text(game.getLayer(1), -2, 1, "10", 80).spawn();
-			new Boxes.Text(game.getLayer(2), -2.5, 3.25, "CHALLENGE", 30).spawn();
+			new Boxes.Text(game.getLayer(3), -2.5, 3.5, "CHALLENGE", 30).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-3, 5, 10, 1)).spawn(); // starting platform
 			{
