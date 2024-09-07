@@ -8,7 +8,7 @@ import com.sillypantscoder.windowlib.Window;
 public class MainWindow extends Window {
 	public Screen screen;
 	public MainWindow() {
-		this.screen = new GameScreen(new Game());
+		this.screen = new GameScreen(new Game(this, 0));
 		// Open the window
 		this.open("Background", 750, 550);
 	}
@@ -23,6 +23,12 @@ public class MainWindow extends Window {
 		return screen.frame(width, height);
 	}
 	public void keyDown(String e) {
+		if (e.equals("R")) {
+			if (this.screen instanceof GameScreen gamescreen) {
+				GameScreen newScreen = new GameScreen(new Game(this, gamescreen.game.level));
+				this.screen = new EndingAnimation(this, screen, new OpeningAnimation(this, newScreen));
+			}
+		}
 		screen.keyDown(e);
 	}
 	public void keyUp(String e) {

@@ -36,26 +36,6 @@ public class GameScreen extends Screen {
 				box.draw(s, drawRect, brightness);
 			}
 		}
-		// Ending animation
-		if (game.endingAnimation > 0) {
-			// Find animation amount
-			int anim = game.endingAnimation;
-			if (game.endingAnimation > 80) {
-				anim = 80+80 - game.endingAnimation;
-			}
-			double borderSize = Math.pow(anim / 80d, 8) / 2;
-			int borderX = (int)(borderSize * width);
-			int borderY = (int)(borderSize * height);
-			// Draw border
-			Surface overlay = new Surface(width, height, new Color(0, 0, 0, 0));
-			// (top, bottom)
-			overlay.drawRect(Color.BLACK, 0, 0, width, borderY);
-			overlay.drawRect(Color.BLACK, 0, height - borderY, width, borderY);
-			// (left, right)
-			overlay.drawRect(Color.BLACK, 0, 0, borderX, height);
-			overlay.drawRect(Color.BLACK, width - borderX, 0, borderX, height);
-			s.blit(overlay, 0, 0);
-		}
 		// Timer
 		if (Game.SHOW_TIMER) {
 			s.blit(Surface.renderText(30, (game.timer / 60) + ":" + Math.round(game.timer % 60), Color.RED), 0, 0);

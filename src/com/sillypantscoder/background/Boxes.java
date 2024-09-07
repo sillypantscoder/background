@@ -229,8 +229,8 @@ public class Boxes {
 	 */
 	public static class End extends Box {
 		public Game game;
-		public End(Game game, double x, double y) {
-			super(game.getLayer(0), new Rect(x, y, 2, 2), PhysicsState.NONE);
+		public End(Game game, List<Box> world, double x, double y) {
+			super(world, new Rect(x, y, 2, 2), PhysicsState.NONE);
 			this.game = game;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
@@ -241,11 +241,10 @@ public class Boxes {
 		public void tick() {
 			super.tick();
 			// Check for win
-			if (game.endingAnimation == 0) {
+			if (game.window.screen instanceof GameScreen gamescreen) {
 				if (game.player1.rect.colliderect_strict(rect)) {
 					if (game.player2.rect.colliderect_strict(rect)) {
-						game.levelCompleted = true;
-						game.endingAnimation = 30;
+						game.window.screen = new EndingAnimation(game.window, gamescreen, new OpeningAnimation(game.window, new GameScreen(new Game(game.window, game.level + 1))));
 					}
 				}
 			}

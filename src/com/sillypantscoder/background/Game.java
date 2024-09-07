@@ -1,8 +1,5 @@
 package com.sillypantscoder.background;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +13,10 @@ import com.sillypantscoder.utils.Rect;
  * This class contains all of the data needed to run the game.
  */
 public class Game {
-	public static final boolean CHEAT = true;
+	public static final boolean CHEAT = false;
 	public static final boolean SHOW_TIMER = false;
 	public static final boolean SAVE_TIMES = false;
+	public MainWindow window;
 	public Boxes.Player player1;
 	public Boxes.Player player2;
 	public boolean switchedPlayer;
@@ -26,14 +24,15 @@ public class Game {
 	public Set<String> keys;
 	public double cameraX;
 	public double cameraY;
-	public int endingAnimation;
 	public boolean levelCompleted;
-	public int level = 0;
+	public int level;
 	public int timer = 0;
-	public Game() {
+	public Game(MainWindow window, int level) {
+		this.window = window;
 		keys = new HashSet<String>();
 		layers = new ArrayList<ArrayList<Box>>();
 		// Level
+		this.level = level;
 		generateLevel();
 	}
 	/**
@@ -124,38 +123,6 @@ public class Game {
 		if (keys.contains("Right")) {
 			player.vx += 0.014;
 		}
-		// Ending animation & timer
-		if (! this.levelCompleted) this.timer += 1;
-		if (this.endingAnimation == 0) {
-		} else {
-			// Ending animation!
-			this.endingAnimation += 1;
-			if (this.endingAnimation == 80) {
-				if (SAVE_TIMES) {
-					try {
-						double time = Math.round((this.timer / 60d) * 100d) / 100d;
-						// Save time to file
-						File outFile = new File("levels.txt");
-						FileWriter f = new FileWriter(outFile, true);
-						f.write("Level " + level + ": " + (levelCompleted ? "completed" : "reset") + " after " +
-							time + " seconds\n");
-						f.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				if (levelCompleted) {
-					this.level += 1;
-					levelCompleted = false;
-				}
-				this.layers = new ArrayList<ArrayList<Box>>();
-				this.switchedPlayer = false;
-				generateLevel();
-			}
-			if (this.endingAnimation > 80+80) {
-				this.endingAnimation = 0;
-			}
-		}
 	}
 	/**
 	 * If cheating mode is enabled, stores the currently selected box.
@@ -213,9 +180,6 @@ public class Game {
 		keys.add(key);
 		if (key.equals("Z")) {
 			this.switchedPlayer = !switchedPlayer;
-		}
-		if (key.equals("R")) {
-			this.endingAnimation = 40;
 		}
 	}
 	public void keyUp(String key) {
