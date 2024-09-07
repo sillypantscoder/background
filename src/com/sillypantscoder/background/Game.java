@@ -77,6 +77,7 @@ public class Game extends Window {
 		levels.add(Levels::level7);
 		levels.add(Levels::level8);
 		levels.add(Levels::level9);
+		levels.add(Levels::level10);
 		if (level >= levels.size()) {
 			Levels.levelErr(this);
 		} else {
