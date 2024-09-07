@@ -245,7 +245,9 @@ public class Boxes {
 			if (window.screen instanceof GameScreen gamescreen) {
 				if (game.player1.rect.colliderect_strict(rect)) {
 					if (game.player2.rect.colliderect_strict(rect)) {
-						window.screen = new EndingAnimation(window, gamescreen, new OpeningAnimation(window, new GameScreen(window, game.level + 1)));
+						// Level is complete
+						Levels.levels[game.level].completed = true;
+						window.screen = new EndingAnimation(window, gamescreen, new OpeningAnimation(window, new MapScreen(window, game.level)));
 					}
 				}
 			}

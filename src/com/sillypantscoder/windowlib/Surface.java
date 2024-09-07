@@ -129,6 +129,26 @@ public class Surface {
 	public void drawCircle(Color color, Rect rect) {
 		drawCircle(color, rect.centerX(), rect.centerY(), (rect.w + rect.h) / 4);
 	}
+	public void drawPolygon(Color color, int[][] points) {
+		Graphics2D g2d = img.createGraphics();
+		g2d.setColor(color);
+		int[] xPoints = new int[points.length];
+		int[] yPoints = new int[points.length];
+		for (int i = 0; i < points.length; i++) {
+			xPoints[i] = points[i][0];
+			yPoints[i] = points[i][1];
+		}
+		g2d.fillPolygon(xPoints, yPoints, points.length);
+		g2d.dispose();
+	}
+	public void drawPolygon(Color color, double[][] points, double centerX, double centerY, double scale) {
+		int[][] drawPoints = new int[points.length][2];
+		for (int i = 0; i < points.length; i++) {
+			drawPoints[i][0] = (int)((points[i][0] * scale) + centerX);
+			drawPoints[i][1] = (int)((points[i][1] * scale) + centerY);
+		}
+		this.drawPolygon(color, drawPoints);
+	}
 	public Surface scaleValues(float amount) {
 		RescaleOp op = new RescaleOp(new float[] { amount, amount, amount, amount }, new float[] { 0, 0, 0, 0 }, null);
 		BufferedImage newImg = op.filter(this.img, null);

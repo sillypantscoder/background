@@ -31,8 +31,13 @@ public class MapScreen extends Screen {
 		// Draw Levels
 		Surface s = new Surface(width, height, new Color(150, 150, 150));
 		for (int i = 0; i < Levels.levels.length; i++) {
-			// Level l = Levels.levels[i];
+			Level l = Levels.levels[i];
+			// Draw path
 			int centerX = (wholeLevelWidth * i) + (wholeLevelWidth / 2);
+			if (l.completed) {
+				s.drawLine(new Color(0, 0, 0), centerX - cameraOffset, height / 2, (centerX - cameraOffset) + wholeLevelWidth, height / 2, 10);
+			}
+			// Draw rectangle
 			int topY = (verticalSpace / 3) * (1 + (i % 2));
 			Rect levelRect = Rect.fromCenter(centerX - cameraOffset, topY + (levelSize / 2), levelSize, levelSize);
 			s.drawRect(new Color(50, 50, 50), levelRect);
@@ -40,6 +45,18 @@ public class MapScreen extends Screen {
 			Surface number = Surface.renderText(levelSize / 2, "" + i, new Color(200, 200, 200));
 			int numberX = centerX - (number.get_width() / 2);
 			s.blit(number, numberX - cameraOffset, topY);
+			// Draw checkmark
+			if (l.completed) {
+				s.drawCircle(new Color(200, 200, 200), centerX - cameraOffset, topY + levelSize, levelSize / 6);
+				s.drawPolygon(new Color(50, 50, 50), new double[][] {
+					new double[] { -4,  1 },
+					new double[] { -3,  0 },
+					new double[] { -1,  2 },
+					new double[] {  3, -3 },
+					new double[] {  4, -2 },
+					new double[] { -1,  4 }
+				}, centerX - cameraOffset, topY + levelSize, levelSize / 40);
+			}
 		}
 		return s;
 	}
@@ -58,8 +75,9 @@ public class MapScreen extends Screen {
 			targetCameraX -= 1;
 		} else if (x > rightX) {
 			targetCameraX += 1;
-		} else {
-			navigate(new GameScreen(window, this.targetCameraX));
+		} else if (targetCameraX == 0 || Levels.levels[targetCameraX - 1].completed) {
+			GameScreen newScreen = new GameScreen(window, this.targetCameraX);
+			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
 		}
 	}
 	public void mouseWheel(int amount) {}

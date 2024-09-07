@@ -42,8 +42,16 @@ public class OpeningAnimation extends Screen {
 	public void keyUp(String e) {
 		getDisplayScreen().keyUp(e);
 	}
-	public void mouseMoved(int x, int y) {}
-	public void mouseDown(int x, int y) {}
-	public void mouseUp(int x, int y) {}
-	public void mouseWheel(int amount) {}
+	public void mouseMoved(int x, int y) {
+		getDisplayScreen().mouseMoved(x, y);
+	}
+	public void mouseDown(int x, int y) {
+		getDisplayScreen().mouseDown(x, y);
+	}
+	public void mouseUp(int x, int y) {
+		getDisplayScreen().mouseUp(x, y);
+	}
+	public void mouseWheel(int amount) {
+		getDisplayScreen().mouseWheel(amount);
+	}
 }
