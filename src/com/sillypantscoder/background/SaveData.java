@@ -21,7 +21,7 @@ public class SaveData {
 			if (Levels.levels[i].bestTime != -1) {
 				saveData += Levels.levels[i].bestTime;
 			}
-			saveData += ".";
+			if (i != Levels.levels.length - 1) saveData += ".";
 		}
 		// Write data to file
 		try {
@@ -62,6 +62,7 @@ public class SaveData {
 		// Find correct screen
 		Screen targetScreen = new GameScreen(window, 0);
 		if (highestLevel != 0) {
+			if (highestLevel == Levels.levels.length) highestLevel -= 1;
 			targetScreen = new MapScreen(window, highestLevel);
 		}
 		OpeningAnimation anim = new OpeningAnimation(window, targetScreen);

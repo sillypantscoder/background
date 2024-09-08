@@ -12,6 +12,7 @@ import com.sillypantscoder.windowlib.Surface;
 
 public class GameScreen extends Screen {
 	public Game game;
+	public boolean levelCompleted;
 	public GameScreen(MainWindow window, int level) {
 		super(window);
 		this.game = new Game(this, level);
@@ -43,7 +44,7 @@ public class GameScreen extends Screen {
 			}
 		}
 		// Timer
-		game.timer += 1;
+		if (!levelCompleted) game.timer += 1;
 		if (Settings.SHOW_TIMER.value) {
 			String time = Utils.formatTime(game.timer);
 			Surface timeS = Surface.renderText(30, time, new Color(50, 50, 50));

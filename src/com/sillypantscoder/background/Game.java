@@ -102,6 +102,11 @@ public class Game {
 				player.vy = -0.3;
 			}
 		}
+		if (keys.contains("Down")) {
+			if (player.getAboveWalls().size() > 0) {
+				player.vy = 0.3;
+			}
+		}
 		if (keys.contains("Left")) {
 			player.vx -= 0.014;
 		}

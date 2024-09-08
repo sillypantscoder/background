@@ -81,6 +81,20 @@ public class Box {
 		}
 		return boxes;
 	}
+	public HashSet<Box> getAboveWalls() {
+		HashSet<Box> boxes = new HashSet<Box>();
+		for (Box b : world) {
+			if (b.getFeet().colliderect(this.getHead())) {
+				if (b.physics == PhysicsState.PHYSICS) {
+					boxes.addAll(b.getAboveWalls());
+				}
+				if (b.physics == PhysicsState.FIXED) {
+					boxes.add(b);
+				}
+			}
+		}
+		return boxes;
+	}
 	/**
 	 * Get the boxes that are supporting this box.
 	 */

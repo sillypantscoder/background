@@ -23,7 +23,9 @@ public class Levels {
 		new Level7(),
 		new Level8(),
 		new Level9(),
-		new Level10()
+		new Level10(),
+		new Level11(),
+		new Level12()
 	};
 	public static class LevelIntro extends Level {
 		public String getName() { return "Introduction"; }
@@ -535,7 +537,7 @@ public class Levels {
 		public String getName() { return "Timing Challenge"; }
 		public String getTagline() { return "good luck"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), -0, 1, "10", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 0, 1, "10", 80).spawn();
 			new Boxes.Text(game.getLayer(3), -0.5, 3.5, "CHALLENGE", 30).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-1, 5, 10, 1)).spawn(); // starting platform
@@ -568,6 +570,60 @@ public class Levels {
 			game.player1.spawn();
 			game.player1.setrespawn();
 			game.player2 = new Boxes.Player(game, game.getLayer(0), 3, -2);
+			game.player2.spawn();
+			game.player2.setrespawn();
+		}
+	}
+	public static class Level11 extends Level {
+		public String getName() { return "Inversion"; }
+		public String getTagline() { return "swing"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(1), 1, 2, "11", 80).spawn();
+			// Platforms
+			new Boxes.Wall(game.getLayer(0), new Rect(-1, 5, 6, 1)).spawn(); // starting platform
+			new Boxes.Wind(game.getLayer(0), new Rect(8, -3, 5, 10), 0, -0.022).spawn(); // big wind left
+			new Boxes.Wall(game.getLayer(0), new Rect(16, -5, 4, 1)).spawn(); // middle platform
+			new Boxes.Wind(game.getLayer(0), new Rect(23, -7, 15, 5), 0, -0.022).spawn(); // big wind right
+			new Boxes.Wall(game.getLayer(0), new Rect(40, -7, 4, 1)).spawn(); // right platform
+			new Boxes.End(game, game.getLayer(0), 43, -13).spawn();
+			// Player Setup
+			game.player1 = new Boxes.Player(game, game.getLayer(0), 1, -2);
+			game.player1.spawn();
+			game.player1.setrespawn();
+			game.player2 = new Boxes.Player(game, game.getLayer(0), 3, -2);
+			game.player2.spawn();
+			game.player2.setrespawn();
+		}
+	}
+	public static class Level12 extends Level {
+		public String getName() { return "The Down Arrow Key Button"; }
+		public String getTagline() { return "at last"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(1), 1, 2, "12", 80).spawn();
+			// Platforms
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 13.5, 1)).spawn(); // starting platform
+			new Boxes.Wall(game.getLayer(0), new Rect(5, -7, 1, 7)).spawn(); // right of starting area
+			new Boxes.Wind(game.getLayer(0), new Rect(-2, 1, 22, 10), 0, -0.022).spawn(); // under starting platform
+			new Boxes.Wall(game.getLayer(0), new Rect(4, 3, 1, 1)).spawn(); // first block below
+			new Boxes.Wall(game.getLayer(0), new Rect(6, 0, 1, 7)).spawn(); // first wall below
+			new Boxes.Wall(game.getLayer(0), new Rect(8, 3, 1, 1)).spawn(); // second block below
+			new Boxes.Wind(game.getLayer(0), new Rect(11.5, -1, 2.5, 2), 0, -0.015).spawn(); // in gate
+			new Boxes.Wall(game.getLayer(0), new Rect(14, 0, 6, 1)).spawn(); // second half of starting platform
+			new Boxes.Wall(game.getLayer(0), new Rect(14, -7, 1, 7)).spawn(); // right of second top area
+			new Boxes.PhysicsObject(game.getLayer(0), new Rect(15, 2.5, 1, 1)).spawn();
+			new Boxes.Wind(game.getLayer(0), new Rect(7.5, -1, 1, 1), 0, -0.015).spawn(); // to get onto the button
+			{
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(17.5, 1, 1, 7), 17.5, 4);
+				door.spawn();
+				new Boxes.Button(game.getLayer(0), 7.5, 0, door).spawn();
+			}
+			new Boxes.Wind(game.getLayer(0), new Rect(23, -4, 5, 10), 0, -0.022).spawn(); // wind far right
+			new Boxes.End(game, game.getLayer(0), 15.5, -5).spawn();
+			// Player Setup
+			game.player1 = new Boxes.Player(game, game.getLayer(0), 0, -2);
+			game.player1.spawn();
+			game.player1.setrespawn();
+			game.player2 = new Boxes.Player(game, game.getLayer(0), 2, -2);
 			game.player2.spawn();
 			game.player2.setrespawn();
 		}
