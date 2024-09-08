@@ -119,13 +119,7 @@ public class Boxes {
 			super.tick();
 			// Check for pressing
 			boolean oldState = this.pressed;
-			this.pressed = false;
-			for (int i = 0; i < world.size(); i++) {
-				if (world.get(i).physics != Box.PhysicsState.PHYSICS) continue;
-				if (world.get(i).getFeet().colliderect(getHead())) {
-					this.pressed = true;
-				}
-			}
+			this.pressed = this.isPressed();
 			// Handler
 			for (SwitchHandler handler : this.handlers) {
 				if (this.pressed != oldState) {
@@ -147,6 +141,9 @@ public class Boxes {
 					this.rect.h += 1d/64;
 				}
 			}
+		}
+		public boolean isPressed() {
+			return this.getAbovePhysicsBoxes(0).size() > 0;
 		}
 		/**
 		 * This interface represents anything that can be activated and deactivated.
@@ -191,7 +188,7 @@ public class Boxes {
 			// Remember previous position
 			double previousX = this.rect.x;
 			double previousY = this.rect.y;
-			HashSet<Box> aboveBoxes = this.getAbovePhysicsBoxes(true);
+			HashSet<Box> aboveBoxes = this.getAbovePhysicsBoxes(5);
 			HashSet<Box> belowBoxes = this.getBelowPhysicsBoxes();
 			// Set pos
 			double anim_amt = Utils.ease_in_out(this.amt);
@@ -202,7 +199,7 @@ public class Boxes {
 			if (this.rect.y <= previousY) {
 				moving.addAll(aboveBoxes);
 				for (Box b : attached) {
-					moving.addAll(b.getAbovePhysicsBoxes(true));
+					moving.addAll(b.getAbovePhysicsBoxes(5));
 				}
 			} else {
 				moving.addAll(belowBoxes);
@@ -291,16 +288,21 @@ public class Boxes {
 	public static class InvisibleWind extends Box {
 		public double amtX;
 		public double amtY;
+		public double padding;
 		public InvisibleWind(List<Box> world, Rect rect, double amtX, double amtY) {
 			super(world, rect, PhysicsState.NONE);
 			this.amtX = amtX;
 			this.amtY = amtY;
+			this.padding = 0.3;
+		}
+		public InvisibleWind withPadding(double padding) {
+			this.padding = padding;
+			return this;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {}
 		public void tick() {
 			super.tick();
 			// Move objects
-			double padding = 0.3;
 			Rect r = new Rect(this.rect.x + padding, this.rect.y + padding, this.rect.w - (padding * 2), this.rect.h - (padding * 2));
 			for (Box box : world) {
 				if (box.physics != PhysicsState.PHYSICS) continue;

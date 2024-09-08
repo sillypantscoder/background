@@ -25,7 +25,8 @@ public class Levels {
 		new Level9(),
 		new Level10(),
 		new Level11(),
-		new Level12()
+		new Level12(),
+		new Level13()
 	};
 	public static class LevelIntro extends Level {
 		public String getName() { return "Introduction"; }
@@ -626,6 +627,84 @@ public class Levels {
 			game.player2 = new Boxes.Player(game, game.getLayer(0), 2, -2);
 			game.player2.spawn();
 			game.player2.setrespawn();
+		}
+	}
+	public static class Level13 extends Level {
+		public String getName() { return "Sugar, Sugar"; }
+		public String getTagline() { return "happy new year"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(1), 3.15, -5.9, "13", 80).spawn();
+			new Boxes.Text(game.getLayer(0), 5, -6, ",", 90).spawn();
+			// Platforms
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 12, 1)).spawn(); // starting platform
+			new Boxes.Spawner(game, 1, () -> new SugarBox(game.getLayer(0), 5.1, -2.8)).spawn();
+			new Boxes.Wall(game.getLayer(0), new Rect(12, 0, 5, 1)).spawn(); // starting platform right half
+			new Boxes.Wall(game.getLayer(0), new Rect(11, 3, 8, 1)).spawn(); // wall bottom 1
+			new Boxes.Wind(game.getLayer(0), new Rect(11, 1, 6, 2), 0.007, 0).withPadding(0).spawn(); // wind right 1
+			new Boxes.Wind(game.getLayer(0), new Rect(17, -4, 2, 7), 0.002, -0.007).withPadding(0).spawn(); // wind up 2
+			new Boxes.Wall(game.getLayer(0), new Rect(16, -7, 1, 8)).spawn(); // wall left 2
+			new Boxes.Wall(game.getLayer(0), new Rect(19, -4, 1, 8)).spawn(); // wall right 2
+			new Boxes.Wind(game.getLayer(0), new Rect(17, -6, 7, 2), 0.007, -0.004).withPadding(0).spawn(); // wind right 3
+			new Boxes.Wall(game.getLayer(0), new Rect(16, -7, 8, 1)).spawn(); // wall top 3
+			new Boxes.Wall(game.getLayer(0), new Rect(19, -4, 5, 1)).spawn(); // wall bottom 3
+			new Boxes.Wall(game.getLayer(0), new Rect(23, -4, 1, 3)).spawn(); // wall left cup
+			new Boxes.Wall(game.getLayer(0), new Rect(23, -2, 4, 1)).spawn(); // wall bottom cup
+			new Boxes.Wall(game.getLayer(0), new Rect(26, -4, 1, 3)).spawn(); // wall right cup
+			{
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(29, -11, 1, 11), 29, -6);
+				door.spawn();
+				(new Boxes.Button(game.getLayer(0), 25, -2, door) {
+					public boolean isPressed() {
+						if (pressed) return true;
+						double weight = 0;
+						for (Box box : this.getAbovePhysicsBoxes(5)) {
+							if (box instanceof SugarLevelPlayer) continue;
+							weight += box.rect.size();
+						}
+						return weight >= 4;
+					}
+				}).spawn();
+			}
+			new Boxes.End(game, game.getLayer(0), 30, -7).spawn();
+			// Player Setup
+			game.player1 = new SugarLevelPlayer(game, game.getLayer(0), -1, -2);
+			game.player1.spawn();
+			game.player1.setrespawn();
+			game.player2 = new SugarLevelPlayer(game, game.getLayer(0), 1, -2);
+			game.player2.spawn();
+			game.player2.setrespawn();
+		}
+		public static class SugarBox extends Boxes.PhysicsObject {
+			public SugarBox(List<Box> world, double x, double y) {
+				super(world, new Rect(x - 0.02, y - 0.02, 0.04, 0.04));
+			}
+			public void tick() {
+				double xamt = Math.round((Math.random() - 0.5) * 4);
+				if (this.touchingGround) this.vx += xamt * 0.001;
+				else this.vx += xamt * 0.003;
+				this.vy -= 0.011;
+				super.tick();
+			}
+			public void collideXWithPhysicsBox(Box box) {
+				if (box instanceof SugarBox) {
+					box.vx = this.vx;
+					this.vx *= 0.8;
+				} else {
+					this.vx *= -0.5;
+				}
+			}
+		}
+		public static class SugarLevelPlayer extends Boxes.Player {
+			public SugarLevelPlayer(Game game, List<Box> world, double x, double y) {
+				super(game, world, x, y);
+			}
+			public void collideXWithPhysicsBox(Box box) {
+				if (box instanceof SugarBox) {
+					box.vx += 0.5;
+				} else {
+					super.collideXWithPhysicsBox(box);
+				}
+			}
 		}
 	}
 }

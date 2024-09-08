@@ -68,15 +68,15 @@ public class Box {
 	}
 	/**
 	 * Get the boxes that are supported by this box.
-	 * @param recursive
 	 */
-	public HashSet<Box> getAbovePhysicsBoxes(boolean recursive) {
+	public HashSet<Box> getAbovePhysicsBoxes(int maxLayers) {
 		HashSet<Box> boxes = new HashSet<Box>();
 		for (Box b : world) {
+			if (boxes.contains(b)) continue;
 			if (b.physics != PhysicsState.PHYSICS) continue;
 			if (b.getFeet().colliderect(this.getHead())) {
 				boxes.add(b);
-				if (recursive) boxes.addAll(b.getAbovePhysicsBoxes(true));
+				if (maxLayers >= 0) boxes.addAll(b.getAbovePhysicsBoxes(maxLayers - 1));
 			}
 		}
 		return boxes;
@@ -169,8 +169,7 @@ public class Box {
 			// Check for collision
 			if (! box.rect.colliderect_strict(newRect)) continue;
 			if (box.physics == PhysicsState.PHYSICS) {
-				this.vx /= 2;
-				box.vx += this.vx;
+				collideXWithPhysicsBox(box);
 				canContinue = false;
 			} else if (box.physics == PhysicsState.FIXED) {
 				this.vx *= -0.25;
@@ -180,6 +179,10 @@ public class Box {
 		if (canContinue) {
 			this.rect = newRect;
 		}
+	}
+	public void collideXWithPhysicsBox(Box box) {
+		this.vx /= 2;
+		box.vx += this.vx;
 	}
 	/**
 	 * Handle collisions on the Y axis.
