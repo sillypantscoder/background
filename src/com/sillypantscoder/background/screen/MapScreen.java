@@ -7,6 +7,7 @@ import com.sillypantscoder.background.Level;
 import com.sillypantscoder.background.Levels;
 import com.sillypantscoder.background.MainWindow;
 import com.sillypantscoder.utils.Rect;
+import com.sillypantscoder.utils.Utils;
 import com.sillypantscoder.windowlib.Surface;
 
 public class MapScreen extends Screen {
@@ -43,7 +44,7 @@ public class MapScreen extends Screen {
 			// Draw path
 			if (i != Levels.levels.length - 1) {
 				Color pathColor = new Color(255, 255, 255, 30);
-				if (l.completed) {
+				if (l.bestTime != -1) {
 					pathColor = new Color(0, 0, 0);
 				}
 				s.drawLine(pathColor, centerX - cameraOffset, centerY, (centerX - cameraOffset) + wholeLevelWidth, nextCenterY, 10);
@@ -53,12 +54,12 @@ public class MapScreen extends Screen {
 			s.drawRect(new Color(50, 50, 50), levelRect);
 			// Draw number
 			Color numberColor = new Color(200, 200, 200, 50);
-			if (i == 0 || Levels.levels[i - 1].completed) numberColor = new Color(200, 200, 200);
+			if (i == 0 || Levels.levels[i - 1].bestTime != -1) numberColor = new Color(200, 200, 200);
 			Surface number = Surface.renderText(levelSize / 2, "" + i, numberColor);
 			int numberX = centerX - (number.get_width() / 2);
-			s.blit(number, numberX - cameraOffset, topY);
+			s.blit(number, numberX - cameraOffset, topY - (levelSize / 10));
 			// Draw checkmark
-			if (l.completed) {
+			if (l.bestTime != -1) {
 				s.drawCircle(new Color(200, 200, 200), centerX - cameraOffset, topY + levelSize, levelSize / 6);
 				s.drawPolygon(new Color(50, 50, 50), new double[][] {
 					new double[] { -4,  1 },
@@ -68,6 +69,9 @@ public class MapScreen extends Screen {
 					new double[] {  4, -2 },
 					new double[] { -1,  4 }
 				}, centerX - cameraOffset, topY + levelSize, levelSize / 40);
+				// Draw text
+				Surface t = Surface.renderText(levelSize / 6, Utils.formatTime(l.bestTime), new Color(100, 100, 100));
+				s.blit(t, (centerX - cameraOffset) - (t.get_width() / 2), (topY + levelSize) - (t.get_height() * 2));
 			}
 		}
 		return s;
@@ -84,23 +88,9 @@ public class MapScreen extends Screen {
 		return (verticalSpace / 3) * (1 + (level % 2));
 	}
 	public void keyDown(String e) {
-		if (e.equals("Left")) {
-			if (targetCameraX - 1 >= 0) {
-				targetCameraX -= 1;
-			}
-		}
-		if (e.equals("Right")) {
-			if (targetCameraX + 1 < Levels.levels.length) {
-				targetCameraX += 1;
-			}
-		}
-		if (e.equals("Space") || e.equals("Z")) {
-			boolean canContinue = targetCameraX == 0 || Levels.levels[targetCameraX - 1].completed;
-			if (canContinue || Game.CHEAT) {
-				LevelTitleScreen newScreen = new LevelTitleScreen(window, this.targetCameraX);
-				navigate(new EndingAnimation(window, this, newScreen));
-			}
-		}
+		if (e.equals("Left")) scroll(-1);
+		if (e.equals("Right")) scroll(1);
+		if (e.equals("Space") || e.equals("Z") || e.equals("Enter")) selectLevel();
 	}
 	public void keyUp(String e) {}
 	public void mouseMoved(int x, int y) {}
@@ -112,20 +102,20 @@ public class MapScreen extends Screen {
 		int leftX = centerX - (levelSize / 2);
 		int rightX = centerX + (levelSize / 2);
 		// Find click position
-		if (x < leftX) {
-			if (targetCameraX - 1 >= 0) {
-				targetCameraX -= 1;
-			}
-		} else if (x > rightX) {
-			if (targetCameraX + 1 < Levels.levels.length) {
-				targetCameraX += 1;
-			}
-		} else {
-			boolean canContinue = targetCameraX == 0 || Levels.levels[targetCameraX - 1].completed;
-			if (canContinue || Game.CHEAT) {
-				LevelTitleScreen newScreen = new LevelTitleScreen(window, this.targetCameraX);
-				navigate(new EndingAnimation(window, this, newScreen));
-			}
+		if (x < leftX) scroll(-1);
+		else if (x > rightX) scroll(1);
+		else selectLevel();
+	}
+	public void scroll(int amount) {
+		if (targetCameraX + amount < Levels.levels.length && targetCameraX + amount >= 0) {
+			targetCameraX += amount;
+		}
+	}
+	public void selectLevel() {
+		boolean canContinue = targetCameraX == 0 || Levels.levels[targetCameraX - 1].bestTime != -1;
+		if (canContinue || Game.CHEAT) {
+			LevelTitleScreen newScreen = new LevelTitleScreen(window, this.targetCameraX);
+			navigate(new EndingAnimation(window, this, newScreen));
 		}
 	}
 	public void mouseWheel(int amount) {}

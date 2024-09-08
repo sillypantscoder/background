@@ -250,7 +250,9 @@ public class Boxes {
 				if (game.player1.rect.colliderect_strict(rect)) {
 					if (game.player2.rect.colliderect_strict(rect)) {
 						// Level is complete
-						Levels.levels[game.level].completed = true;
+						Level level = Levels.levels[game.level];
+						level.bestTime = level.bestTime == -1 ? game.timer : Math.min(level.bestTime, game.timer);
+						SaveData.save();
 						window.screen = new EndingAnimation(window, gamescreen, new OpeningAnimation(window, new MapScreen(window, game.level)));
 					}
 				}

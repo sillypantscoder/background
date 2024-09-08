@@ -25,4 +25,9 @@ public class Utils {
 			return "";
 		}
 	}
+	public static String formatTime(int time) {
+		String seconds = String.valueOf(time % 60);
+		if (seconds.length() == 1) seconds = "0" + seconds;
+		return Math.floorDiv(time, 60) + "." + seconds;
+	}
 }

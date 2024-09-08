@@ -6,6 +6,7 @@ import com.sillypantscoder.background.Box;
 import com.sillypantscoder.background.Game;
 import com.sillypantscoder.background.MainWindow;
 import com.sillypantscoder.utils.Rect;
+import com.sillypantscoder.utils.Utils;
 import com.sillypantscoder.windowlib.Surface;
 
 public class GameScreen extends Screen {
@@ -41,8 +42,12 @@ public class GameScreen extends Screen {
 			}
 		}
 		// Timer
+		game.timer += 1;
 		if (Game.SHOW_TIMER) {
-			s.blit(Surface.renderText(30, (game.timer / 60) + ":" + Math.round(game.timer % 60), Color.RED), 0, 0);
+			String time = Utils.formatTime(game.timer);
+			Surface timeS = Surface.renderText(30, time, new Color(50, 50, 50));
+			int timeX = (width / 2) - (timeS.get_width() / 2);
+			s.blit(timeS, timeX, 10);
 		}
 		return s;
 	}
