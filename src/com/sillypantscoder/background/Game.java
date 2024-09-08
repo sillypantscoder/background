@@ -14,7 +14,6 @@ import com.sillypantscoder.utils.Rect;
  */
 public class Game {
 	public static final boolean CHEAT = false;
-	public static final boolean SHOW_TIMER = true;
 	public GameScreen screen;
 	public Boxes.Player player1;
 	public Boxes.Player player2;

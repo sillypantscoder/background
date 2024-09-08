@@ -12,6 +12,11 @@ import com.sillypantscoder.utils.Utils;
 public class SaveData {
 	public static void save() {
 		String saveData = "";
+		// Save settings
+		for (int i = 0; i < Settings.settings.length; i++) {
+			saveData += Settings.settings[i].save();
+		}
+		// Save levels
 		for (int i = 0; i < Levels.levels.length; i++) {
 			if (Levels.levels[i].bestTime != -1) {
 				saveData += Levels.levels[i].bestTime;
@@ -32,7 +37,19 @@ public class SaveData {
 		if (! new File("save_data.txt").exists()) return;
 		// Read data
 		String data = Utils.readFile("save_data.txt");
-		String[] levels = data.split("\\.", -1);
+		// Read settings
+		int settingsWidth = 0;
+		for (int i = 0; i < Settings.settings.length; i++) {
+			Settings.Setting<?> setting = Settings.settings[i];
+			int width = setting.getSaveLength();
+			// save setting
+			String settingData = data.substring(settingsWidth, settingsWidth + width);
+			setting.load(settingData);
+			// continue
+			settingsWidth += width;
+		}
+		// Read levels
+		String[] levels = data.substring(settingsWidth).split("\\.", -1);
 		for (int i = 0; i < Levels.levels.length; i++) {
 			if (levels[i].length() == 0) continue;
 			int time = Integer.parseInt(levels[i]);

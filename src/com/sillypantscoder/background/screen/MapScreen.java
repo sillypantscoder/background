@@ -74,6 +74,8 @@ public class MapScreen extends Screen {
 				s.blit(t, (centerX - cameraOffset) - (t.get_width() / 2), (topY + levelSize) - (t.get_height() * 2));
 			}
 		}
+		// Draw settings button
+		s.blit(SettingsScreen.settingsIcon.resize(30, 30), 5, 5);
 		return s;
 	}
 	public int getLevelSize() {
@@ -97,6 +99,11 @@ public class MapScreen extends Screen {
 	public void mouseDown(int x, int y) {}
 	public void mouseUp(int x, int y) {
 		final int levelSize = getLevelSize();
+		// Check for settings button
+		if (x < 40 && y < 40) {
+			navigate(new SettingsScreen(this));
+			return;
+		}
 		// Find level position
 		int centerX = lastWidth / 2;
 		int leftX = centerX - (levelSize / 2);

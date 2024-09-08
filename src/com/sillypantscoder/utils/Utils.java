@@ -26,8 +26,14 @@ public class Utils {
 		}
 	}
 	public static String formatTime(int time) {
-		String seconds = String.valueOf(time % 60);
-		if (seconds.length() == 1) seconds = "0" + seconds;
-		return Math.floorDiv(time, 60) + "." + seconds;
+		// calculate
+		int frames = time % 60;
+		int seconds = Math.floorDiv(time, 60);
+		int s100ths = (int)((frames / 60d) * 100);
+		// format string
+		String dec = String.valueOf(s100ths);
+		if (dec.length() == 1) dec = "0" + dec;
+		// if (dec.length() == 2) dec = "0" + dec;
+		return seconds + "." + dec;
 	}
 }

@@ -5,6 +5,7 @@ import java.awt.Color;
 import com.sillypantscoder.background.Box;
 import com.sillypantscoder.background.Game;
 import com.sillypantscoder.background.MainWindow;
+import com.sillypantscoder.background.Settings;
 import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.utils.Utils;
 import com.sillypantscoder.windowlib.Surface;
@@ -43,7 +44,7 @@ public class GameScreen extends Screen {
 		}
 		// Timer
 		game.timer += 1;
-		if (Game.SHOW_TIMER) {
+		if (Settings.SHOW_TIMER.value) {
 			String time = Utils.formatTime(game.timer);
 			Surface timeS = Surface.renderText(30, time, new Color(50, 50, 50));
 			int timeX = (width / 2) - (timeS.get_width() / 2);
