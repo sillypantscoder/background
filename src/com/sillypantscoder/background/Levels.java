@@ -582,11 +582,11 @@ public class Levels {
 			new Boxes.Text(game.getLayer(1), 1, 2, "11", 80).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-1, 5, 6, 1)).spawn(); // starting platform
-			new Boxes.Wind(game.getLayer(0), new Rect(8, -3, 5, 10), 0, -0.022).spawn(); // big wind left
+			new Boxes.Wind(game.getLayer(0), new Rect(7.5, -3, 5, 9), 0, -0.022).spawn(); // big wind left
 			new Boxes.Wall(game.getLayer(0), new Rect(16, -5, 4, 1)).spawn(); // middle platform
 			new Boxes.Wind(game.getLayer(0), new Rect(23, -7, 15, 5), 0, -0.022).spawn(); // big wind right
-			new Boxes.Wall(game.getLayer(0), new Rect(40, -7, 4, 1)).spawn(); // right platform
-			new Boxes.End(game, game.getLayer(0), 43, -13).spawn();
+			new Boxes.Wall(game.getLayer(0), new Rect(40, -6.75, 4, 1)).spawn(); // right platform
+			new Boxes.End(game, game.getLayer(0), 43, -12.5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), 1, -2);
 			game.player1.spawn();
@@ -604,7 +604,7 @@ public class Levels {
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 13.5, 1)).spawn(); // starting platform
 			new Boxes.Wall(game.getLayer(0), new Rect(5, -7, 1, 7)).spawn(); // right of starting area
-			new Boxes.Wind(game.getLayer(0), new Rect(-2, 1, 22, 10), 0, -0.022).spawn(); // under starting platform
+			new Boxes.Wind(game.getLayer(0), new Rect(-2, 1, 22, 11), 0, -0.022).spawn(); // wind under starting platform
 			new Boxes.Wall(game.getLayer(0), new Rect(4, 3, 1, 1)).spawn(); // first block below
 			new Boxes.Wall(game.getLayer(0), new Rect(6, 0, 1, 7)).spawn(); // first wall below
 			new Boxes.Wall(game.getLayer(0), new Rect(8, 3, 1, 1)).spawn(); // second block below
@@ -618,7 +618,7 @@ public class Levels {
 				door.spawn();
 				new Boxes.Button(game.getLayer(0), 7.5, 0, door).spawn();
 			}
-			new Boxes.Wind(game.getLayer(0), new Rect(23, -4, 5, 10), 0, -0.022).spawn(); // wind far right
+			new Boxes.Wind(game.getLayer(0), new Rect(23, -3, 5, 10), 0, -0.022).spawn(); // wind far right
 			new Boxes.End(game, game.getLayer(0), 15.5, -5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), 0, -2);
@@ -661,7 +661,7 @@ public class Levels {
 							if (box instanceof SugarLevelPlayer) continue;
 							weight += box.rect.size();
 						}
-						return weight >= 4;
+						return weight >= 5;
 					}
 				}).spawn();
 			}

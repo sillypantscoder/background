@@ -321,6 +321,7 @@ public class Boxes {
 		public double offsetX;
 		public double offsetY;
 		public Surface bg;
+		public boolean updatedBrightness = false;
 		public Wind(List<Box> world, Rect rect, double amtX, double amtY) {
 			super(world, rect, amtX, amtY);
 			// Create bg image
@@ -339,9 +340,12 @@ public class Boxes {
 			return new Color(realbrightness, realbrightness, realbrightness, 255);
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
+			if (!updatedBrightness) {
+				bg = bg.scaleValues(getColor(brightness, 1/4d).getRed() / 255f);
+				updatedBrightness = true;
+			}
 			s.blit(
 				bg.crop((int)(offsetX + gridSize), (int)(offsetY + gridSize), (int)(drawRect.w), (int)(drawRect.h))
-				.scaleValues(getColor(brightness, 1/4d).getRed() / 255f)
 			, (int)(drawRect.x), (int)(drawRect.y));
 			s.drawRect(getColor(brightness, 2/4d), drawRect, 3);
 		}
