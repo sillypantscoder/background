@@ -154,46 +154,23 @@ public class Boxes {
 		}
 	}
 	/**
-	 * A moving platform. Its normal position is described by the provided rect,
-	 *  and its new position is passed into the constructor.
+	 * A moving platform.
 	 */
-	public static class Door extends Box implements Button.SwitchHandler {
-		public double oldX;
-		public double oldY;
-		public double newX;
-		public double newY;
-		public double amt;
-		public boolean activated;
+	public static class MovingPlatform extends Box {
 		public HashSet<Box> attached;
-		public Door(List<Box> world, Rect rect, double newX, double newY) {
+		public MovingPlatform(List<Box> world, Rect rect) {
 			super(world, rect, PhysicsState.FIXED);
-			oldX = rect.x;
-			oldY = rect.y;
-			this.newX = newX;
-			this.newY = newY;
 			this.attached = new HashSet<Box>();
 		}
 		public void tick() {
 			super.tick();
-			// Move amt
-			if (this.activated) {
-				if (this.amt < 1) {
-					this.amt += 1/32d;
-				}
-			} else {
-				if (this.amt > 0) {
-					this.amt -= 1/32d;
-				}
-			}
 			// Remember previous position
 			double previousX = this.rect.x;
 			double previousY = this.rect.y;
 			HashSet<Box> aboveBoxes = this.getAbovePhysicsBoxes(5);
 			HashSet<Box> belowBoxes = this.getBelowPhysicsBoxes();
 			// Set pos
-			double anim_amt = Utils.ease_in_out(this.amt);
-			this.rect.x = this.oldX + ((this.newX - this.oldX) * anim_amt);
-			this.rect.y = this.oldY + ((this.newY - this.oldY) * anim_amt);
+			this.move();
 			// Find which entities to move
 			HashSet<Box> moving = new HashSet<Box>();
 			if (this.rect.y <= previousY) {
@@ -217,6 +194,42 @@ public class Boxes {
 				b.rect.x += diffX;
 				b.rect.y += diffY;
 			}
+		}
+		public void move() {}
+	}
+	/**
+	 * A moving platform. Its normal position is described by the provided rect,
+	 *  and its new position is passed into the constructor.
+	 */
+	public static class Door extends MovingPlatform implements Button.SwitchHandler {
+		public double oldX;
+		public double oldY;
+		public double newX;
+		public double newY;
+		public double amt;
+		public boolean activated;
+		public Door(List<Box> world, Rect rect, double newX, double newY) {
+			super(world, rect);
+			oldX = rect.x;
+			oldY = rect.y;
+			this.newX = newX;
+			this.newY = newY;
+		}
+		public void move() {
+			// Move amt
+			if (this.activated) {
+				if (this.amt < 1) {
+					this.amt += 1/32d;
+				}
+			} else {
+				if (this.amt > 0) {
+					this.amt -= 1/32d;
+				}
+			}
+			// Set pos
+			double anim_amt = Utils.ease_in_out(this.amt);
+			this.rect.x = this.oldX + ((this.newX - this.oldX) * anim_amt);
+			this.rect.y = this.oldY + ((this.newY - this.oldY) * anim_amt);
 		}
 		public void activate() {
 			this.activated = true;
@@ -278,7 +291,7 @@ public class Boxes {
 				// Attempt to spawn
 				Box b = supplier.get();
 				b.spawn();
-				b.cancelFromCollision();
+				if (b.physics == PhysicsState.PHYSICS) b.cancelFromCollision();
 			}
 		}
 	}

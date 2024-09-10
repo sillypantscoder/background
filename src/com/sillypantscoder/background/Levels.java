@@ -26,7 +26,8 @@ public class Levels {
 		new Level10(),
 		new Level11(),
 		new Level12(),
-		new Level13()
+		new Level13(),
+		new Level14()
 	};
 	public static class LevelIntro extends Level {
 		public String getName() { return "Introduction"; }
@@ -705,6 +706,71 @@ public class Levels {
 					super.collideXWithPhysicsBox(box);
 				}
 			}
+		}
+	}
+	public static class Level14 extends Level {
+		public String getName() { return "Multiple Stories"; }
+		public String getTagline() { return "automatic elevators are available"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(1), 2.5, -3.5, "14", 80).spawn();
+			// Platforms
+			new Boxes.Wall(game.getLayer(0), new Rect(-8, -15, 1, 17)).spawn(); // wall left
+			new Boxes.Wall(game.getLayer(0), new Rect(5, -15, 1, 16)).spawn(); // wall right
+			new Boxes.Wall(game.getLayer(0), new Rect(-8, 2, 7, 1)).spawn(); // bottom floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-8, -16, 14, 1)).spawn(); // top roof
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, 1, 1, 1)).spawn(); // brick between bottom floor and level 1 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 7, 1)).spawn(); // level 1 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, -4, 7, 1)).spawn(); // level 2 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, -8, 7, 1)).spawn(); // level 3 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, -12, 7, 1)).spawn(); // level 4 floor
+			new Boxes.Spawner(game, 60, () -> new Boxes.MovingPlatform(game.getLayer(0), new Rect(-4, 2, 1, 1)) {
+				public void move() {
+					// remove
+					if (this.rect.y < -16) this.remove();
+					// move
+					this.rect.y -= 0.05;
+				}
+			}).spawn();
+			new Boxes.Spawner(game, 60, () -> new Boxes.MovingPlatform(game.getLayer(0), new Rect(-6, -16, 1, 1)) {
+				public void move() {
+					// remove
+					if (this.rect.y > 2) this.remove();
+					// move
+					this.rect.y += 0.05;
+				}
+			}).spawn();
+			{
+				Boxes.Door door2 = new Boxes.Door(game.getLayer(0), new Rect(-2, -6.5, 1, 2), -2, -8);
+				door2.spawn();
+				new Boxes.Button(game.getLayer(0), 4, 0, door2).spawn();
+				new Boxes.Button(game.getLayer(0), 2, -8, door2).spawn();
+			}
+			{
+				Boxes.Door door3 = new Boxes.Door(game.getLayer(0), new Rect(-2, -10.5, 1, 2), -2, -12);
+				door3.spawn();
+				new Boxes.Button(game.getLayer(0), 4, -4, door3).spawn();
+			}
+			{
+				Boxes.Door door1 = new Boxes.Door(game.getLayer(0), new Rect(-2, -4, 1, 2), -2, -2.5);
+				door1.spawn();
+				Boxes.Door door4 = new Boxes.Door(game.getLayer(0), new Rect(-2, -14.5, 1, 2), -2, -16);
+				door4.spawn();
+				new Boxes.Button(game.getLayer(0), 4, -8, new Boxes.Button.SwitchHandler[] {
+					door1, door4
+				}).spawn();
+			}
+			new Boxes.PhysicsObject(game.getLayer(0), new Rect(2, -13, 1, 1)).spawn();
+			new Boxes.Wind(game.getLayer(0), new Rect(-7, -15, 5, 2), -0.03, 0).spawn();
+			new Boxes.Wind(game.getLayer(0), new Rect(-7, 0, 5, 2), 0.03, 0).spawn();
+			new Boxes.Wind(game.getLayer(0), new Rect(2.5, -5, 1, 1), 0, -0.03).spawn();
+			new Boxes.End(game, game.getLayer(0), 2.75, -10.5).spawn();
+			// Player Setup
+			game.player1 = new Boxes.Player(game, game.getLayer(0), 0, -2);
+			game.player1.spawn();
+			game.player1.setrespawn();
+			game.player2 = new Boxes.Player(game, game.getLayer(0), 2, -2);
+			game.player2.spawn();
+			game.player2.setrespawn();
 		}
 	}
 }

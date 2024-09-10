@@ -60,10 +60,13 @@ public class SaveData {
 		int highestLevel = 0;
 		for (int i = 0; i < Levels.levels.length; i++) { if (Levels.levels[i].bestTime != -1) highestLevel = i + 1; }
 		// Find correct screen
-		Screen targetScreen = new GameScreen(window, 0);
+		Screen targetScreen = new GameScreen(window, highestLevel);
 		if (highestLevel != 0) {
-			if (highestLevel == Levels.levels.length) highestLevel -= 1;
-			targetScreen = new MapScreen(window, highestLevel);
+			boolean forceGameScreen = highestLevel < Levels.levels.length;
+			if (! (forceGameScreen && Game.CHEAT)) {
+				if (highestLevel == Levels.levels.length) highestLevel -= 1;
+				targetScreen = new MapScreen(window, highestLevel);
+			}
 		}
 		OpeningAnimation anim = new OpeningAnimation(window, targetScreen);
 		anim.maxTime *= 2;
