@@ -21,6 +21,7 @@ public class SaveData {
 			if (Levels.levels[i].bestTime != -1) {
 				saveData += Levels.levels[i].bestTime;
 			}
+			if (Levels.levels[i].gotCoin) saveData += "c";
 			if (i != Levels.levels.length - 1) saveData += ".";
 		}
 		// Write data to file
@@ -51,6 +52,11 @@ public class SaveData {
 		// Read levels
 		String[] levels = data.substring(settingsWidth).split("\\.", -1);
 		for (int i = 0; i < levels.length; i++) {
+			if (levels[i].endsWith("c")) {
+				// Got coin
+				Levels.levels[i].gotCoin = true;
+				levels[i] = levels[i].substring(0, levels[i].length() - 1);
+			}
 			if (levels[i].length() == 0) continue;
 			int time = Integer.parseInt(levels[i]);
 			Levels.levels[i].bestTime = time;

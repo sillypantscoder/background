@@ -370,4 +370,63 @@ public class Boxes {
 			offsetY %= gridSize * 2;
 		}
 	}
+	public static class SecretCoin extends Box {
+		public static Surface coinImage = makeCoinImage();
+		public Game game;
+		public SecretCoin(Game game, List<Box> world, double x, double y) {
+			super(world, new Rect(x - 0.25, y - 0.25, 0.5, 0.5), PhysicsState.NONE);
+			this.game = game;
+		}
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			s.blit(coinImage, (int)(drawRect.centerX()) - (coinImage.get_width() / 2), (int)(drawRect.centerY()) - (coinImage.get_height() / 2));
+		}
+		public void tick() {
+			super.tick();
+			// Check for collision
+			Level currentLevel = Levels.levels[game.level];
+			if (game.player1.rect.colliderect_strict(rect)) {
+				if (game.player2.rect.colliderect_strict(rect)) {
+					// Get the coin
+					currentLevel.gotCoin = true;
+					this.remove();
+					SaveData.save();
+					// Spawn particles
+					new CoinGetParticle(game, world, this.rect.centerX(), this.rect.centerY(), 0.4, 0.1, 0.04).spawn();
+					new CoinGetParticle(game, world, this.rect.centerX(), this.rect.centerY(), 0, 0.3, 0.01).spawn();
+				}
+			}
+		}
+		public static Surface makeCoinImage() {
+			Surface s = new Surface(30, 30, new Color(0, 0, 0, 0));
+			s.drawCircle(new Color(0, 0, 0, 25), s.get_width() / 2, s.get_width() / 2, s.get_width() / 2);
+			Surface t = Surface.renderText((int)(s.get_width() * 0.5), "C", new Color(0, 0, 0, 25));
+			s.blit(t, (s.get_width() / 2) - (t.get_width() / 2), (s.get_height() / 2) - (t.get_height() / 2));
+			return s;
+		}
+		public static class CoinGetParticle extends Box {
+			public double rad;
+			public double v;
+			public double a;
+			public double av;
+			public CoinGetParticle(Game game, List<Box> world, double x, double y, double rad, double v, double av) {
+				super(world, Rect.fromCenter(x, y, 1, 1), PhysicsState.NONE);
+				this.rad = rad;
+				this.v = v;
+				this.a = 1;
+				this.av = av;
+			}
+			public void draw(Surface s, Rect drawRect, double brightness) {
+				Rect r = drawRect.withSize(drawRect.size() * rad);
+				s.drawCircle(new Color(0, 0, 0, (int)(this.a * 255)), r, 3);
+			}
+			public void tick() {
+				super.tick();
+				// Animation
+				this.rad += this.v;
+				this.v *= 0.9;
+				this.a -= this.av;
+				if (this.a < 0) this.remove();
+			}
+		}
+	}
 }

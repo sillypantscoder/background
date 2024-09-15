@@ -75,6 +75,13 @@ public class Levels {
 			new Boxes.Text(game.getLayer(2), 35, 4.5, "the end to continue", 20).spawn();
 			new Boxes.End(game, game.getLayer(0), 40, 3.5).spawn();
 			new Boxes.Wall(game.getLayer(3), new Rect(33, 0.5, 11, 8)).spawn(); // background box far right
+			// coin
+			new Boxes.SecretCoin(game, game.getLayer(0), 23, -2).spawn();
+			new Boxes.Text(game.getLayer(3), 23.5, -3, "This is a secret", 15).spawn();
+			new Boxes.Text(game.getLayer(3), 23.8, -2.5, "coin. Can you figure", 15).spawn();
+			new Boxes.Text(game.getLayer(3), 24.1, -2, "out how to get it?", 15).spawn();
+			new Boxes.Text(game.getLayer(3), 23.4, -1.5, "(Both players must be touching the", 12).spawn();
+			new Boxes.Text(game.getLayer(3), 23.6, -1.1, "coin at the same time.)", 12).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 0);
 			game.player1.spawn();
@@ -99,12 +106,14 @@ public class Levels {
 			}
 			new Boxes.Wall(game.getLayer(0), new Rect(18, -3, 1, 1)).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(7, -6, 3, 1)).spawn();
-			new Boxes.Wall(game.getLayer(0), new Rect(2, -9, 3, 1)).spawn();
+			new Boxes.Wall(game.getLayer(0), new Rect(1, -9, 4, 1)).spawn();
+			// End
 			new Boxes.End(game, game.getLayer(0), 2, -12).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), 0, -10).spawn();
 			// Background
 			for (int i = 1; i < 5; i++) {
 				new Boxes.Wall(game.getLayer(i), new Rect(-2, 5, 5, 1)).spawn();
-				new Boxes.Wall(game.getLayer(i), new Rect(2, -9, 3, 1)).spawn();
+				new Boxes.Wall(game.getLayer(i), new Rect(1, -9, 4, 1)).spawn();
 			}
 			new Boxes.Wall(game.getLayer(5), new Rect(-2, -9, 7, 15)).spawn();
 			new Boxes.Wall(game.getLayer(3), new Rect(9, -4, 11, 8)).spawn();
@@ -137,7 +146,9 @@ public class Levels {
 			}
 			new Boxes.Wall(game.getLayer(0), new Rect(12, 0, 2, 1)).spawn();
 			new Boxes.Wall(game.getLayer(1), new Rect(13.5, 1, 2, 1)).spawn();
+			// end
 			new Boxes.End(game, game.getLayer(0), 12.5, -2.5).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), -1.5, -0.5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 0);
 			game.player1.spawn();
@@ -191,6 +202,7 @@ public class Levels {
 			new Boxes.Wall(game.getLayer(1), new Rect(18, 6.5, 2, 1.5)).spawn();
 			// End
 			new Boxes.End(game, game.getLayer(0), 24, 7.5).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), 29.5, 7.25).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -0.5, 3.5);
 			game.player1.spawn();
@@ -241,6 +253,7 @@ public class Levels {
 				new Boxes.Button(game.getLayer(0), 23, 0, door).spawn();
 			}
 			new Boxes.End(game, game.getLayer(0), 34, -2.5).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), 12.25, -5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(1), -1, 2.5);
 			game.player1.spawn();
@@ -278,6 +291,23 @@ public class Levels {
 			new Boxes.Wall(game.getLayer(2), new Rect(-3, -5, 6, 11)).spawn();
 			new Boxes.Wall(game.getLayer(3), new Rect(-7, -1.5, 15, 3)).spawn();
 			new Boxes.Wall(game.getLayer(3), new Rect(-2, -12.5, 4, 5)).spawn();
+			// Coin
+			(new Boxes.SecretCoin(game, game.getLayer(0), -2, -5) {
+				public static final int maxTicks = 60 * 7;
+				public int ticks = 0;
+				public void tick() {
+					super.tick();
+					// Counter
+					this.ticks += 1;
+					if (this.ticks >= maxTicks) {
+						this.rect.y -= Math.pow(this.ticks - maxTicks, 2) / 50;
+					}
+					if (this.rect.y < -24) {
+						this.remove();
+					}
+				}
+			}).spawn();
+			new Boxes.Text(game.getLayer(3), -7.5, -5, "Coin: Under 7 seconds", 15).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 3);
 			game.player1.spawn();
@@ -335,7 +365,10 @@ public class Levels {
 				new Boxes.Button(game.getLayer(0), -17, -1, door).spawn();
 			}
 			new Boxes.Wall(game.getLayer(0), new Rect(-19, -1, 3, 1)).spawn(); // far left platform left part
+			// End
 			new Boxes.End(game, game.getLayer(0), -19, -5).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), 4.5, 9.5).spawn();
+			new Boxes.Wall(game.getLayer(0), new Rect(9.5, 10, 1, 1)).spawn();
 			// Decoration
 			new Boxes.Wall(game.getLayer(1), new Rect(-4, 0, 9, 6)).spawn();
 			new Boxes.Wall(game.getLayer(1), new Rect(4, -4, 2, 7)).spawn();
@@ -386,6 +419,10 @@ public class Levels {
 				new Boxes.Button(game.getLayer(2), -8, -1, door).spawn();
 			}
 			new Boxes.End(game, game.getLayer(0), 13, 3.5).spawn();
+			// coin
+			new Boxes.Wind(game.getLayer(0), new Rect(16.5, 9.5, 1, 1), -3.25, 0).spawn();
+			new Boxes.Wind(game.getLayer(0), new Rect(-2.5, 11.5, 1, 1), 0.3, -1).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), -2, 2).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getMultilayer(new int[] { 0, 1 }), -1, -5);
 			game.player1.spawn();
@@ -464,6 +501,7 @@ public class Levels {
 				floor.attached.add(wallInsideTop);
 				floor.attached.add(wallInsideBottom);
 			}
+			new Boxes.SecretCoin(game, game.getLayer(0), 1.5, -3).spawn();
 			{
 				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-1.5, -5, 1, 1), -1.5, -1);
 				door.spawn();
@@ -492,6 +530,7 @@ public class Levels {
 			// Platforms
 			ListCombination<Box> multiLayerFront = game.getMultilayer(new int[] { 0, 1 });
 			ListCombination<Box> multiLayerBack = game.getMultilayer(new int[] { 1, 2 });
+			new Boxes.SecretCoin(game, game.getLayer(0), -9.5, -2).spawn();
 			new Boxes.Wall(multiLayerFront, new Rect(-3, 5, 6, 1)).spawn(); // starting platform
 			new Boxes.Wall(multiLayerFront, new Rect(-4, 1, 1, 5)).spawn(); // left wall
 			new Boxes.Wall(multiLayerFront, new Rect(-8, 1, 5, 1)).spawn(); // left platform
@@ -556,18 +595,26 @@ public class Levels {
 				}).spawn();
 			}
 			new Boxes.Wall(game.getLayer(0), new Rect(-20, -16, 1, 18)).spawn(); // left wall left
-			new Boxes.Wall(game.getLayer(0), new Rect(-17, -12, 1, 25)).spawn(); // left wall right
-			new Boxes.Wall(game.getLayer(0), new Rect(-28, 5, 12, 1)).spawn(); // left floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-17, -12, 1, 21)).spawn(); // left wall right
+			new Boxes.Wall(game.getLayer(0), new Rect(-34, 5, 18, 1)).spawn(); // left floor
 			{
 				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-2, 5, 1, 1), -15.5, 5); // horizontal
 				door.spawn();
 				Boxes.Door door2 = new Boxes.Door(game.getLayer(0), new Rect(-9, -12, 1, 1), -9, 2); // vertical
 				door2.spawn();
+				Boxes.Door door3 = new Boxes.Door(game.getLayer(0), new Rect(-17, 8, 1, 5), -17, 12); // shortcut unlock
+				door3.spawn();
 				new Boxes.Button(game.getLayer(0), -23, 5, new Boxes.Button.SwitchHandler[] {
-					door, door2
+					door, door2, door3
 				}).spawn();
 			}
-			new Boxes.End(game, game.getLayer(0), -24, -1).spawn();
+			new Boxes.End(game, game.getLayer(0), -33, -1).spawn();
+			// coin
+			new Boxes.Wall(game.getLayer(0), new Rect(-36, 12, 29, 1)).spawn(); // shortcut floor
+			new Boxes.Wind(game.getLayer(0), new Rect(-36, 8, 1, 4), 0, -0.03).spawn(); // shortcut left
+			new Boxes.Wall(game.getLayer(0), new Rect(-29, -0.75, 1, 6.5)).spawn(); // end platform barrier left
+			new Boxes.Wall(game.getLayer(0), new Rect(-28, 2, 1, 4)).spawn(); // end platform barrier right
+			new Boxes.SecretCoin(game, game.getLayer(0), -25, 0.5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), 1, -2);
 			game.player1.spawn();
@@ -586,9 +633,10 @@ public class Levels {
 			new Boxes.Wall(game.getLayer(0), new Rect(-1, 5, 6, 1)).spawn(); // starting platform
 			new Boxes.Wind(game.getLayer(0), new Rect(8, -3, 5, 9.5), 0, -0.022).spawn(); // big wind left
 			new Boxes.Wall(game.getLayer(0), new Rect(16, -5, 4, 1)).spawn(); // middle platform
-			new Boxes.Wind(game.getLayer(0), new Rect(23, -7, 15, 5), 0, -0.022).spawn(); // big wind right
+			new Boxes.Wind(game.getLayer(0), new Rect(23, -7, 15, 6.5), 0, -0.022).spawn(); // big wind right
 			new Boxes.Wall(game.getLayer(0), new Rect(40, -6.75, 4, 1)).spawn(); // right platform
 			new Boxes.End(game, game.getLayer(0), 43, -12.5).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), 32, -6.5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), 1, -2);
 			game.player1.spawn();
@@ -622,6 +670,7 @@ public class Levels {
 			}
 			new Boxes.Wind(game.getLayer(0), new Rect(23, -3, 5, 10.5), 0, -0.022).spawn(); // wind far right
 			new Boxes.End(game, game.getLayer(0), 15.5, -5).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), 23, -4.5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), 0, -2);
 			game.player1.spawn();
@@ -668,6 +717,7 @@ public class Levels {
 				}).spawn();
 			}
 			new Boxes.End(game, game.getLayer(0), 30, -7).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), 30.5, -10).spawn();
 			// Player Setup
 			game.player1 = new SugarLevelPlayer(game, game.getLayer(0), -1, -2);
 			game.player1.spawn();
@@ -716,14 +766,14 @@ public class Levels {
 			new Boxes.Text(game.getLayer(1), 2.5, -3.5, "14", 80).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-8, -15, 1, 17)).spawn(); // wall left
-			new Boxes.Wall(game.getLayer(0), new Rect(5, -15, 1, 16)).spawn(); // wall right
+			new Boxes.Wall(game.getLayer(0), new Rect(7, -15, 1, 16)).spawn(); // wall right
 			new Boxes.Wall(game.getLayer(0), new Rect(-8, 2, 7, 1)).spawn(); // bottom floor
-			new Boxes.Wall(game.getLayer(0), new Rect(-8, -16, 14, 1)).spawn(); // top roof
+			new Boxes.Wall(game.getLayer(0), new Rect(-8, -16, 16, 1)).spawn(); // top roof
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 1, 1, 1)).spawn(); // brick between bottom floor and level 1 floor
-			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 7, 1)).spawn(); // level 1 floor
-			new Boxes.Wall(game.getLayer(0), new Rect(-2, -4, 7, 1)).spawn(); // level 2 floor
-			new Boxes.Wall(game.getLayer(0), new Rect(-2, -8, 7, 1)).spawn(); // level 3 floor
-			new Boxes.Wall(game.getLayer(0), new Rect(-2, -12, 7, 1)).spawn(); // level 4 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 9, 1)).spawn(); // level 1 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, -4, 9, 1)).spawn(); // level 2 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, -8, 9, 1)).spawn(); // level 3 floor
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, -12, 9, 1)).spawn(); // level 4 floor
 			new Boxes.Spawner(game, 60, () -> new Boxes.MovingPlatform(game.getLayer(0), new Rect(-4, 2, 1, 1)) {
 				public void move() {
 					// remove
@@ -763,14 +813,19 @@ public class Levels {
 			new Boxes.PhysicsObject(game.getLayer(0), new Rect(1, -13, 1, 1)).spawn();
 			new Boxes.Wind(game.getLayer(0), new Rect(-7, -15, 5, 2), -0.06, 0).spawn(); // top wind zone
 			new Boxes.Wind(game.getLayer(0), new Rect(-7, 0, 5, 2), 0.06, 0).spawn(); // bottom wind zone
-			new Boxes.Wind(game.getLayer(0), new Rect(2.5, -5, 1, 1), 0, -0.03).spawn(); // to get box on button
+			new Boxes.Wind(game.getLayer(0), new Rect(2.5, -5, 1, 1), 0, -0.03).spawn(); // to get box on button2
+			new Boxes.Wind(game.getLayer(0), new Rect(6, -5, 1, 1), -0.03, -0).spawn(); // to get box off button2
 			new Boxes.Wind(game.getLayer(0), new Rect(3, -13, 2, 1), -0.03, 0).spawn(); // softlock prevention
 			new Boxes.End(game, game.getLayer(0), 2.75, -10.5).spawn();
+			// coin
+			new Boxes.SecretCoin(game, game.getLayer(0), 4, -4.5).spawn();
+			new Boxes.Wind(game.getLayer(0), new Rect(2.5, -1, 1, 1), 0, -0.03).spawn(); // to get box on button1
+			new Boxes.Wind(game.getLayer(0), new Rect(6, -1, 1, 1), -0.03, -0).spawn(); // to get box off button1
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), 0, -2);
 			game.player1.spawn();
 			game.player1.setrespawn();
-			game.player2 = new Boxes.Player(game, game.getLayer(0), 2, -2);
+			game.player2 = new Boxes.Player(game, game.getLayer(0), 1.25, -2);
 			game.player2.spawn();
 			game.player2.setrespawn();
 		}
@@ -806,6 +861,7 @@ public class Levels {
 				new Boxes.Button(game.getLayer(0), -10, -5, door).spawn();
 			}
 			new Boxes.End(game, game.getLayer(0), -16, -9).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), -13, -18.5).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), 0, -1);
 			game.player1.spawn();

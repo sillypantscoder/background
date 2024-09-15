@@ -13,7 +13,7 @@ import com.sillypantscoder.utils.Rect;
  * This class contains all of the data needed to run the game.
  */
 public class Game {
-	public static final boolean CHEAT = false;
+	public static final boolean CHEAT = true;
 	public GameScreen screen;
 	public Boxes.Player player1;
 	public Boxes.Player player2;
@@ -57,7 +57,7 @@ public class Game {
 	 */
 	public void generateLevel() {
 		if (level >= Levels.levels.length) {
-			System.err.println("Error getting next level");
+			System.err.println("Error loading level");
 		} else {
 			Levels.levels[level].build(this);
 		}

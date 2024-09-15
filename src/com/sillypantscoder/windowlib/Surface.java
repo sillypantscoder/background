@@ -126,8 +126,14 @@ public class Surface {
 	public void drawCircle(Color color, double cx, double cy, double r) {
 		drawCircle(color, (int)(cx), (int)(cy), (int)(r));
 	}
+	public void drawCircle(Color color, double cx, double cy, double r, int lineWidth) {
+		drawCircle(color, (int)(cx), (int)(cy), (int)(r), lineWidth);
+	}
 	public void drawCircle(Color color, Rect rect) {
 		drawCircle(color, rect.centerX(), rect.centerY(), (rect.w + rect.h) / 4);
+	}
+	public void drawCircle(Color color, Rect rect, int lineWidth) {
+		drawCircle(color, rect.centerX(), rect.centerY(), (rect.w + rect.h) / 4, lineWidth);
 	}
 	public void drawPolygon(Color color, int[][] points) {
 		Graphics2D g2d = img.createGraphics();

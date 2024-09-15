@@ -117,4 +117,9 @@ public class Rect {
 	public static Rect fromCenter(double centerX, double centerY, double width, double height) {
 		return new Rect(centerX - (width / 2), centerY - (height / 2), width, height);
 	}
+	public Rect withSize(double size) {
+		double centerX = centerX();
+		double centerY = centerY();
+		return fromCenter(centerX, centerY, size, size);
+	}
 }

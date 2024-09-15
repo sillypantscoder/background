@@ -73,6 +73,15 @@ public class MapScreen extends Screen {
 				Surface t = Surface.renderText(levelSize / 6, Utils.formatTime(l.bestTime), new Color(100, 100, 100));
 				s.blit(t, (centerX - cameraOffset) - (t.get_width() / 2), (topY + levelSize) - (t.get_height() * 2));
 			}
+			// Draw coin
+			if (l.gotCoin) {
+				int coinX = (centerX - (levelSize / 2)) - cameraOffset;
+				int coinY = centerY + (levelSize / 2);
+				int coinSize = levelSize / 14;
+				s.drawCircle(new Color(200, 200, 200), coinX, coinY, coinSize);
+				Surface t = Surface.renderText((int)(coinSize * 1.75), "C", new Color(50, 50, 50));
+				s.blit(t, coinX - (t.get_width() / 2), coinY - (t.get_height() / 2));
+			}
 		}
 		// Draw settings button
 		s.blit(SettingsScreen.settingsIcon.resize(30, 30), 5, 5);
