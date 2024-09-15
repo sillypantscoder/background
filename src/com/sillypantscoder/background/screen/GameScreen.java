@@ -57,7 +57,7 @@ public class GameScreen extends Screen {
 		if (e.equals("R")) {
 			GameScreen newScreen = new GameScreen(window, game.level);
 			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
-		} else if (e.equals("Escape")) {
+		} else if (e.equals("Escape") || e.equals("⎋")) {
 			MapScreen newScreen = new MapScreen(window, game.level);
 			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
 		} else {

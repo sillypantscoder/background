@@ -97,21 +97,25 @@ public class Game {
 			}
 		}
 		// Player Movement
-		if (keys.contains("Up") || keys.contains("Space")) {
+		if (keys.contains("Up") || keys.contains("↑") || keys.contains("Space") || keys.contains("␣")) {
 			if (player.touchingGround) {
 				player.vy = -0.3;
 			}
 		}
-		if (keys.contains("Down")) {
+		if (keys.contains("Down") || keys.contains("↓")) {
 			if (player.getAboveWalls().size() > 0) {
 				player.vy = 0.3;
 			}
 		}
 		if (keys.contains("Left")) {
-			player.vx -= 0.014;
+			if (keys.contains("Left") || keys.contains("←")) {
+				player.vx -= 0.014;
+			}
 		}
 		if (keys.contains("Right")) {
-			player.vx += 0.014;
+			if (keys.contains("Right") || keys.contains("→")) {
+				player.vx += 0.014;
+			}
 		}
 	}
 	/**

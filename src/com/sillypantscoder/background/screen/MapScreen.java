@@ -99,9 +99,9 @@ public class MapScreen extends Screen {
 		return (verticalSpace / 3) * (1 + (level % 2));
 	}
 	public void keyDown(String e) {
-		if (e.equals("Left")) scroll(-1);
-		if (e.equals("Right")) scroll(1);
-		if (e.equals("Space") || e.equals("Z") || e.equals("Enter")) selectLevel();
+		if (e.equals("Left") || e.equals("←")) scroll(-1);
+		if (e.equals("Right") || e.equals("→")) scroll(1);
+		if (e.equals("Space") || e.equals("␣") || e.equals("Z") || e.equals("Enter")) selectLevel();
 	}
 	public void keyUp(String e) {}
 	public void mouseMoved(int x, int y) {}
