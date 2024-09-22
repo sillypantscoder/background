@@ -29,11 +29,14 @@ public class Utils {
 		// calculate
 		int frames = time % 60;
 		int seconds = Math.floorDiv(time, 60);
+		int minutes = Math.floorDiv(seconds, 60);
+		seconds -= minutes * 60;
 		int s100ths = (int)((frames / 60d) * 100);
 		// format string
 		String dec = String.valueOf(s100ths);
 		if (dec.length() == 1) dec = "0" + dec;
-		// if (dec.length() == 2) dec = "0" + dec;
-		return seconds + "." + dec;
+		String sec = String.valueOf(seconds);
+		if (sec.length() == 1) sec = "0" + sec;
+		return (minutes > 0 ? (minutes + ":" + sec) : seconds) + "." + dec;
 	}
 }

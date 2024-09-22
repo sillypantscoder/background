@@ -422,7 +422,7 @@ public class Levels {
 			// coin
 			new Boxes.Wind(game.getLayer(0), new Rect(16.5, 9.5, 1, 1), -3.25, 0).spawn();
 			new Boxes.Wind(game.getLayer(0), new Rect(-2.5, 11.5, 1, 1), 0.3, -1).spawn();
-			new Boxes.SecretCoin(game, game.getLayer(0), -2, 2).spawn();
+			new Boxes.SecretCoin(game, game.getLayer(0), -2.5, 1.75).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getMultilayer(new int[] { 0, 1 }), -1, -5);
 			game.player1.spawn();

@@ -387,7 +387,7 @@ public class Boxes {
 			if (game.player1.rect.colliderect_strict(rect)) {
 				if (game.player2.rect.colliderect_strict(rect)) {
 					// Get the coin
-					currentLevel.gotCoin = true;
+					currentLevel.bestCoinTime = currentLevel.bestCoinTime == -1 ? game.timer : Math.min(currentLevel.bestCoinTime, game.timer);
 					this.remove();
 					SaveData.save();
 					// Spawn particles
