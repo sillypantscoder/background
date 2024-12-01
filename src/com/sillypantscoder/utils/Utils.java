@@ -3,6 +3,7 @@ package com.sillypantscoder.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.function.Supplier;
 
 public class Utils {
 	public static double ease_in_out(double x) {
@@ -38,5 +39,17 @@ public class Utils {
 		String sec = String.valueOf(seconds);
 		if (sec.length() == 1) sec = "0" + sec;
 		return (minutes > 0 ? (minutes + ":" + sec) : seconds) + "." + dec;
+	}
+	public static class EaseVariable implements Supplier<Double> {
+		public double currentValue;
+		public Supplier<Double> targetValue;
+		public EaseVariable(Supplier<Double> targetValue) {
+			this.currentValue = targetValue.get();
+			this.targetValue = targetValue;
+		}
+		public Double get() {
+			this.currentValue = ((this.currentValue * 9.0) + this.targetValue.get()) / 10.0;
+			return currentValue;
+		}
 	}
 }

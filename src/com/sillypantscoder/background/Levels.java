@@ -2,11 +2,14 @@ package com.sillypantscoder.background;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.sillypantscoder.background.Box.PhysicsState;
 import com.sillypantscoder.background.Boxes.Button.SwitchHandler;
 import com.sillypantscoder.utils.ListCombination;
 import com.sillypantscoder.utils.Rect;
+import com.sillypantscoder.utils.Utils;
+import com.sillypantscoder.windowlib.Surface;
 
 /**
  * This class contains all of the levels.
@@ -704,17 +707,9 @@ public class Levels {
 			{
 				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(29, -11, 1, 11), 29, -6);
 				door.spawn();
-				(new Boxes.Button(game.getLayer(0), 25, -2, door) {
-					public boolean isPressed() {
-						if (pressed) return true;
-						double weight = 0;
-						for (Box box : this.getAbovePhysicsBoxes(5)) {
-							if (box instanceof SugarLevelPlayer) continue;
-							weight += box.rect.size();
-						}
-						return weight >= 5;
-					}
-				}).spawn();
+				WeightedButton button = new WeightedButton(game.getLayer(0), 25, -2, door);
+				button.spawn();
+				new Dial(game.getLayer(0), 25, 0.25, new Utils.EaseVariable(button::getFraction)).spawn();
 			}
 			new Boxes.End(game, game.getLayer(0), 30, -7).spawn();
 			new Boxes.SecretCoin(game, game.getLayer(0), 30.5, -10).spawn();
@@ -725,6 +720,51 @@ public class Levels {
 			game.player2 = new SugarLevelPlayer(game, game.getLayer(0), 1, -2);
 			game.player2.spawn();
 			game.player2.setrespawn();
+		}
+		public static class WeightedButton extends Boxes.Button {
+			public double maxWeight = 7;
+			public WeightedButton(List<Box> world, double x, double y, SwitchHandler handler) {
+				super(world, x, y, handler);
+			}
+			public double getWeight() {
+				double weight = 0;
+				for (Box box : this.getAbovePhysicsBoxes(5)) {
+					// if (box instanceof SugarLevelPlayer) continue;
+					weight += box.rect.size();
+				}
+				return weight;
+			}
+			public double getFraction() {
+				double weight = this.getWeight();
+				if (weight > maxWeight) return 1;
+				else return weight / maxWeight;
+			}
+			public boolean isPressed() {
+				if (pressed) return true;
+				double weight = this.getWeight();
+				return weight >= maxWeight + 0.6;
+			}
+		}
+		public static class Dial extends Box {
+			public Supplier<Double> fractionGetter;
+			public Dial(List<Box> world, double x, double y, Supplier<Double> fractionGetter) {
+				super(world, new Rect(x - 1, y - 1, 2, 2), PhysicsState.NONE);
+				this.fractionGetter = fractionGetter;
+			}
+			public void draw(Surface s, Rect drawRect, double brightness) {
+				double degrees = this.fractionGetter.get() * 360.0;
+				// draw the arc
+				s.drawArc(getColor(255 - ((255 - brightness) / 2)), drawRect.centerX(), drawRect.centerY(), drawRect.size() / 2.0, 0, degrees);
+				// draw the outline circle
+				s.drawCircle(getColor(brightness), drawRect, 5);
+				// draw line from top to center
+				s.drawLine(getColor(brightness), (int)(drawRect.centerX()), (int)(drawRect.top()), (int)(drawRect.centerX()), (int)(drawRect.centerY()), 5);
+				// draw line from center to outside point
+				double radians = Math.toRadians(degrees - 90);
+				double outsideX = (Math.cos(radians) * (drawRect.size() / 2)) + drawRect.centerX();
+				double outsideY = (Math.sin(radians) * (drawRect.size() / 2)) + drawRect.centerY();
+				s.drawLine(getColor(brightness), (int)(drawRect.centerX()), (int)(drawRect.centerY()), (int)(outsideX), (int)(outsideY), 5);
+			}
 		}
 		public static class SugarBox extends Boxes.PhysicsObject {
 			public SugarBox(List<Box> world, double x, double y) {
