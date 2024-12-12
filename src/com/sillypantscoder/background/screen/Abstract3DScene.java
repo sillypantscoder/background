@@ -9,16 +9,17 @@ import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 
 public abstract class Abstract3DScene extends Screen {
+	public double boxCoordScale = 50;
 	public Abstract3DScene(MainWindow window) {
 		super(window);
 	}
-	public abstract List<List<Drawable3D>> getLayers();
+	public abstract List<? extends List<? extends Drawable3D>> getLayers();
 	public abstract double getCameraX();
 	public abstract double getCameraY();
 	public Surface frame(int width, int height) {
 		double cameraX = getCameraX();
 		double cameraY = getCameraY();
-		List<List<Drawable3D>> layers = getLayers();
+		List<? extends List<? extends Drawable3D>> layers = getLayers();
 		// Draw Layers
 		Surface s = new Surface(width, height, Color.WHITE);
 		for (int i = layers.size() - 1; i >= 0; i--) {
@@ -28,10 +29,10 @@ public abstract class Abstract3DScene extends Screen {
 				Drawable3D box = layers.get(i).get(j);
 				// Get rect
 				Rect drawRect = new Rect(
-					(box.getRect().x * 50) - cameraX,
-					(box.getRect().y * 50) - cameraY,
-					box.getRect().w * 50,
-					box.getRect().h * 50
+					(box.getRect().x * boxCoordScale) - cameraX,
+					(box.getRect().y * boxCoordScale) - cameraY,
+					box.getRect().w * boxCoordScale,
+					box.getRect().h * boxCoordScale
 				);
 				drawRect = new Rect(
 					(drawRect.x * zoom) + ((width / 2d) * (1 - zoom)),

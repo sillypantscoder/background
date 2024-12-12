@@ -1,8 +1,7 @@
 package com.sillypantscoder.background.screen;
 
 import java.awt.Color;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 import com.sillypantscoder.background.Drawable3D;
 import com.sillypantscoder.background.Game;
@@ -18,7 +17,7 @@ public class GameScreen extends Abstract3DScene {
 		super(window);
 		this.game = new Game(this, level);
 	}
-	public List<List<Drawable3D>> getLayers() { return game.layers.stream().map((v) -> v.stream().map((i) -> (Drawable3D)(i)).collect(Collectors.toList())).toList(); }
+	public ArrayList<? extends ArrayList<? extends Drawable3D>> getLayers() { return game.layers; }
 	public double getCameraX() { return game.cameraX; }
 	public double getCameraY() { return game.cameraY; }
 	public Surface frame(int width, int height) {

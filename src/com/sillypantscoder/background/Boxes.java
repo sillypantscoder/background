@@ -23,14 +23,17 @@ public class Boxes {
 	public static class Text extends Box {
 		public String text;
 		public int textSize;
-		public Text(List<Box> world, double x, double y, String text, int textSize) {
+		public boolean centered;
+		public Text(List<Box> world, double x, double y, String text, int textSize, boolean centered) {
 			super(world, new Rect(x, y, Surface.renderText(textSize, text, Color.BLACK).get_width() / 50d, Surface.renderText(textSize, text, Color.BLACK).get_height() / 50d), PhysicsState.NONE);
 			this.text = text;
 			this.textSize = textSize;
+			this.centered = centered;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
 			Surface t = Surface.renderText(textSize, text, getColor(brightness));
-			s.blit(t, (int)(drawRect.x), (int)(drawRect.y));
+			if (centered) s.blit(t, (int)(drawRect.x - (t.get_width() / 2)), (int)(drawRect.y - (t.get_height() / 2)));
+			else s.blit(t, (int)(drawRect.x), (int)(drawRect.y));
 		}
 	}
 	/**

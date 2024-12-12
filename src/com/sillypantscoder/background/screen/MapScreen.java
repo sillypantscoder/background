@@ -1,7 +1,11 @@
 package com.sillypantscoder.background.screen;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
+import com.sillypantscoder.background.Box;
+import com.sillypantscoder.background.Boxes;
+import com.sillypantscoder.background.Drawable3D;
 import com.sillypantscoder.background.Game;
 import com.sillypantscoder.background.Level;
 import com.sillypantscoder.background.Levels;
@@ -10,88 +14,95 @@ import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.utils.Utils;
 import com.sillypantscoder.windowlib.Surface;
 
-public class MapScreen extends Screen {
+public class MapScreen extends Abstract3DScene {
 	public double cameraX;
 	public int targetCameraX;
 	public int lastWidth;
 	public int lastHeight;
+	public ArrayList<ArrayList<Drawable3D>> layers;
 	public MapScreen(MainWindow window, int startLevel) {
 		super(window);
+		this.boxCoordScale = 1;
 		this.cameraX = startLevel - 1;
 		this.targetCameraX = startLevel;
+		this.makeLayers();
+	}
+	public double getFullLevelWidth() { return lastWidth * 0.4; }
+	public ArrayList<ArrayList<Drawable3D>> getLayers() { return layers; }
+	public double getCameraX() { return (cameraX * getFullLevelWidth()) - (lastWidth * 0.5); }
+	public double getCameraY() { return 0; }
+	public static class LockIcon implements Drawable3D {
+		public Rect rect;
+		public LockIcon(Rect rect) {
+			this.rect = rect;
+		}
+		public Rect getRect() { return rect; }
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			Color color = Box.getColor(brightness);
+			Surface lock = new Surface((int)(drawRect.w), (int)(drawRect.h*1.5), new Color(0, 0, 0, 0));
+			double bodyBorderRadius = drawRect.size() / 2;
+			// draw lock top
+			double lockTopSize = drawRect.size() - (bodyBorderRadius * 0.6);
+			lock.drawCircle(color, Rect.fromCenter(drawRect.w / 2, drawRect.h / 2, lockTopSize, lockTopSize));
+			lock.eraseCircle((int)(drawRect.w / 2), (int)(drawRect.h / 2), (int)(lockTopSize * 0.5 * 0.5));
+			// draw lock body
+			lock.drawRoundedRect(color, new Rect(0, drawRect.h * 0.5, drawRect.w, drawRect.h), bodyBorderRadius);
+			// draw dot
+			lock.eraseCircle((int)(drawRect.w / 2), (int)(drawRect.h * 1), (int)(drawRect.size() / 6));
+			// draw to screen
+			s.blit(lock, (int)(drawRect.x), (int)(drawRect.y));
+		}
+	}
+	public boolean isLevelLocked(int levelNo) {
+		return levelNo != 0 && Levels.levels[levelNo - 1].bestTime == -1;
+	}
+	public void makeLayers() {
+		layers = new ArrayList<ArrayList<Drawable3D>>();
+		layers.add(new ArrayList<Drawable3D>());
+		layers.add(new ArrayList<Drawable3D>());
+		layers.add(new ArrayList<Drawable3D>());
+		layers.add(new ArrayList<Drawable3D>());
+		layers.add(new ArrayList<Drawable3D>());
+		for (int i = 0; i < Levels.levels.length; i++) {
+			makeLevel(i);
+		}
+	}
+	public void makeLevel(int levelNo) {
+		// Find level rect
+		double levelSize = getFullLevelWidth();
+		Rect levelRect = Rect.fromCenter(levelSize * levelNo, lastHeight / 2, levelSize * 0.9, levelSize * 0.9);
+		// Background
+		layers.get(2).add(new Boxes.Wall(null, levelRect));
+		layers.get(3).add(new Boxes.Wall(null, levelRect));
+		layers.get(4).add(new Boxes.Wall(null, levelRect));
+		// Level #
+		Boxes.Text levelTitle = new Boxes.Text(null, levelRect.centerX(), levelRect.centerY() - (levelSize * 0.2), levelNo + "", Math.max(1, (int)(levelSize / 5)), true);
+		layers.get(0).add(levelTitle); layers.get(1).add(levelTitle);
+		// Level complete sign
+		Level l = Levels.levels[levelNo];
+		int textSize = (int)(levelSize / 14);
+		if (l.bestTime != -1) {
+			layers.get(1).add(new Boxes.Text(null, levelRect.left() + (levelSize * 0.05), levelRect.centerY() + (textSize *  -1), "Level Complete", Math.max(1, textSize), false));
+			layers.get(1).add(new Boxes.Text(null, levelRect.left() + (levelSize * 0.05), levelRect.centerY() + (textSize * 0.5), "Time: " + Utils.formatTime(l.bestTime), Math.max(1, textSize), false));
+		}
+		// Coin complete sign
+		if (l.bestCoinTime != -1) {
+			layers.get(1).add(new Boxes.Text(null, levelRect.left() + (levelSize * 0.05), levelRect.centerY() + (textSize *   2), "Got Coin", Math.max(1, textSize), false));
+			layers.get(1).add(new Boxes.Text(null, levelRect.left() + (levelSize * 0.05), levelRect.centerY() + (textSize * 3.5), "Time: " + Utils.formatTime(l.bestCoinTime), Math.max(1, textSize), false));
+		}
+		// Lock Icon
+		if (isLevelLocked(levelNo)) {
+			layers.get(1).add(new LockIcon(Rect.fromCenter(levelRect.centerX(), levelRect.centerY() + (levelSize * 0.1), levelSize * 0.25, levelSize * 0.25)));
+		}
 	}
 	public Surface frame(int width, int height) {
 		// Record width & height
-		this.lastWidth = width;
-		this.lastHeight = height;
-		// Sizing
-		final int levelSpacing = Math.max(100, width / 8);
-		final int levelSize = getLevelSize();
-		final int wholeLevelWidth = levelSpacing + levelSize + levelSpacing;
-		final int horizontalSpace = width - wholeLevelWidth;
+		if (width  != this.lastWidth ) { this.lastWidth  = width ; makeLayers(); }
+		if (height != this.lastHeight) { this.lastHeight = height; makeLayers(); }
 		// Camera
 		cameraX = ((cameraX * 9) + targetCameraX) / 10;
-		final int cameraOffset = (int)(wholeLevelWidth * cameraX) - (horizontalSpace / 2);
-		// Draw Levels
-		Surface s = new Surface(width, height, new Color(150, 150, 150));
-		for (int i = 0; i < Levels.levels.length; i++) {
-			Level l = Levels.levels[i];
-			// Find geometry
-			int centerX = (wholeLevelWidth * i) + (wholeLevelWidth / 2);
-			int topY = getTopYForLevel(height, i);
-			int centerY = topY + (levelSize / 2);
-			int nextCenterY = getTopYForLevel(height, i + 1) + (levelSize / 2);
-			// Draw path
-			if (i != Levels.levels.length - 1) {
-				Color pathColor = new Color(255, 255, 255, 30);
-				if (l.bestTime != -1) {
-					pathColor = new Color(0, 0, 0);
-				}
-				s.drawLine(pathColor, centerX - cameraOffset, centerY, (centerX - cameraOffset) + wholeLevelWidth, nextCenterY, 10);
-			}
-			// Draw rectangle
-			Rect levelRect = Rect.fromCenter(centerX - cameraOffset, topY + (levelSize / 2), levelSize, levelSize);
-			s.drawRect(new Color(50, 50, 50), levelRect);
-			// Draw number
-			Color numberColor = new Color(200, 200, 200, 50);
-			if (i == 0 || Levels.levels[i - 1].bestTime != -1) numberColor = new Color(200, 200, 200);
-			Surface number = Surface.renderText(levelSize / 2, "" + i, numberColor);
-			int numberX = centerX - (number.get_width() / 2);
-			s.blit(number, numberX - cameraOffset, topY - (levelSize / 10));
-			// Draw checkmark
-			if (l.bestTime != -1) {
-				s.drawCircle(new Color(200, 200, 200), centerX - cameraOffset, topY + levelSize, levelSize / 6);
-				s.drawPolygon(new Color(50, 50, 50), new double[][] {
-					new double[] { -4,  1 },
-					new double[] { -3,  0 },
-					new double[] { -1,  2 },
-					new double[] {  3, -3 },
-					new double[] {  4, -2 },
-					new double[] { -1,  4 }
-				}, centerX - cameraOffset, topY + levelSize, levelSize / 40);
-				// Draw text
-				Surface t = Surface.renderText(levelSize / 6, Utils.formatTime(l.bestTime), new Color(100, 100, 100));
-				s.blit(t, (centerX - cameraOffset) - (t.get_width() / 2), (topY + levelSize) - (int)(t.get_height() * 2.5));
-			}
-			// Draw coin
-			if (l.bestCoinTime != -1) {
-				// Draw text
-				Surface t2 = Surface.renderText(levelSize / 6, Utils.formatTime(l.bestCoinTime), new Color(100, 100, 100));
-				int textX = (centerX - cameraOffset) - (t2.get_width() / 2);
-				int textY = (topY + levelSize) - (int)(t2.get_height() * 1.75);
-				s.blit(t2, textX, textY);
-				// Draw coin icon
-				int coinSize = levelSize / 16;
-				int coinX = textX - (int)(coinSize * 1.5);
-				int coinY = textY + (t2.get_height() / 2);
-				s.drawCircle(new Color(200, 200, 200), coinX, coinY, coinSize);
-				Surface t = Surface.renderText((int)(coinSize * 1.75), "C", new Color(50, 50, 50));
-				s.blit(t, coinX - (t.get_width() / 2), coinY - (t.get_height() / 2));
-			}
-		}
-		// Draw settings button
-		s.blit(SettingsScreen.settingsIcon.resize(30, 30), 5, 5);
-		return s;
+		// 3D effect
+		return super.frame(width, height);
 	}
 	public int getLevelSize() {
 		int levelSize = Math.min(lastWidth / 3, lastHeight - 200);
@@ -134,8 +145,7 @@ public class MapScreen extends Screen {
 		}
 	}
 	public void selectLevel() {
-		boolean canContinue = targetCameraX == 0 || Levels.levels[targetCameraX - 1].bestTime != -1;
-		if (canContinue || Game.CHEAT) {
+		if ((! isLevelLocked(targetCameraX)) || Game.CHEAT) {
 			LevelTitleScreen newScreen = new LevelTitleScreen(window, this.targetCameraX);
 			navigate(new EndingAnimation(window, this, newScreen));
 		}

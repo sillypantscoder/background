@@ -40,23 +40,23 @@ public class Levels {
 		public void build(Game game) {
 			// decoration left
 			new Boxes.Wall(game.getLayer(2), new Rect(-2, 5, 10, 4)).spawn(); // terrain box
-			new Boxes.Text(game.getMultilayer(new int[] { 1, 2, 3, 4, 5, 6, 7 }), -3.5, 0.5, "BACKGROUND", 100).spawn();
+			new Boxes.Text(game.getMultilayer(new int[] { 1, 2, 3, 4, 5, 6, 7 }), -3.5, 0.5, "BACKGROUND", 100, false).spawn();
 			new Boxes.Wall(game.getLayer(3), new Rect(5, 0, 4, 5)).spawn(); // text box middle
 			new Boxes.Wall(game.getLayer(2), new Rect(7, -1, 3, 3)).spawn(); // text box right
 			// arrow key instructions
-			new Boxes.Text(game.getLayer(0), -1, 6, "Arrow keys", 30).spawn();
-			new Boxes.Text(game.getLayer(0), -0.5, 6.6, "to move", 30).spawn();
-			new Boxes.Text(game.getLayer(1), -1, 7.5, "(up arrow to jump)", 20).spawn();
+			new Boxes.Text(game.getLayer(0), -1, 6, "Arrow keys", 30, false).spawn();
+			new Boxes.Text(game.getLayer(0), -0.5, 6.6, "to move", 30, false).spawn();
+			new Boxes.Text(game.getLayer(1), -1, 7.5, "(up arrow to jump)", 20, false).spawn();
 			// platforms left
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 4, 5, 1)).spawn(); // starting platform
 			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(6, 6, 11, 1)).spawn(); // bottom middle platform
 			// switch players instructions
-			new Boxes.Text(game.getLayer(0), 9.5, 7, "Press Z to", 30).spawn();
-			new Boxes.Text(game.getLayer(0), 10, 7.8, "switch players", 30).spawn();
+			new Boxes.Text(game.getLayer(0), 9.5, 7, "Press Z to", 30, false).spawn();
+			new Boxes.Text(game.getLayer(0), 10, 7.8, "switch players", 30, false).spawn();
 			// button instructions
-			new Boxes.Text(game.getLayer(1), 15, 2, "You can press", 30).spawn();
-			new Boxes.Text(game.getLayer(1), 15.5, 2.8, "buttons to move", 30).spawn();
-			new Boxes.Text(game.getLayer(1), 16, 3.6, "platforms", 30).spawn();
+			new Boxes.Text(game.getLayer(1), 15, 2, "You can press", 30, false).spawn();
+			new Boxes.Text(game.getLayer(1), 15.5, 2.8, "buttons to move", 30, false).spawn();
+			new Boxes.Text(game.getLayer(1), 16, 3.6, "platforms", 30, false).spawn();
 			// button + door
 			{
 				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(22.5, 2, 1, 4), 22.5, -1);
@@ -64,8 +64,8 @@ public class Levels {
 				new Boxes.Button(game.getLayer(0), 18, 8, door).spawn();
 			}
 			// moving block
-			new Boxes.Text(game.getLayer(1), 24.5, 2.5, "Some objects", 30).spawn();
-			new Boxes.Text(game.getLayer(1), 25, 3.3, "can be pushed", 30).spawn();
+			new Boxes.Text(game.getLayer(1), 24.5, 2.5, "Some objects", 30, false).spawn();
+			new Boxes.Text(game.getLayer(1), 25, 3.3, "can be pushed", 30, false).spawn();
 			new Boxes.PhysicsObject(game.getLayer(0), new Rect(25, 0, 1, 1)).spawn();
 			new Boxes.Wall(game.getLayer(2), new Rect(16, 5, 10, 4)).spawn(); // background box right
 			// hole
@@ -74,18 +74,18 @@ public class Levels {
 			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(19, 6, 1, 3)).spawn(); // hole right
 			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(19, 6, 23, 1)).spawn(); // bottom right platform
 			// end instructions
-			new Boxes.Text(game.getLayer(2), 35.2, 3.5, "Both players", 20).spawn();
-			new Boxes.Text(game.getLayer(2), 35.6, 4, "must be touching", 20).spawn();
-			new Boxes.Text(game.getLayer(2), 35, 4.5, "the end to continue", 20).spawn();
+			new Boxes.Text(game.getLayer(2), 35.2, 3.5, "Both players", 20, false).spawn();
+			new Boxes.Text(game.getLayer(2), 35.6, 4, "must be touching", 20, false).spawn();
+			new Boxes.Text(game.getLayer(2), 35, 4.5, "the end to continue", 20, false).spawn();
 			new Boxes.End(game, game.getLayer(0), 40, 3.5).spawn();
 			new Boxes.Wall(game.getLayer(3), new Rect(33, 0.5, 11, 8)).spawn(); // background box far right
 			// coin
 			new Boxes.SecretCoin(game, game.getLayer(0), 23, -2).spawn();
-			new Boxes.Text(game.getLayer(3), 23.5, -3, "This is a secret", 15).spawn();
-			new Boxes.Text(game.getLayer(3), 23.8, -2.5, "coin. Can you figure", 15).spawn();
-			new Boxes.Text(game.getLayer(3), 24.1, -2, "out how to get it?", 15).spawn();
-			new Boxes.Text(game.getLayer(3), 23.4, -1.5, "(Both players must be touching the", 12).spawn();
-			new Boxes.Text(game.getLayer(3), 23.6, -1.1, "coin at the same time.)", 12).spawn();
+			new Boxes.Text(game.getLayer(3), 23.5, -3, "This is a secret", 15, false).spawn();
+			new Boxes.Text(game.getLayer(3), 23.8, -2.5, "coin. Can you figure", 15, false).spawn();
+			new Boxes.Text(game.getLayer(3), 24.1, -2, "out how to get it?", 15, false).spawn();
+			new Boxes.Text(game.getLayer(3), 23.4, -1.5, "(Both players must be touching the", 12, false).spawn();
+			new Boxes.Text(game.getLayer(3), 23.6, -1.1, "coin at the same time.)", 12, false).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 0);
 			game.player1.spawn();
@@ -97,7 +97,7 @@ public class Levels {
 		public String getName() { return "U-Turn"; }
 		public String getTagline() { return "practice"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), -1, 2, "1", 80).spawn();
+			new Boxes.Text(game.getLayer(1), -1, 2, "1", 80, false).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 5, 1)).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(3, 3, 1, 2)).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(9, 3, 3, 1)).spawn();
@@ -132,7 +132,7 @@ public class Levels {
 		public String getName() { return "The Background"; }
 		public String getTagline() { return "plot twist"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), -3.5, 4, "2", 80).spawn();
+			new Boxes.Text(game.getLayer(1), -3.5, 4, "2", 80, false).spawn();
 			ListCombination<Box> bothLayer = game.getMultilayer(new int[] { 0, 1 });
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 5, 1)).spawn(); // Starting platform
@@ -153,8 +153,8 @@ public class Levels {
 			// end
 			new Boxes.End(game, game.getLayer(0), 12.5, -2.5).spawn();
 			new Boxes.SecretCoin(game, game.getLayer(0), -1.5, -0.5).spawn();
-			new Boxes.Text(game.getLayer(1), 0, 7, "press R to restart", 30).spawn();
-			new Boxes.Text(game.getLayer(1), 0.3, 7.6, "the level", 30).spawn();
+			new Boxes.Text(game.getLayer(1), 0, 7, "press R to restart", 30, false).spawn();
+			new Boxes.Text(game.getLayer(1), 0.3, 7.6, "the level", 30, false).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 0);
 			game.player1.spawn();
@@ -166,7 +166,7 @@ public class Levels {
 		public String getName() { return "Conveyor Belt"; }
 		public String getTagline() { return "welcome to the factory"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 6, 4, "3", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 6, 4, "3", 80, false).spawn();
 			// Create both layer
 			ListCombination<Box> bothLayer = game.getMultilayer(new int[] { 0, 1 });
 			// Platform
@@ -222,7 +222,7 @@ public class Levels {
 		public String getName() { return "Puppet Show"; }
 		public String getTagline() { return "featuring the low gravity block"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 2, 6.5, "4", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 2, 6.5, "4", 80, false).spawn();
 			// Create both layer
 			ListCombination<Box> bothLayer = game.getMultilayer(new int[] { 0, 1 });
 			// Platform
@@ -271,7 +271,7 @@ public class Levels {
 		public String getName() { return "Doors"; }
 		public String getTagline() { return "up and over"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 0, -1, "5", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 0, -1, "5", 80, false).spawn();
 			// Platform
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 5, 1)).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(4, 1, 4, 1)).spawn();
@@ -313,7 +313,7 @@ public class Levels {
 					}
 				}
 			}).spawn();
-			new Boxes.Text(game.getLayer(3), -7.5, -5, "Coin: Under 7 seconds", 15).spawn();
+			new Boxes.Text(game.getLayer(3), -7.5, -5, "Coin: Under 7 seconds", 15, false).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 3);
 			game.player1.spawn();
@@ -327,7 +327,7 @@ public class Levels {
 		public String getName() { return "Open Ended"; }
 		public String getTagline() { return "the puzzling adventure"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), -6, 1, "6", 80).spawn();
+			new Boxes.Text(game.getLayer(1), -6, 1, "6", 80, false).spawn();
 			// Platform
 			new Boxes.Wall(game.getLayer(0), new Rect(-4, 5, 6, 1)).spawn(); // spawn platform
 			new Boxes.PhysicsObject(game.getLayer(0), new Rect(-3, 2.1, 1, 1)).spawn(); // block bottom
@@ -391,7 +391,7 @@ public class Levels {
 		public String getName() { return "The Elevator"; }
 		public String getTagline() { return "around and around"; }
 		public void build(Game game) {
-		new Boxes.Text(game.getLayer(1), -2, -1, "7", 80).spawn();
+			new Boxes.Text(game.getLayer(1), -2, -1, "7", 80, false).spawn();
 			// Create multilayer objects
 			ListCombination<Box> threeLayer = game.getMultilayer(new int[] { 0, 1, 2 });
 			// Platforms
@@ -442,7 +442,7 @@ public class Levels {
 		public String getName() { return "Some More Elevators"; }
 		public String getTagline() { return "some elevators are more usable than other elevators"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 0, 6, "8", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 0, 6, "8", 80, false).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-3.5, 5, 8, 1)).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(-3.5, 1, 8, 1)).spawn();
@@ -532,7 +532,7 @@ public class Levels {
 		public String getName() { return "Swap Game"; }
 		public String getTagline() { return "you can do it"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), -2, 2, "9", 80).spawn();
+			new Boxes.Text(game.getLayer(1), -2, 2, "9", 80, false).spawn();
 			// Platforms
 			ListCombination<Box> multiLayerFront = game.getMultilayer(new int[] { 0, 1 });
 			ListCombination<Box> multiLayerBack = game.getMultilayer(new int[] { 1, 2 });
@@ -585,8 +585,8 @@ public class Levels {
 		public String getName() { return "Timing Challenge"; }
 		public String getTagline() { return "good luck"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 0, 1, "10", 80).spawn();
-			new Boxes.Text(game.getLayer(3), -0.5, 3.5, "CHALLENGE", 30).spawn();
+			new Boxes.Text(game.getLayer(1), 0, 1, "10", 80, false).spawn();
+			new Boxes.Text(game.getLayer(3), -0.5, 3.5, "CHALLENGE", 30, false).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-1, 5, 10, 1)).spawn(); // starting platform
 			{
@@ -634,7 +634,7 @@ public class Levels {
 		public String getName() { return "Inversion"; }
 		public String getTagline() { return "swing"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 1, 2, "11", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 1, 2, "11", 80, false).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-1, 5, 6, 1)).spawn(); // starting platform
 			new Boxes.Wind(game.getLayer(0), new Rect(8, -3, 5, 9.5), 0, -0.022).spawn(); // big wind left
@@ -656,7 +656,7 @@ public class Levels {
 		public String getName() { return "The Down Arrow Key Button"; }
 		public String getTagline() { return "at last"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 1, 2, "12", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 1, 2, "12", 80, false).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 13.5, 1)).spawn(); // starting platform
 			new Boxes.Wall(game.getLayer(0), new Rect(5, -7, 1, 7)).spawn(); // right of starting area
@@ -690,8 +690,8 @@ public class Levels {
 		public String getName() { return "Sugar, Sugar"; }
 		public String getTagline() { return "happy new year"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 3.15, -5.9, "13", 80).spawn();
-			new Boxes.Text(game.getLayer(0), 5, -6, ",", 90).spawn();
+			new Boxes.Text(game.getLayer(1), 3.15, -5.9, "13", 80, false).spawn();
+			new Boxes.Text(game.getLayer(0), 5, -6, ",", 90, false).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 12, 1)).spawn(); // starting platform
 			new Boxes.Spawner(game, 1, () -> new SugarBox(game.getLayer(0), 5.1, -2.8)).spawn();
@@ -806,7 +806,7 @@ public class Levels {
 		public String getName() { return "Multiple Stories"; }
 		public String getTagline() { return "automatic elevators are available"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 2.5, -3.5, "14", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 2.5, -3.5, "14", 80, false).spawn();
 			// Platforms
 			new Boxes.Wall(game.getLayer(0), new Rect(-8, -15, 1, 17)).spawn(); // wall left
 			new Boxes.Wall(game.getLayer(0), new Rect(7, -15, 1, 16)).spawn(); // wall right
@@ -877,7 +877,7 @@ public class Levels {
 		public String getName() { return "Bouncy Block"; }
 		public String getTagline() { return "have some fun"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 2.5, -3.5, "15", 80).spawn();
+			new Boxes.Text(game.getLayer(1), 2.5, -3.5, "15", 80, false).spawn();
 			// Platforms
 			new BouncyBlock(game.getLayer(0), new Rect(-2, 0, 7, 1)).spawn(); // floor
 			new Boxes.PhysicsObject(game.getLayer(0), new Rect(-2, -4, 1, 1)).spawn();

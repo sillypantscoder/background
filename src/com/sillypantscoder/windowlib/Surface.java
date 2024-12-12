@@ -1,7 +1,9 @@
 package com.sillypantscoder.windowlib;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
@@ -104,6 +106,12 @@ public class Surface {
 	public void drawRect(Color color, Rect r, int lineWidth) {
 		this.drawRect(color, (int)(r.x), (int)(r.y), (int)(r.w), (int)(r.h), lineWidth);
 	}
+	public void drawRoundedRect(Color color, Rect r, double borderRadius) {
+		Graphics2D g2d = img.createGraphics();
+		g2d.setColor(color);
+		g2d.fillRoundRect((int)(r.x), (int)(r.y), (int)(r.w), (int)(r.h), (int)(borderRadius), (int)(borderRadius));
+		g2d.dispose();
+	}
 	public void drawEllipse(Color color, int cx, int cy, int rx, int ry) {
 		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
@@ -134,6 +142,13 @@ public class Surface {
 	}
 	public void drawCircle(Color color, Rect rect, int lineWidth) {
 		drawCircle(color, rect.centerX(), rect.centerY(), (rect.w + rect.h) / 4, lineWidth);
+	}
+	public void eraseCircle(int cx, int cy, int r) {
+		Graphics2D g2d = img.createGraphics();
+		g2d.setColor(new Color(0, 0, 0, 0));
+		g2d.setComposite(AlphaComposite.Clear);
+		g2d.fillOval(cx - r, cy - r, r*2, r*2);
+		g2d.dispose();
 	}
 	public void drawArc(Color color, double x, double y, double radius, double degStart, double degEnd) {
 		Graphics2D g2d = img.createGraphics();
