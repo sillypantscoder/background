@@ -141,12 +141,6 @@ public class Surface {
 		g2d.fillArc((int)(x - radius), (int)(y - radius), (int)(radius*2), (int)(radius*2), 90 - (int)(degStart), -(int)(degEnd - degStart));
 		g2d.dispose();
 	}
-	public void _drawArc(Color color, int x, int y, int width, int height, int startAngle, int arcAngle) {
-		Graphics2D g2d = img.createGraphics();
-		g2d.setColor(color);
-		g2d.fillArc(x, y, width, height, startAngle, arcAngle);
-		g2d.dispose();
-	}
 	public void drawPolygon(Color color, int[][] points) {
 		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);

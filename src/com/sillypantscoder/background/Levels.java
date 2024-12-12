@@ -1,5 +1,6 @@
 package com.sillypantscoder.background;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -152,6 +153,8 @@ public class Levels {
 			// end
 			new Boxes.End(game, game.getLayer(0), 12.5, -2.5).spawn();
 			new Boxes.SecretCoin(game, game.getLayer(0), -1.5, -0.5).spawn();
+			new Boxes.Text(game.getLayer(1), 0, 7, "press R to restart", 30).spawn();
+			new Boxes.Text(game.getLayer(1), 0.3, 7.6, "the level", 30).spawn();
 			// Player Setup
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 0);
 			game.player1.spawn();
@@ -876,24 +879,10 @@ public class Levels {
 		public void build(Game game) {
 			new Boxes.Text(game.getLayer(1), 2.5, -3.5, "15", 80).spawn();
 			// Platforms
-			(new Boxes.Wall(game.getLayer(0), new Rect(-2, 0, 7, 1)) {
-				public void tick() {
-					super.tick();
-					for (Box b : this.getAbovePhysicsBoxes(0)) {
-						b.vy = -0.4;
-					}
-				}
-			}).spawn(); // floor
+			new BouncyBlock(game.getLayer(0), new Rect(-2, 0, 7, 1)).spawn(); // floor
 			new Boxes.PhysicsObject(game.getLayer(0), new Rect(-2, -4, 1, 1)).spawn();
 			new Boxes.Wall(game.getLayer(0), new Rect(-1, -5, 1, 1)).spawn();
-			(new Boxes.Wall(game.getLayer(0), new Rect(-9, -5, 6.5, 1)) {
-				public void tick() {
-					super.tick();
-					for (Box b : this.getAbovePhysicsBoxes(0)) {
-						b.vy = -0.4;
-					}
-				}
-			}).spawn(); // floor right
+			new BouncyBlock(game.getLayer(0), new Rect(-9, -5, 6.5, 1)).spawn(); // floor right
 			new Boxes.Wall(game.getLayer(0), new Rect(-11, -5, 2, 1)).spawn(); // floor far right non bouncy section
 			{
 				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(-13, -14, 1, 7), -13, -6);
@@ -909,6 +898,22 @@ public class Levels {
 			game.player2 = new Boxes.Player(game, game.getLayer(0), 2, -8);
 			game.player2.spawn();
 			game.player2.setrespawn();
+		}
+		public static class BouncyBlock extends Boxes.Wall {
+			public BouncyBlock(List<Box> world, Rect rect) {
+				super(world, rect);
+			}
+			public void tick() {
+				super.tick();
+				for (Box b : this.getAbovePhysicsBoxes(0)) {
+					b.vy = -0.4;
+				}
+			}
+			public void draw(Surface s, Rect drawRect, double brightness) {
+				super.draw(s, drawRect, brightness);
+				int padding = 5;
+				s.drawRect(Color.WHITE, new Rect(drawRect.x + padding, drawRect.y + padding, drawRect.w - (padding * 2), drawRect.h - (padding * 2)), 1);
+			}
 		}
 	}
 }
