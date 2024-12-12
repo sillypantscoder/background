@@ -1,48 +1,30 @@
 package com.sillypantscoder.background.screen;
 
 import java.awt.Color;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.sillypantscoder.background.Box;
+import com.sillypantscoder.background.Drawable3D;
 import com.sillypantscoder.background.Game;
 import com.sillypantscoder.background.MainWindow;
 import com.sillypantscoder.background.Settings;
-import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.utils.Utils;
 import com.sillypantscoder.windowlib.Surface;
 
-public class GameScreen extends Screen {
+public class GameScreen extends Abstract3DScene {
 	public Game game;
 	public boolean levelCompleted;
 	public GameScreen(MainWindow window, int level) {
 		super(window);
 		this.game = new Game(this, level);
 	}
+	public List<List<Drawable3D>> getLayers() { return game.layers.stream().map((v) -> v.stream().map((i) -> (Drawable3D)(i)).collect(Collectors.toList())).toList(); }
+	public double getCameraX() { return game.cameraX; }
+	public double getCameraY() { return game.cameraY; }
 	public Surface frame(int width, int height) {
 		game.tick(width, height);
 		// Draw Layers
-		Surface s = new Surface(width, height, Color.WHITE);
-		for (int i = game.layers.size() - 1; i >= 0; i--) {
-			double zoom = 14d / (i + 14);
-			double brightness = 256 - Math.pow(2, 8 - i);
-			for (int j = 0; j < game.layers.get(i).size(); j++) {
-				Box box = game.layers.get(i).get(j);
-				// Get rect
-				Rect drawRect = new Rect(
-					(box.rect.x * 50) - game.cameraX,
-					(box.rect.y * 50) - game.cameraY,
-					box.rect.w * 50,
-					box.rect.h * 50
-				);
-				drawRect = new Rect(
-					(drawRect.x * zoom) + ((width / 2d) * (1 - zoom)),
-					(drawRect.y * zoom) + ((height / 2d) * (1 - zoom)),
-					drawRect.w * zoom,
-					drawRect.h * zoom
-				);
-				// Draw
-				box.draw(s, drawRect, brightness);
-			}
-		}
+		Surface s = super.frame(width, height);
 		// Timer
 		if (!levelCompleted) game.timer += 1;
 		if (Settings.SHOW_TIMER.value) {

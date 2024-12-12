@@ -10,7 +10,7 @@ import com.sillypantscoder.windowlib.Surface;
 /**
  * A box in the world.
  */
-public class Box {
+public class Box implements Drawable3D {
 	public static enum PhysicsState {
 		NONE,
 		FIXED,
@@ -48,6 +48,7 @@ public class Box {
 	public void remove() {
 		this.world.remove(this);
 	}
+	public Rect getRect() { return this.rect; }
 	public static Color getColor(double brightness) { return new Color((int)(brightness), (int)(brightness), (int)(brightness)); }
 	/**
 	 * Draw this box to the screen.
