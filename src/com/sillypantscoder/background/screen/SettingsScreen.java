@@ -33,12 +33,13 @@ public class SettingsScreen extends Screen {
 		this.width = width;
 		this.height = height;
 		Surface s = parent.frame(width, height);
+		s.drawRect(new Color(0, 0, 0, 127), 0, 0, width, height);
 		// Draw background & title
-		s.drawRect(new Color(200, 200, 200), 50, 60, width - 100, height - 100);
+		s.drawRect(new Color(200, 200, 200), 50, 50, width - 100, height - 100);
 		Surface title = Surface.renderText(50, "Settings", new Color(50, 50, 50));
-		s.blit(title, 50, 50);
+		s.blit(title, 60, 60);
 		// Draw settings
-		int cum_y = title.get_height() + 50;
+		int cum_y = title.get_height() + 60;
 		for (int i = 0; i < Settings.settings.length; i++) {
 			Settings.Setting<?> setting = Settings.settings[i];
 			// render
@@ -60,7 +61,7 @@ public class SettingsScreen extends Screen {
 		}
 		// Check settings
 		Surface title = Surface.renderText(50, "Settings", new Color(50, 50, 50));
-		int cum_y = title.get_height() + 50;
+		int cum_y = title.get_height() + 60;
 		for (int i = 0; i < Settings.settings.length; i++) {
 			Settings.Setting<?> setting = Settings.settings[i];
 			// render

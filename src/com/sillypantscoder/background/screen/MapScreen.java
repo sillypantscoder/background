@@ -20,6 +20,9 @@ public class MapScreen extends Abstract3DScene {
 	public int lastWidth;
 	public int lastHeight;
 	public ArrayList<ArrayList<Drawable3D>> layers;
+	public Boxes.Text screenTitle;
+	public Arrow arrowLeft;
+	public Arrow arrowRight;
 	public MapScreen(MainWindow window, int startLevel) {
 		super(window);
 		this.boxCoordScale = 1;
@@ -53,6 +56,28 @@ public class MapScreen extends Abstract3DScene {
 			s.blit(lock, (int)(drawRect.x), (int)(drawRect.y));
 		}
 	}
+	public static class Arrow implements Drawable3D {
+		public Rect rect;
+		public boolean direction;
+		public Arrow(Rect rect, boolean direction) {
+			this.rect = rect;
+			this.direction = direction;
+		}
+		public Rect getRect() { return rect; }
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			Color color = Box.getColor(brightness);
+			if (direction) s.drawPolygon(color, new int[][] {
+				new int[] { (int)(drawRect.x + (drawRect.w * 0)), (int)(drawRect.y + (drawRect.h * 0)) },
+				new int[] { (int)(drawRect.x + (drawRect.w * 1)), (int)(drawRect.y + (drawRect.h * 0.5)) },
+				new int[] { (int)(drawRect.x + (drawRect.w * 0)), (int)(drawRect.y + (drawRect.h * 1)) }
+			});
+			else s.drawPolygon(color, new int[][] {
+				new int[] { (int)(drawRect.x + (drawRect.w *  0)), (int)(drawRect.y + (drawRect.h * 0)) },
+				new int[] { (int)(drawRect.x + (drawRect.w * -1)), (int)(drawRect.y + (drawRect.h * 0.5)) },
+				new int[] { (int)(drawRect.x + (drawRect.w *  0)), (int)(drawRect.y + (drawRect.h * 1)) }
+			});
+		}
+	}
 	public boolean isLevelLocked(int levelNo) {
 		return levelNo != 0 && Levels.levels[levelNo - 1].bestTime == -1;
 	}
@@ -63,6 +88,12 @@ public class MapScreen extends Abstract3DScene {
 		layers.add(new ArrayList<Drawable3D>());
 		layers.add(new ArrayList<Drawable3D>());
 		layers.add(new ArrayList<Drawable3D>());
+		screenTitle = new Boxes.Text(null, 0, lastWidth / 60.0, "Level Select", Math.max(1, lastWidth / 20), true);
+		layers.get(1).add(screenTitle);
+		arrowLeft = new Arrow(Rect.fromCenter(0, lastHeight / 2, 40, 80), false);
+		layers.get(1).add(arrowLeft);
+		arrowRight = new Arrow(Rect.fromCenter(0, lastHeight / 2, 40, 80), true);
+		layers.get(1).add(arrowRight);
 		for (int i = 0; i < Levels.levels.length; i++) {
 			makeLevel(i);
 		}
@@ -101,19 +132,16 @@ public class MapScreen extends Abstract3DScene {
 		if (height != this.lastHeight) { this.lastHeight = height; makeLayers(); }
 		// Camera
 		cameraX = ((cameraX * 9) + targetCameraX) / 10;
+		// Update UI locations
+		screenTitle.rect.x = cameraX * getFullLevelWidth();
+		arrowLeft.rect.x = (cameraX - 0.5) * getFullLevelWidth();
+		arrowRight.rect.x = (cameraX + 0.5) * getFullLevelWidth();
 		// 3D effect
-		return super.frame(width, height);
-	}
-	public int getLevelSize() {
-		int levelSize = Math.min(lastWidth / 3, lastHeight - 200);
-		if (levelSize > 350) levelSize = 350;
-		if (levelSize < 50) levelSize = 50;
-		return levelSize;
-	}
-	public int getTopYForLevel(int height, int level) {
-		final int levelSize = getLevelSize();
-		final int verticalSpace = height - levelSize;
-		return (verticalSpace / 3) * (1 + (level % 2));
+		Surface result = super.frame(width, height);
+		// Settings icon
+		result.blit(SettingsScreen.settingsIcon.resize(30, 30), 5, 5);
+		// Finish
+		return result;
 	}
 	public void keyDown(String e) {
 		if (e.equals("Left") || e.equals("←")) scroll(-1);
@@ -124,7 +152,6 @@ public class MapScreen extends Abstract3DScene {
 	public void mouseMoved(int x, int y) {}
 	public void mouseDown(int x, int y) {}
 	public void mouseUp(int x, int y) {
-		final int levelSize = getLevelSize();
 		// Check for settings button
 		if (x < 40 && y < 40) {
 			navigate(new SettingsScreen(this));
@@ -132,8 +159,8 @@ public class MapScreen extends Abstract3DScene {
 		}
 		// Find level position
 		int centerX = lastWidth / 2;
-		int leftX = centerX - (levelSize / 2);
-		int rightX = centerX + (levelSize / 2);
+		int leftX = centerX - (int)(getFullLevelWidth() * 0.5 * 0.8);
+		int rightX = centerX + (int)(getFullLevelWidth() * 0.5 * 0.8);
 		// Find click position
 		if (x < leftX) scroll(-1);
 		else if (x > rightX) scroll(1);
