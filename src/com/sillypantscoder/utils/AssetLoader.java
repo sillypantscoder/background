@@ -26,7 +26,7 @@ public class AssetLoader {
 	}
 	public static boolean isJar() {
 		String addr = AssetLoader.class.getResource("AssetLoader.class").getProtocol();
-		return addr == "jar";
+		return addr.equals("jar");
 	}
 	/**
 	 * Gets the location of the `src` directory. If running from a JAR file, unpacks the JAR file first.
@@ -53,9 +53,7 @@ public class AssetLoader {
 			} else {
 				return getRootLocation();
 			}
-		} catch (IOException e) {
-			return "";
-		} catch (InterruptedException e) {
+		} catch (IOException | InterruptedException e) {
 			return "";
 		}
 	}
@@ -65,9 +63,7 @@ public class AssetLoader {
 			pb.directory(new File("/tmp"));
 			try {
 				pb.start().waitFor();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (InterruptedException | IOException e) {
 				e.printStackTrace();
 			}
 			System.out.println("assetloader: deleted temporary folder /tmp/java_assetloader_files_" + runnerID);

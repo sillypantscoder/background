@@ -5,8 +5,8 @@ import java.awt.Color;
 import com.sillypantscoder.windowlib.Surface;
 
 public class Settings {
-	public static BooleanSetting SHOW_TIMER = new BooleanSetting("Show timer", false);
-	public static Setting<?>[] settings = new Setting[] {
+	public static final BooleanSetting SHOW_TIMER = new BooleanSetting("Show timer", false);
+	public static final Setting<?>[] settings = new Setting[] {
 		SHOW_TIMER
 	};
 	// Setting classes

@@ -2,6 +2,7 @@ package com.sillypantscoder.background;
 
 public class Main {
 	public static void main(String[] args) {
-		new MainWindow();
+		MainWindow win = new MainWindow();
+		win.open();
 	}
 }

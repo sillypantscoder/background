@@ -2,15 +2,18 @@ package com.sillypantscoder.background;
 
 import java.awt.Color;
 
+import com.sillypantscoder.background.screen.GameScreen;
+import com.sillypantscoder.background.screen.MapScreen;
+import com.sillypantscoder.background.screen.OpeningAnimation;
 import com.sillypantscoder.background.screen.Screen;
 import com.sillypantscoder.windowlib.Surface;
 import com.sillypantscoder.windowlib.Window;
 
 public class MainWindow extends Window {
 	public Screen screen;
-	public MainWindow() {
+	public void open() {
 		SaveData.load();
-		this.screen = SaveData.getEntryScreen(this);
+		this.initializeScreen();
 		// Open the window
 		this.open("Background", 750, 550);
 	}
@@ -41,5 +44,21 @@ public class MainWindow extends Window {
 	}
 	public void mouseWheel(int amount) {
 		screen.mouseWheel(amount);
+	}
+	public void initializeScreen() {
+		int highestLevel = 0;
+		for (int i = 0; i < Levels.levels.length; i++) { if (Levels.levels[i].bestTime != -1) highestLevel = i + 1; }
+		// Find correct screen
+		Screen targetScreen = new GameScreen(this, highestLevel);
+		if (highestLevel != 0) {
+			boolean forceGameScreen = highestLevel < Levels.levels.length;
+			if (! (forceGameScreen && Game.CHEAT)) {
+				if (highestLevel == Levels.levels.length) highestLevel -= 1;
+				targetScreen = new MapScreen(this, highestLevel);
+			}
+		}
+		OpeningAnimation anim = new OpeningAnimation(this, targetScreen);
+		anim.maxTime *= 2;
+		this.screen = anim;
 	}
 }

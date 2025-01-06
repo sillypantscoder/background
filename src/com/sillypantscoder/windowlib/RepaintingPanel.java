@@ -20,13 +20,12 @@ import java.util.function.Consumer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 /**
  * A panel that automatically redraws itself.
  */
 public class RepaintingPanel extends JPanel {
-	private static final long serialVersionUID = 7148504528835036003L;
 	public static ArrayList<RepaintingPanel> panelsOpen = new ArrayList<RepaintingPanel>();
 	protected JFrame frame;
 	public BiFunction<Integer, Integer, BufferedImage> painter;
@@ -56,22 +55,16 @@ public class RepaintingPanel extends JPanel {
 	public void closeWindow() {
 		frame.setVisible(false);
 		panelsOpen.remove(this);
-		if (panelsOpen.size() == 0) {
+		if (panelsOpen.isEmpty()) {
 			System.exit(0);
 		}
 	}
 	public void startAnimation() {
-		SwingWorker<Integer, Object> sw = new SwingWorker<Integer, Object>() {
-			protected Integer doInBackground() throws Exception {
-				while (frame.isVisible()) {
-					frame.revalidate();
-					frame.getContentPane().repaint();
-					Thread.sleep(16);
-				}
-				return 0;
-			}
-		};
-		sw.execute();
+		Timer timer = new Timer(16, (e) -> {
+			frame.revalidate();
+			frame.getContentPane().repaint();
+		});
+		timer.start();
 	}
 	public void run(String title, Surface icon, int width, int height) {
 		frame = new JFrame(title);

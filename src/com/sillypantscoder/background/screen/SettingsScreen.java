@@ -40,8 +40,7 @@ public class SettingsScreen extends Screen {
 		s.blit(title, 60, 60);
 		// Draw settings
 		int cum_y = title.get_height() + 60;
-		for (int i = 0; i < Settings.settings.length; i++) {
-			Settings.Setting<?> setting = Settings.settings[i];
+		for (Settings.Setting<?> setting : Settings.settings) {
 			// render
 			Surface d = setting.draw(width - 120);
 			s.blit(d, 70, cum_y);
@@ -62,8 +61,7 @@ public class SettingsScreen extends Screen {
 		// Check settings
 		Surface title = Surface.renderText(50, "Settings", new Color(50, 50, 50));
 		int cum_y = title.get_height() + 60;
-		for (int i = 0; i < Settings.settings.length; i++) {
-			Settings.Setting<?> setting = Settings.settings[i];
+		for (Settings.Setting<?> setting : Settings.settings) {
 			// render
 			Surface d = setting.draw(width - 120);
 			cum_y += d.get_height();

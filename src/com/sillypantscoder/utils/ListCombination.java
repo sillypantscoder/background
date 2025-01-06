@@ -20,29 +20,31 @@ public class ListCombination<T> extends AbstractList<T> {
 		}
 	}
 	public boolean add(T e) {
-		for (int i = 0; i < lists.length; i++) {
-			lists[i].add(e);
+		for (List<T> list : lists) {
+			list.add(e);
 		}
 		return true;
 	}
 	public boolean remove(Object e) {
-		for (int i = 0; i < lists.length; i++) {
-			lists[i].remove(e);
+		for (List<T> list : lists) {
+			list.remove(e);
 		}
 		return true;
 	}
 	public int size() {
 		int s = 0;
-		for (int i = 0; i < lists.length; i++) {
-			s += lists[i].size();
+		for (List<T> list : lists) {
+			s += list.size();
 		}
 		return s;
 	}
 	public T get(int index) {
 		int idx = index;
-		for (int i = 0; i < lists.length; i++) {
-			if (idx < lists[i].size()) return lists[i].get(idx);
-			idx -= lists[i].size();
+		for (List<T> list : lists) {
+			if (idx < list.size()) {
+				return list.get(idx);
+			}
+			idx -= list.size();
 		}
 		throw new IndexOutOfBoundsException();
 	}

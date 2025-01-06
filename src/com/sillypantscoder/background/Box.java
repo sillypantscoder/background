@@ -49,6 +49,12 @@ public class Box implements Drawable3D {
 		this.world.remove(this);
 	}
 	public Rect getRect() { return this.rect; }
+	public Box copy() {
+		Box b = new Box(this.world, this.rect, this.physics);
+		b.vx = this.vx;
+		b.vy = this.vy;
+		return b;
+	}
 	public static Color getColor(double brightness) { return new Color((int)(brightness), (int)(brightness), (int)(brightness)); }
 	/**
 	 * Draw this box to the screen.

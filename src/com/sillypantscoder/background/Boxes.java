@@ -30,6 +30,9 @@ public class Boxes {
 			this.textSize = textSize;
 			this.centered = centered;
 		}
+		public Text copy() {
+			return new Text(world, rect.x, rect.y, text, textSize, centered);
+		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
 			Surface t = Surface.renderText(textSize, text, getColor(brightness));
 			if (centered) s.blit(t, (int)(drawRect.x - (t.get_width() / 2)), (int)(drawRect.y - (t.get_height() / 2)));
@@ -46,6 +49,14 @@ public class Boxes {
 		public Player(Game game, List<Box> world, double x, double y) {
 			super(world, new Rect(x, y, 1, 1), PhysicsState.PHYSICS);
 			this.game = game;
+		}
+		public Player copy() {
+			Player b = new Player(game, world, rect.x, rect.y);
+			b.vx = this.vx;
+			b.vy = this.vy;
+			b.respawnX = this.respawnX;
+			b.respawnY = this.respawnY;
+			return b;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
 			if (this == game.getPlayer()) {
@@ -88,19 +99,6 @@ public class Boxes {
 		}
 	}
 	/**
-	 * (Unused) This class is supposed to represent a ball, by drawing a circle instead of a
-	 *  square, and removing friction. However, the physics still treats it as a box.
-	 */
-	public static class Ball extends PhysicsObject {
-		public Ball(List<Box> world, double x, double y, double size) {
-			super(world, new Rect(x, y, size, size));
-		}
-		public void draw(Surface s, Rect drawRect) {
-			s.drawCircle(Color.BLACK, drawRect);
-		}
-		public void hzDamp() {}
-	}
-	/**
 	 * A button that can open one or more doors.
 	 */
 	public static class Button extends Box {
@@ -117,6 +115,20 @@ public class Boxes {
 		public Button(List<Box> world, double x, double y, SwitchHandler[] handlers) {
 			super(world, new Rect(x - 0.5, y, 1, 1d/64), PhysicsState.FIXED);
 			this.handlers = handlers;
+		}
+		public Button copy() {
+			SwitchHandler[] newHandlers = new SwitchHandler[this.handlers.length];
+			System.arraycopy(this.handlers, 0, newHandlers, 0, this.handlers.length);
+			Button b = new Button(this.world, this.rect.x, this.rect.y, newHandlers);
+			b.vx = this.vx;
+			b.vy = this.vy;
+			b.length = this.length;
+			b.pressed = this.pressed;
+			b.rect.x = this.rect.x;
+			b.rect.y = this.rect.y;
+			b.rect.h = this.rect.h;
+			b.rect.x = this.rect.x;
+			return b;
 		}
 		public void tick() {
 			super.tick();
@@ -146,7 +158,7 @@ public class Boxes {
 			}
 		}
 		public boolean isPressed() {
-			return this.getAbovePhysicsBoxes(0).size() > 0;
+			return !this.getAbovePhysicsBoxes(0).isEmpty();
 		}
 		/**
 		 * This interface represents anything that can be activated and deactivated.
@@ -159,7 +171,7 @@ public class Boxes {
 	/**
 	 * A moving platform.
 	 */
-	public static class MovingPlatform extends Box {
+	public static abstract class MovingPlatform extends Box {
 		public HashSet<Box> attached;
 		public MovingPlatform(List<Box> world, Rect rect) {
 			super(world, rect, PhysicsState.FIXED);
@@ -198,7 +210,7 @@ public class Boxes {
 				b.rect.y += diffY;
 			}
 		}
-		public void move() {}
+		public abstract void move();
 	}
 	/**
 	 * A moving platform. Its normal position is described by the provided rect,
@@ -217,6 +229,14 @@ public class Boxes {
 			oldY = rect.y;
 			this.newX = newX;
 			this.newY = newY;
+		}
+		public Door copy() {
+			Door b = new Door(world, rect, newX, newY);
+			b.vx = this.vx;
+			b.vy = this.vy;
+			b.amt = amt;
+			b.activated = activated;
+			return b;
 		}
 		public void move() {
 			// Move amt
@@ -250,6 +270,12 @@ public class Boxes {
 			super(world, new Rect(x, y, 2, 2), PhysicsState.NONE);
 			this.game = game;
 		}
+		public End copy() {
+			End b = new End(game, world, rect.x, rect.y);
+			b.vx = this.vx;
+			b.vy = this.vy;
+			return b;
+		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
 			for (int offset : new int[] { -10, 0, 0, 0, 0, 0, 10 }) {
 				s.drawRect(new Color(0, 0, 0, 50), drawRect.move(offset, offset * 2));
@@ -277,14 +303,21 @@ public class Boxes {
 	 * An invisible object that spawns another object every `frames` frames.
 	 */
 	public static class Spawner extends Box {
+		public Game game;
 		public int ticks;
 		public int maxTicks;
 		public Supplier<Box> supplier;
 		public Spawner(Game game, int frames, Supplier<Box> supplier) {
 			super(game.getLayer(0), new Rect(0, 0, 0, 0), PhysicsState.NONE);
+			this.game = game;
 			ticks = frames - 1;
 			maxTicks = frames;
 			this.supplier = supplier;
+		}
+		public Spawner copy() {
+			Spawner b = new Spawner(game, maxTicks, supplier);
+			b.ticks = ticks;
+			return b;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {}
 		public void tick() {
@@ -314,6 +347,11 @@ public class Boxes {
 		public InvisibleWind withPadding(double padding) {
 			this.padding = padding;
 			return this;
+		}
+		public InvisibleWind copy() {
+			InvisibleWind b = new InvisibleWind(world, rect, amtX, amtY);
+			b.padding = padding;
+			return b;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {}
 		public void tick() {
@@ -351,6 +389,11 @@ public class Boxes {
 			offsetX = 0.1d * gridSize;
 			offsetY = 0.1d * gridSize;
 		}
+		public Wind copy() {
+			Wind b = new Wind(world, rect, amtX, amtY);
+			b.padding = padding;
+			return b;
+		}
 		public static Color getColor(double brightness, double multiplier) {
 			int realbrightness = (int)(255 - ((255 - brightness) * multiplier));
 			return new Color(realbrightness, realbrightness, realbrightness, 255);
@@ -380,6 +423,10 @@ public class Boxes {
 			super(world, new Rect(x - 0.25, y - 0.25, 0.5, 0.5), PhysicsState.NONE);
 			this.game = game;
 		}
+		public SecretCoin copy() {
+			SecretCoin b = new SecretCoin(game, world, rect.x+0.25, rect.y+0.25);
+			return b;
+		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
 			s.blit(coinImage, (int)(drawRect.centerX()) - (coinImage.get_width() / 2), (int)(drawRect.centerY()) - (coinImage.get_height() / 2));
 		}
@@ -394,8 +441,8 @@ public class Boxes {
 					this.remove();
 					SaveData.save();
 					// Spawn particles
-					new CoinGetParticle(game, world, this.rect.centerX(), this.rect.centerY(), 0.4, 0.1, 0.04).spawn();
-					new CoinGetParticle(game, world, this.rect.centerX(), this.rect.centerY(), 0, 0.3, 0.01).spawn();
+					new CoinGetParticle(world, this.rect.centerX(), this.rect.centerY(), 0.4, 0.1, 0.04).spawn();
+					new CoinGetParticle(world, this.rect.centerX(), this.rect.centerY(), 0, 0.3, 0.01).spawn();
 				}
 			}
 		}
@@ -411,12 +458,16 @@ public class Boxes {
 			public double v;
 			public double a;
 			public double av;
-			public CoinGetParticle(Game game, List<Box> world, double x, double y, double rad, double v, double av) {
+			public CoinGetParticle(List<Box> world, double x, double y, double rad, double v, double av) {
 				super(world, Rect.fromCenter(x, y, 1, 1), PhysicsState.NONE);
 				this.rad = rad;
 				this.v = v;
 				this.a = 1;
 				this.av = av;
+			}
+			public CoinGetParticle copy() {
+				CoinGetParticle b = new CoinGetParticle(world, rect.x, rect.y, rad, v, av);
+				return b;
 			}
 			public void draw(Surface s, Rect drawRect, double brightness) {
 				Rect r = drawRect.withSize(drawRect.size() * rad);

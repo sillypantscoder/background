@@ -6,9 +6,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +32,7 @@ public class Surface {
 	public Surface(BufferedImage image) {
 		img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = img.createGraphics();
-		g2d.drawImage(image, 0, 0, new DummyImageObserver());
+		g2d.drawImage(image, 0, 0, null);
 		g2d.dispose();
 	}
 	public void fill(Color color) {
@@ -45,7 +43,7 @@ public class Surface {
 	}
 	public void blit(Surface other, int x, int y) {
 		Graphics2D g2d = img.createGraphics();
-		g2d.drawImage(other.img, x, y, new DummyImageObserver());
+		g2d.drawImage(other.img, x, y, null);
 		g2d.dispose();
 	}
 	public void blit(Surface other, int centerX, int centerY, double rotation) {
@@ -53,7 +51,7 @@ public class Surface {
 		g2d.translate(centerX, centerY);
 		g2d.rotate(Math.toRadians(rotation));
 		g2d.translate(-centerX, -centerY);
-		g2d.drawImage(other.img, centerX - other.get_width() / 2, centerY - other.get_height() / 2, new DummyImageObserver());
+		g2d.drawImage(other.img, centerX - other.get_width() / 2, centerY - other.get_height() / 2, null);
 		g2d.dispose();
 	}
 	public int get_width() {
@@ -228,9 +226,7 @@ public class Surface {
 			FONT = new Font("SansSerif", Font.BOLD, 30);
 			try {
 				FONT = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(AssetLoader.getResourceLocation("Segoe UI Bold.ttf")));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (FontFormatException e) {
+			} catch (FileNotFoundException | FontFormatException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -274,8 +270,7 @@ public class Surface {
 		ArrayList<Surface> surfaces = new ArrayList<Surface>();
 		String[] words = text.split(" ");
 		String line = "";
-		for (int j = 0; j < words.length; j++) {
-			String word = words[j];
+		for (String word : words) {
 			if (fm.stringWidth(line + " " + word) > maxWidth) {
 				surfaces.add(renderText(size, line, color));
 				line = word;
@@ -292,24 +287,19 @@ public class Surface {
 	}
 	public static Surface combineVertically(Surface[] surfaces, Color background) {
 		int width = 1;
-		for (int i = 0; i < surfaces.length; i++) { int w = surfaces[i].get_width(); if (w > width) { width = w; } }
+		for (Surface surface : surfaces) { int w = surface.get_width(); if (w > width) width = w; }
 		int height = 1;
-		for (int i = 0; i < surfaces.length; i++) { int h = surfaces[i].get_height(); height += h; }
+		for (Surface surface : surfaces) { int h = surface.get_height(); height += h; }
 		Surface total = new Surface(width, height, background);
 		int cum_y = 0;
-		for (int i = 0; i < surfaces.length; i++) {
-			int imgX = (width / 2) - (surfaces[i].get_width() / 2);
-			total.blit(surfaces[i], imgX, cum_y);
-			cum_y += surfaces[i].get_height();
+		for (Surface surface : surfaces) {
+			int imgX = (width / 2) - (surface.get_width() / 2);
+			total.blit(surface, imgX, cum_y);
+			cum_y += surface.get_height();
 		}
 		return total;
 	}
 	public static Surface combineVertically(ArrayList<Surface> surfaces, Color background) {
 		return combineVertically(surfaces.toArray(new Surface[surfaces.size()]), background);
-	}
-	public static class DummyImageObserver implements ImageObserver {
-		public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-			return false;
-		}
 	}
 }

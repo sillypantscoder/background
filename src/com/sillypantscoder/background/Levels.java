@@ -299,14 +299,14 @@ public class Levels {
 			new Boxes.Wall(game.getLayer(3), new Rect(-2, -12.5, 4, 5)).spawn();
 			// Coin
 			(new Boxes.SecretCoin(game, game.getLayer(0), -2, -5) {
-				public static final int maxTicks = 60 * 7;
+				public static final int MAX_TICKS = 60 * 7;
 				public int ticks = 0;
 				public void tick() {
 					super.tick();
 					// Counter
 					this.ticks += 1;
-					if (this.ticks >= maxTicks) {
-						this.rect.y -= Math.pow(this.ticks - maxTicks, 2) / 50;
+					if (this.ticks >= MAX_TICKS) {
+						this.rect.y -= Math.pow(this.ticks - MAX_TICKS, 2) / 50;
 					}
 					if (this.rect.y < -24) {
 						this.remove();

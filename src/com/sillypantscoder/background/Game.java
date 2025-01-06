@@ -8,6 +8,9 @@ import com.sillypantscoder.background.Box.PhysicsState;
 import com.sillypantscoder.background.screen.GameScreen;
 import com.sillypantscoder.utils.ListCombination;
 import com.sillypantscoder.utils.Rect;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class contains all of the data needed to run the game.
@@ -31,6 +34,78 @@ public class Game {
 		// Level
 		this.level = level;
 		generateLevel();
+	}
+	@SuppressWarnings("unlikely-arg-type")
+	public Game copy() {
+		ArrayList<ArrayList<Box>> newLayers = new ArrayList<ArrayList<Box>>();
+		for (@SuppressWarnings("unused") ArrayList<Box> __ : this.layers) newLayers.add(new ArrayList<Box>());
+		// copy each box
+		Set<Box> allBoxes = new HashSet<Box>();
+		for (int layer = 0; layer < layers.size(); layer++) {
+			for (int b = 0; b < layers.get(layer).size(); b++) {
+				allBoxes.add(layers.get(layer).get(b));
+			}
+		}
+		Map<Box, Box> copyMap = new HashMap<Box, Box>();
+		for (Box b : allBoxes) {
+			Box copied = b.copy();
+			copyMap.put(b, copied);
+			// find world for this box
+			if (this.layers.contains(copied.world)) {
+				// regular world
+				int layer = this.layers.indexOf(copied.world);
+				copied.world = newLayers.get(layer);
+			} else if (copied.world instanceof ListCombination<Box> combinedWorld) {
+				// combined world
+				List<Box>[] lists = combinedWorld.lists;
+				@SuppressWarnings("unchecked")
+				List<Box>[] newLists = new List[lists.length];
+				for (int i = 0; i < lists.length; i++) {
+					int layerno = this.layers.indexOf(lists[i]);
+					if (layerno == -1) throw new RuntimeException("A box's world is a list combination containing unknown objects");
+					newLists[i] = newLayers.get(layerno);
+				}
+				ListCombination<Box> newWorld = new ListCombination<Box>(newLists);
+				copied.world = newWorld;
+			}
+		}
+		// copy layers
+		for (int layer = 0; layer < layers.size(); layer++) {
+			ArrayList<Box> l = newLayers.get(layer);
+			for (int b = 0; b < layers.get(layer).size(); b++) {
+				Box box = layers.get(layer).get(b);
+				// lookup
+				Box copied = copyMap.get(box);
+				l.add(copied);
+				// special for buttons
+				if (copied instanceof Boxes.Button btn) {
+					for (int i = 0; i < btn.handlers.length; i++) {
+						btn.handlers[i] = (Boxes.Button.SwitchHandler)(copyMap.get(btn.handlers[i]));
+					}
+				}
+			}
+		}
+		// construct new game
+		Game copied = new Game(screen, level);
+		copied.player1 = (Boxes.Player)(copyMap.get(player1));
+		copied.player2 = (Boxes.Player)(copyMap.get(player2));
+		copied.switchedPlayer = this.switchedPlayer;
+		copied.layers = newLayers;
+		copied.cameraX = this.cameraX;
+		copied.cameraY = this.cameraY;
+		copied.timer = this.timer;
+		// set games
+		if (player1 != null) copied.player1.game = copied;
+		if (player2 != null) copied.player2.game = copied;
+		for (int layer = 0; layer < newLayers.size(); layer++) {
+			for (int b = 0; b < newLayers.get(layer).size(); b++) {
+				if (newLayers.get(layer).get(b) instanceof Boxes.End end) {
+					end.game = copied;
+				}
+			}
+		}
+		// finish
+		return copied;
 	}
 	/**
 	 * Get the layer with the specified number.
@@ -97,25 +172,21 @@ public class Game {
 			}
 		}
 		// Player Movement
-		if (keys.contains("Up") || keys.contains("↑") || keys.contains("Space") || keys.contains("␣")) {
+		if (keys.contains("Up") || keys.contains("W") || keys.contains("↑") || keys.contains("Space") || keys.contains("␣")) {
 			if (player.touchingGround) {
 				player.vy = -0.3;
 			}
 		}
-		if (keys.contains("Down") || keys.contains("↓")) {
-			if (player.getAboveWalls().size() > 0) {
+		if (keys.contains("Down") || keys.contains("S") || keys.contains("↓")) {
+			if (!player.getAboveWalls().isEmpty()) {
 				player.vy = 0.3;
 			}
 		}
-		if (keys.contains("Left")) {
-			if (keys.contains("Left") || keys.contains("←")) {
-				player.vx -= 0.014;
-			}
+		if (keys.contains("Left") || keys.contains("A") || keys.contains("←")) {
+			player.vx -= 0.014;
 		}
-		if (keys.contains("Right")) {
-			if (keys.contains("Right") || keys.contains("→")) {
-				player.vx += 0.014;
-			}
+		if (keys.contains("Right") || keys.contains("D") || keys.contains("→")) {
+			player.vx += 0.014;
 		}
 	}
 	/**
