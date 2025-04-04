@@ -1,9 +1,12 @@
 package com.sillypantscoder.background;
 
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.sillypantscoder.background.screen.EndingAnimation;
 import com.sillypantscoder.background.screen.GameScreen;
@@ -44,16 +47,19 @@ public class Boxes {
 	 */
 	public static class Player extends Box {
 		public Game game;
+		public List<Box> respawnWorld;
 		public double respawnX = 1;
 		public double respawnY = -8;
 		public Player(Game game, List<Box> world, double x, double y) {
 			super(world, new Rect(x, y, 1, 1), PhysicsState.PHYSICS);
+			this.respawnWorld = world;
 			this.game = game;
 		}
 		public Player copy() {
 			Player b = new Player(game, world, rect.x, rect.y);
 			b.vx = this.vx;
 			b.vy = this.vy;
+			b.respawnWorld = this.respawnWorld;
 			b.respawnX = this.respawnX;
 			b.respawnY = this.respawnY;
 			return b;
@@ -71,6 +77,10 @@ public class Boxes {
 			this.rect.x = respawnX;
 			this.rect.y = respawnY;
 			this.vx = 0;
+			// Reset world
+			this.remove();
+			this.world = this.respawnWorld;
+			this.spawn();
 			// Instant camera
 			if (this == game.getPlayer()) {
 				game.cameraX += (this.rect.x - oldX) * 50;
@@ -416,6 +426,9 @@ public class Boxes {
 			offsetY %= gridSize * 2;
 		}
 	}
+	/**
+	 * A coin that can be collected.
+	 */
 	public static class SecretCoin extends Box {
 		public static Surface coinImage = makeCoinImage();
 		public Game game;
@@ -480,6 +493,119 @@ public class Boxes {
 				this.v *= 0.9;
 				this.a -= this.av;
 				if (this.a < 0) this.remove();
+			}
+		}
+	}
+	/**
+	 * A portal that, when entered, teleports you to another location.
+	 */
+	public static class Portal extends Box {
+		public Map<Box, PortalTrackerEntry> tracker;
+		public Portal otherSide;
+		public Portal(List<Box> world, Rect rect, Portal otherSide) {
+			super(world, rect, PhysicsState.NONE);
+			this.tracker = new HashMap<Box, PortalTrackerEntry>();
+			this.otherSide = otherSide;
+		}
+		public void draw(Surface s, Rect drawRect, double brightness) {
+			s.drawRect(getColor(brightness), drawRect, (int)(drawRect.size() / 10));
+		}
+		public boolean touchingBox(Rect r) {
+			return this.rect.colliderect_strict(r);
+		}
+		public boolean containsBox(Rect r) {
+			return this.rect.contains(r);
+		}
+		public double getTransformX() {
+			return this.otherSide.rect.x - this.rect.x;
+		}
+		public double getTransformY() {
+			return this.otherSide.rect.y - this.rect.y;
+		}
+		public void tick() {
+			// 1. Add entries to boxes that need them
+			for (var i = 0; i < this.world.size(); i++) {
+				Box b = this.world.get(i);
+				if (b instanceof Portal) continue;
+				if (b instanceof Shadow) continue;
+				if (this.touchingBox(b.rect) && !this.tracker.containsKey(b)) {
+					Shadow shadow = new Shadow(this.otherSide.world, b, getTransformX(), getTransformY(), this.otherSide.rect);
+					shadow.spawn();
+					this.tracker.put(b, new PortalTrackerEntry(shadow, false));
+				}
+			}
+			// 2. Check all boxes with an entry
+			//		(Also, copy the key set so that removing items doesn't crash it)
+			for (Box b : tracker.keySet().stream().collect(Collectors.toList())) {
+				PortalTrackerEntry entry = this.tracker.get(b);
+				// a. If it isn't inside the portal, get rid of the entry
+				if (! this.touchingBox(b.rect)) {
+					this.tracker.remove(b);
+					continue;
+				}
+				// b. Skip if it already teleported (i.e. don't teleport it agan)
+				if (entry.alreadyTeleported) {
+					continue;
+				}
+				// c. Teleport the box if it is completely inside the portal
+				if (this.containsBox(b.rect)) {
+					entry.shadow.remove();
+					this.tracker.remove(b);
+					// Teleport the box
+					b.remove();
+					b.rect.x += getTransformX();
+					b.rect.y += getTransformY();
+					b.world = this.otherSide.world;
+					b.spawn();
+					// Create entry on the other portal
+					Shadow reverseShadow = new Shadow(this.world, b, -getTransformX(), -getTransformY(), this.rect);
+					reverseShadow.spawn();
+					this.otherSide.tracker.put(b, new PortalTrackerEntry(reverseShadow, true));
+				}
+			}
+		}
+		public static void createPair(List<Box> world1, Rect rect1, List<Box> world2, Rect rect2) {
+			Portal portal1 = new Portal(world1, rect1, null);
+			Portal portal2 = new Portal(world2, rect2, portal1);
+			portal1.otherSide = portal2;
+			// Spawn
+			portal1.spawn();
+			portal2.spawn();
+		}
+		public static class PortalTrackerEntry {
+			public Shadow shadow;
+			public boolean alreadyTeleported;
+			public PortalTrackerEntry(Shadow shadow, boolean alreadyTeleported) {
+				this.shadow = shadow;
+				this.alreadyTeleported = alreadyTeleported;
+			}
+		}
+		public static class Shadow extends Box {
+			public Box box;
+			public double transformX;
+			public double transformY;
+			public Rect portalBorder;
+			public Shadow(List<Box> world, Box box, double transformX, double transformY, Rect portalBorder) {
+				super(world, box.rect, PhysicsState.NONE);
+				this.box = box;
+				this.transformX = transformX;
+				this.transformY = transformY;
+				this.portalBorder = portalBorder;
+			}
+			public Rect getDisplayRect() {
+				return this.box.rect.move(this.transformX, this.transformY);
+			}
+			public Rect getRect() {
+				// Move the box's rect to the new location.
+				// Then crop it to the portal borders.
+				return this.getDisplayRect().intersection(this.portalBorder);
+			}
+			public void tick() {
+				super.tick();
+				// Delete self if the box goes out of the portal
+				if (this.getDisplayRect().colliderect(this.portalBorder) == false) {
+					this.remove();
+				}
 			}
 		}
 	}

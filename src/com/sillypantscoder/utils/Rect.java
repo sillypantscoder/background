@@ -53,6 +53,15 @@ public class Rect {
 			&& bottom() > other.top();
 	}
 	/**
+	 * Determine whether this Rect completely contains another Rect.
+	 */
+	public boolean contains(Rect r) {
+		return this.left() < r.left()
+			&& this.right() > r.right()
+			&& this.top() < r.top()
+			&& this.bottom() > r.bottom();
+	}
+	/**
 	 * @param x The x-coordinate to move to.
 	 * @param y The y-coordinate to move to.
 	 * @return A new Rect with the updated position.
@@ -121,5 +130,15 @@ public class Rect {
 		double centerX = centerX();
 		double centerY = centerY();
 		return fromCenter(centerX, centerY, size, size);
+	}
+	public Rect intersection(Rect portalBorder) {
+		double x1 = Math.max(this.x, portalBorder.x);
+		double y1 = Math.max(this.y, portalBorder.y);
+		double x2 = Math.min(this.x + this.w, portalBorder.x + portalBorder.w);
+		double y2 = Math.min(this.y + this.h, portalBorder.y + portalBorder.h);
+		if (x1 > x2 || y1 > y2) {
+			return new Rect(0, 0, 0, 0);
+		}
+		return new Rect(x1, y1, x2 - x1, y2 - y1);
 	}
 }

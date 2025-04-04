@@ -73,6 +73,7 @@ public class GameScreen extends Abstract3DScene {
 		game.keyUp(e);
 	}
 	public void mouseMoved(int x, int y) {
+		super.mouseMoved(x, y);
 		game.mouseMoved(x, y);
 	}
 	public void mouseDown(int x, int y) {

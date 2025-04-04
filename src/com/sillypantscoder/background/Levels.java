@@ -32,7 +32,8 @@ public class Levels {
 		new Level12(),
 		new Level13(),
 		new Level14(),
-		new Level15()
+		new Level15(),
+		new Level16()
 	};
 	public static class LevelIntro extends Level {
 		public String getName() { return "Introduction"; }
@@ -914,6 +915,28 @@ public class Levels {
 				int padding = 5;
 				s.drawRect(Color.WHITE, new Rect(drawRect.x + padding, drawRect.y + padding, drawRect.w - (padding * 2), drawRect.h - (padding * 2)), 1);
 			}
+		}
+	}
+	public static class Level16 extends Level {
+		public String getName() { return "It's Portal Time"; }
+		public String getTagline() { return "everybody's favorite time"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(1), -1, 1, "16", 80, false).spawn();
+			// Platforms
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 23, 1)).spawn(); // floor
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(7, 1, 2, 2), game.getLayer(0), new Rect(10, 1, 2, 2)); // portals left (intro)
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(17, 1, 2, 2), game.getLayer(0), new Rect(20, -5, 2, 2)); // portals middle (first obstacle)
+			new Boxes.Wall(game.getLayer(0), new Rect(20, -1, 1, 7)).spawn(); // wall
+			new Boxes.Wall(game.getLayer(0), new Rect(20, -1, 8, 1)).spawn(); // floor top
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(29, -6, 2, 2), game.getLayer(0), new Rect(29, 1, 2, 2)); // portals right (vertical)
+			new Boxes.Wall(game.getLayer(0), new Rect(32, -1, 8, 1)).spawn(); // floor top right
+			// End
+			new Boxes.End(game, game.getLayer(0), 38, -4.5).spawn();
+			// Player Setup
+			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 1);
+			game.player1.spawn(); game.player1.setrespawn();
+			game.player2 = new Boxes.Player(game, game.getLayer(0), 1, 1);
+			game.player2.spawn(); game.player2.setrespawn();
 		}
 	}
 }
