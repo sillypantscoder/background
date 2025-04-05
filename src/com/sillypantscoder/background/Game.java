@@ -132,7 +132,7 @@ public class Game {
 	 */
 	public void generateLevel() {
 		if (level >= Levels.levels.length) {
-			System.err.println("Error loading level");
+			System.err.println("Error loading level " + level);
 		} else {
 			Levels.levels[level].build(this);
 		}

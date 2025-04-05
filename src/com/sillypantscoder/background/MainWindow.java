@@ -46,15 +46,14 @@ public class MainWindow extends Window {
 		screen.mouseWheel(amount);
 	}
 	public void initializeScreen() {
-		int highestLevel = 0;
-		for (int i = 0; i < Levels.levels.length; i++) { if (Levels.levels[i].bestTime != -1) highestLevel = i + 1; }
+		int targetLevel = Levels.levels.length;
+		for (int i = Levels.levels.length - 1; i >= 0; i--) { if (Levels.levels[i].bestTime == -1) targetLevel = i; }
 		// Find correct screen
-		Screen targetScreen = new GameScreen(this, highestLevel);
-		if (highestLevel != 0) {
-			boolean forceGameScreen = highestLevel < Levels.levels.length;
-			if (! (forceGameScreen && Game.CHEAT)) {
-				if (highestLevel == Levels.levels.length) highestLevel -= 1;
-				targetScreen = new MapScreen(this, highestLevel);
+		Screen targetScreen = new MapScreen(this, Math.min(Levels.levels.length - 1, targetLevel)); // map screen by default
+		if (targetLevel < Levels.levels.length) {
+			// If cheating, switch directly to game screen
+			if (Game.CHEAT) {
+				targetScreen = new GameScreen(this, targetLevel);
 			}
 		}
 		OpeningAnimation anim = new OpeningAnimation(this, targetScreen);
