@@ -270,6 +270,28 @@ public class Boxes {
 		public void deactivate() {
 			this.activated = false;
 		}
+		public static class CounterActivator implements Button.SwitchHandler {
+			public Button.SwitchHandler handler;
+			public int n;
+			public CounterActivator(Button.SwitchHandler handler) {
+				this.handler = handler;
+			}
+			public void activate() {
+				this.n += 1;
+				this.update();
+			}
+			public void deactivate() {
+				this.n -= 1;
+				this.update();
+			}
+			public void update() {
+				if (this.n > 0) {
+					this.handler.activate();
+				} else {
+					this.handler.deactivate();
+				}
+			}
+		}
 	}
 	/**
 	 * The end of a level.

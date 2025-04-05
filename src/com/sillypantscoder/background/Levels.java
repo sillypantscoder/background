@@ -33,7 +33,8 @@ public class Levels {
 		new Level13(),
 		new Level14(),
 		new Level15(),
-		new Level16()
+		new Level16(),
+		new Level17()
 	};
 	public static class LevelIntro extends Level {
 		public String getName() { return "Introduction"; }
@@ -928,7 +929,7 @@ public class Levels {
 			Boxes.Portal.createPair(game.getLayer(0), new Rect(17, 1, 2, 2), game.getLayer(0), new Rect(20, -5, 2, 2)); // portals middle (first obstacle)
 			new Boxes.Wall(game.getLayer(0), new Rect(20, -1, 1, 7)).spawn(); // wall
 			new Boxes.Wall(game.getLayer(0), new Rect(20, -1, 8, 1)).spawn(); // floor top
-			Boxes.Portal.createPair(game.getLayer(0), new Rect(29, -6, 2, 2), game.getLayer(0), new Rect(29, 1, 2, 2)); // portals right (vertical)
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(29, -6.25, 2, 2), game.getLayer(0), new Rect(29, 0, 2, 2)); // portals right (vertical)
 			new Boxes.Wall(game.getLayer(0), new Rect(32, -1, 8, 1)).spawn(); // floor top right
 			// End
 			new Boxes.End(game, game.getLayer(0), 38, -4.5).spawn();
@@ -936,6 +937,50 @@ public class Levels {
 			game.player1 = new Boxes.Player(game, game.getLayer(0), -1, 1);
 			game.player1.spawn(); game.player1.setrespawn();
 			game.player2 = new Boxes.Player(game, game.getLayer(0), 1, 1);
+			game.player2.spawn(); game.player2.setrespawn();
+		}
+	}
+	public static class Level17 extends Level {
+		public String getName() { return "The Background, Part 2"; }
+		public String getTagline() { return "plot twist, again!"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(1), -1, 1, "17", 80, false).spawn();
+			// Platforms
+			new Boxes.Wall(game.getLayer(0), new Rect(-2, 5, 7, 1)).spawn(); // floor front left
+			new Boxes.Wall(game.getLayer(1), new Rect(-7, 5, 5, 1)).spawn(); // floor back
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(-4.5, 6, 2, 2), game.getLayer(1), new Rect(-5.5, 0, 2, 2)); // portals left
+			new Boxes.PhysicsObject(game.getLayer(0), new Rect(2.5, 0, 1, 1)).spawn(); // movable block
+			{
+				// buttons left
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(6, -1, 1, 7), 6, -7);
+				door.spawn();
+				new Boxes.Button(game.getLayer(1), -10, 6, door).spawn();
+			}
+			new Boxes.Wall(game.getLayer(1), new Rect(-11, 6, 5, 1)).spawn(); // floor back bottom (for button)
+			{
+				// buttons right
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(8, -1, 1, 7), 8, -7);
+				door.spawn();
+				new Boxes.Button(game.getLayer(1), -8, 6, door).spawn();
+			}
+			new Boxes.Wall(game.getLayer(0), new Rect(10, 5, 3, 1)).spawn(); // floor front right
+			// Ending across top
+			new Boxes.Wall(game.getLayer(1), new Rect(13, 0, 3, 1)).spawn(); // platform back top right
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(13.5, 1, 2, 2), game.getLayer(1), new Rect(14.5, -4, 2, 2)); // portals far right
+			new Boxes.Wall(game.getLayer(1), new Rect(6, 0, 3, 1)).spawn(); // platform back top middle
+			new Boxes.Wall(game.getLayer(1), new Rect(3, 0, 3, 1)).spawn(); // platform back top left
+			{
+				// buttons back top middle
+				Boxes.Door door = new Boxes.Door(game.getLayer(1), new Rect(-2, 5, 3, 1), -2, 0);
+				door.spawn();
+				new Boxes.Button(game.getLayer(1), 4, 0, door).spawn();
+			}
+			// End
+			new Boxes.End(game, game.getLayer(0), 5, -5).spawn();
+			// Player Setup
+			game.player1 = new Boxes.Player(game, game.getLayer(0), -1.5, 1);
+			game.player1.spawn(); game.player1.setrespawn();
+			game.player2 = new Boxes.Player(game, game.getLayer(0), 0.5, 1);
 			game.player2.spawn(); game.player2.setrespawn();
 		}
 	}

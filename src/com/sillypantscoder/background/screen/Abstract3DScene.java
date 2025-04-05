@@ -20,6 +20,7 @@ public abstract class Abstract3DScene extends Screen {
 	public abstract double getCameraX();
 	public abstract double getCameraY();
 	public void drawGrid(Surface s) {
+		double boxCoordScale = Math.max(10, this.boxCoordScale);
 		double cameraX = getCameraX();
 		double cameraY = getCameraY();
 		// Find grid start and size
