@@ -25,34 +25,30 @@ import java.awt.FontMetrics;
 public class Surface {
 	public static Font FONT = null;
 	public BufferedImage img;
+	public Graphics2D g2d;
 	public Surface(int width, int height, Color color) {
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		g2d = img.createGraphics();
 		this.fill(color);
 	}
 	public Surface(BufferedImage image) {
 		img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2d = img.createGraphics();
+		g2d = img.createGraphics();
 		g2d.drawImage(image, 0, 0, null);
-		g2d.dispose();
 	}
 	public void fill(Color color) {
-		Graphics2D graphics = img.createGraphics();
-		graphics.setPaint(color);
-		graphics.fillRect(0, 0, img.getWidth(), img.getHeight());
-		graphics.dispose();
+		g2d.setPaint(color);
+		g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
 	}
 	public void blit(Surface other, int x, int y) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.drawImage(other.img, x, y, null);
-		g2d.dispose();
 	}
 	public void blit(Surface other, int centerX, int centerY, double rotation) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.translate(centerX, centerY);
 		g2d.rotate(Math.toRadians(rotation));
 		g2d.translate(-centerX, -centerY);
 		g2d.drawImage(other.img, centerX - other.get_width() / 2, centerY - other.get_height() / 2, null);
-		g2d.dispose();
+		g2d.dispose(); g2d = img.createGraphics();
 	}
 	public int get_width() {
 		return img.getWidth();
@@ -77,25 +73,18 @@ public class Surface {
 		return Color.BLACK;
 	}
 	public void drawLine(Color color, int x1, int y1, int x2, int y2, int thickness) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
-		BasicStroke bs = new BasicStroke(thickness);
-		g2d.setStroke(bs);
+		g2d.setStroke(new BasicStroke(thickness));
 		g2d.drawLine(x1, y1, x2, y2);
-		g2d.dispose();
 	}
 	public void drawRect(Color color, int x, int y, int width, int height) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
 		g2d.fillRect(x, y, width, height);
-		g2d.dispose();
 	}
 	public void drawRect(Color color, int x, int y, int width, int height, int lineWidth) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
 		g2d.setStroke(new BasicStroke(lineWidth));
 		g2d.drawRect(x, y, width, height);
-		g2d.dispose();
 	}
 	public void drawRect(Color color, Rect r) {
 		this.drawRect(color, (int)(r.x), (int)(r.y), (int)(r.w), (int)(r.h));
@@ -104,23 +93,17 @@ public class Surface {
 		this.drawRect(color, (int)(r.x), (int)(r.y), (int)(r.w), (int)(r.h), lineWidth);
 	}
 	public void drawRoundedRect(Color color, Rect r, double borderRadius) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
 		g2d.fillRoundRect((int)(r.x), (int)(r.y), (int)(r.w), (int)(r.h), (int)(borderRadius), (int)(borderRadius));
-		g2d.dispose();
 	}
 	public void drawEllipse(Color color, int cx, int cy, int rx, int ry) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
 		g2d.fillOval(cx - rx, cy - ry, rx*2, ry*2);
-		g2d.dispose();
 	}
 	public void drawEllipse(Color color, int cx, int cy, int rx, int ry, int lineWidth) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
 		g2d.setStroke(new BasicStroke(lineWidth));
 		g2d.drawOval(cx - rx, cy - ry, rx*2, ry*2);
-		g2d.dispose();
 	}
 	public void drawCircle(Color color, int cx, int cy, int r) {
 		this.drawEllipse(color, cx, cy, r, r);
@@ -141,20 +124,15 @@ public class Surface {
 		drawCircle(color, rect.centerX(), rect.centerY(), (rect.w + rect.h) / 4, lineWidth);
 	}
 	public void eraseCircle(int cx, int cy, int r) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(new Color(0, 0, 0, 0));
 		g2d.setComposite(AlphaComposite.Clear);
 		g2d.fillOval(cx - r, cy - r, r*2, r*2);
-		g2d.dispose();
 	}
 	public void drawArc(Color color, double x, double y, double radius, double degStart, double degEnd) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
 		g2d.fillArc((int)(x - radius), (int)(y - radius), (int)(radius*2), (int)(radius*2), 90 - (int)(degStart), -(int)(degEnd - degStart));
-		g2d.dispose();
 	}
 	public void drawPolygon(Color color, int[][] points) {
-		Graphics2D g2d = img.createGraphics();
 		g2d.setColor(color);
 		int[] xPoints = new int[points.length];
 		int[] yPoints = new int[points.length];
@@ -163,7 +141,6 @@ public class Surface {
 			yPoints[i] = points[i][1];
 		}
 		g2d.fillPolygon(xPoints, yPoints, points.length);
-		g2d.dispose();
 	}
 	public void drawPolygon(Color color, double[][] points, double centerX, double centerY, double scale) {
 		int[][] drawPoints = new int[points.length][2];

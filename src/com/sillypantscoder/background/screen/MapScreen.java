@@ -172,6 +172,7 @@ public class MapScreen extends Abstract3DScene {
 		}
 	}
 	public void selectLevel() {
+		if (this.window.screen instanceof EndingAnimation) return;
 		if ((! isLevelLocked(targetCameraX)) || Game.CHEAT) {
 			LevelTitleScreen newScreen = new LevelTitleScreen(window, this.targetCameraX);
 			navigate(new EndingAnimation(window, this, newScreen));
