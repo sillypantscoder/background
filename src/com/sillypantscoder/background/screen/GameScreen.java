@@ -62,6 +62,7 @@ public class GameScreen extends Abstract3DScene {
 			GameScreen newScreen = new GameScreen(window, game.level);
 			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
 		} else if (e.equals("Escape") || e.equals("⎋")) {
+			if (this.window.screen instanceof EndingAnimation) return;
 			MapScreen newScreen = new MapScreen(window, game.level);
 			navigate(new EndingAnimation(window, this, new OpeningAnimation(window, newScreen)));
 		} else {

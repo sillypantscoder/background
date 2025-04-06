@@ -147,6 +147,7 @@ public class MapScreen extends Abstract3DScene {
 		if (e.equals("Left") || e.equals("←")) scroll(-1);
 		if (e.equals("Right") || e.equals("→")) scroll(1);
 		if (e.equals("Space") || e.equals("␣") || e.equals("Z") || e.equals("Enter")) selectLevel();
+		if (e.equals("Escape") && !(this.window.screen instanceof EndingAnimation)) navigate(new SettingsScreen(this));
 	}
 	public void keyUp(String e) {}
 	public void mouseMoved(int x, int y) {}

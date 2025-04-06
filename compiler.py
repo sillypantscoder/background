@@ -41,11 +41,15 @@ Main-Class: com.sillypantscoder.background.Main
 """)
 	f.close()
 	subprocess.run(["jar", "-c", "-v", "-f", "compiled.jar", "-m", "compiled_output/manifest", "-C", "compiled_output/", "."])
-	subprocess.run(["rm", "-r", "compiled_output"])
 
 # 4. Run the files
 
 if WINDOWS:
-	subprocess.run(["java", "-cp", "compiled_output", "words.Words"])
+	subprocess.run(["java", "-cp", "compiled_output", "com.sillypantscoder.background.Main"])
 else:
-	subprocess.run(["java", "-jar", "compiled.jar"])
+	rc = subprocess.run(["java", "-jar", "compiled.jar"]).returncode
+	if rc != 0:
+		print("\nCommand to run the program (for Windows):")
+		print("\tjava -cp compiled_output com.sillypantscoder.background.Main")
+	else:
+		subprocess.run(["rm", "-r", "compiled_output"])

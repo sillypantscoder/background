@@ -49,7 +49,9 @@ public class SettingsScreen extends Screen {
 		// Return
 		return s;
 	}
-	public void keyDown(String e) {}
+	public void keyDown(String e) {
+		if (e.equals("Escape")) navigate(parent);
+	}
 	public void keyUp(String e) {}
 	public void mouseMoved(int x, int y) {}
 	public void mouseDown(int x, int y) {}
