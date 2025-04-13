@@ -9,7 +9,7 @@ import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 
 public abstract class Abstract3DScene extends Screen {
-	public static final boolean DRAW_GRID = false;
+	public static final boolean DEBUG_MODE = true;
 	public double gridMouseX;
 	public double gridMouseY;
 	public double boxCoordScale = 50;
@@ -19,7 +19,7 @@ public abstract class Abstract3DScene extends Screen {
 	public abstract List<? extends List<? extends Drawable3D>> getLayers();
 	public abstract double getCameraX();
 	public abstract double getCameraY();
-	public void drawGrid(Surface s) {
+	public void drawGrid(Surface s) { // Planning to move this and mouseMoved to EditorScreen
 		double boxCoordScale = Math.max(10, this.boxCoordScale);
 		double cameraX = getCameraX();
 		double cameraY = getCameraY();
@@ -79,9 +79,8 @@ public abstract class Abstract3DScene extends Screen {
 	public Surface frame(int width, int height) {
 		double cameraX = getCameraX();
 		double cameraY = getCameraY();
-		// Draw Grid (optional)
+		// Create Surface
 		Surface s = new Surface(width, height, Color.WHITE);
-		if (DRAW_GRID) drawGrid(s);
 		// Draw Layers
 		List<? extends List<? extends Drawable3D>> layers = getLayers();
 		for (int i = layers.size() - 1; i >= 0; i--) {
@@ -109,7 +108,7 @@ public abstract class Abstract3DScene extends Screen {
 		return s;
 	}
 	public void mouseMoved(int x, int y) {
-		if (DRAW_GRID) {
+		if (DEBUG_MODE) {
 			gridMouseX = x;
 			gridMouseY = y;
 		}

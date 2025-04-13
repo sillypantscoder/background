@@ -49,6 +49,7 @@ public class LevelTitleScreen extends Screen {
 		// Continue
 		if (this.time >= 170) {
 			GameScreen newScreen = new GameScreen(window, level);
+			if (Abstract3DScene.DEBUG_MODE) newScreen = new EditorScreen(window, level);
 			OpeningAnimation anim = new OpeningAnimation(window, newScreen);
 			anim.maxTime *= 2;
 			navigate(anim);

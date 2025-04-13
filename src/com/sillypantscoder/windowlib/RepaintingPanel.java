@@ -26,8 +26,12 @@ import javax.swing.Timer;
  * A panel that automatically redraws itself.
  */
 public class RepaintingPanel extends JPanel {
+	// Keep track of open windows
 	public static ArrayList<RepaintingPanel> panelsOpen = new ArrayList<RepaintingPanel>();
+	// Frame
 	protected JFrame frame;
+	protected Timer timer;
+	// Handlers
 	public BiFunction<Integer, Integer, BufferedImage> painter;
 	public Consumer<String> keyDown;
 	public Consumer<String> keyUp;
@@ -54,17 +58,19 @@ public class RepaintingPanel extends JPanel {
 	}
 	public void closeWindow() {
 		frame.setVisible(false);
+		frame.dispose();
+		this.timer.stop();
 		panelsOpen.remove(this);
 		if (panelsOpen.isEmpty()) {
 			System.exit(0);
 		}
 	}
 	public void startAnimation() {
-		Timer timer = new Timer(16, (e) -> {
+		this.timer = new Timer(16, (e) -> {
 			frame.revalidate();
 			frame.getContentPane().repaint();
 		});
-		timer.start();
+		this.timer.start();
 	}
 	public void run(String title, Surface icon, int width, int height) {
 		frame = new JFrame(title);

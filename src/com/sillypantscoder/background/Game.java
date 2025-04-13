@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sillypantscoder.background.Box.PhysicsState;
+import com.sillypantscoder.background.screen.Abstract3DScene;
 import com.sillypantscoder.background.screen.GameScreen;
 import com.sillypantscoder.utils.ListCombination;
 import com.sillypantscoder.utils.Rect;
@@ -16,7 +17,6 @@ import java.util.Map;
  * This class contains all of the data needed to run the game.
  */
 public class Game {
-	public static final boolean CHEAT = false;
 	public GameScreen screen;
 	public Boxes.Player player1;
 	public Boxes.Player player2;
@@ -191,6 +191,7 @@ public class Game {
 	}
 	/**
 	 * If cheating mode is enabled, stores the currently selected box.
+	 * Planning to move this to EditorScreen.
 	 */
 	public Box mouseCarrying = null;
 	public void mouseMoved(int x, int y) {
@@ -210,14 +211,11 @@ public class Game {
 			if (newX != mouseCarrying.rect.x || newY != mouseCarrying.rect.y) {
 				mouseCarrying.rect.x = newX;
 				mouseCarrying.rect.y = newY;
-				if (mouseCarrying.physics != PhysicsState.PHYSICS) {
-					System.out.println("moved object to x: " + newX + " y: " + newY);
-				}
 			}
 		}
 	}
 	public void mouseDown(int x, int y) {
-		if (! CHEAT) return;
+		if (! Abstract3DScene.DEBUG_MODE) return;
 		Rect mouseRect = new Rect((x + cameraX) / 50, (y + cameraY) / 50, 0.01, 0.01);
 		for (ArrayList<Box> list : this.layers) {
 			for (Box b : list) {
@@ -239,6 +237,11 @@ public class Game {
 		}
 	}
 	public void mouseUp(int x, int y) {
+		if (mouseCarrying != null) {
+			if (mouseCarrying.physics != PhysicsState.PHYSICS) {
+				System.out.println("moved object to x: " + mouseCarrying.rect.x + " y: " + mouseCarrying.rect.y);
+			}
+		}
 		mouseCarrying = null;
 	}
 	public void keyDown(String key) {

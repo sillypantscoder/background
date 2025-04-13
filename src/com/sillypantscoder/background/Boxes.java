@@ -323,7 +323,7 @@ public class Boxes {
 						// Level is complete
 						game.screen.levelCompleted = true;
 						Level level = Levels.levels[game.level];
-						level.bestTime = level.bestTime == -1 ? game.timer : Math.min(level.bestTime, game.timer);
+						if (game.timer > 0) level.bestTime = level.bestTime == -1 ? game.timer : Math.min(level.bestTime, game.timer);
 						SaveData.save();
 						window.screen = new EndingAnimation(window, gamescreen, new OpeningAnimation(window, new MapScreen(window, game.level)));
 					}
@@ -524,13 +524,15 @@ public class Boxes {
 	public static class Portal extends Box {
 		public Map<Box, PortalTrackerEntry> tracker;
 		public Portal otherSide;
-		public Portal(List<Box> world, Rect rect, Portal otherSide) {
+		public boolean teleportCamera;
+		public Portal(List<Box> world, Rect rect, Portal otherSide, boolean teleportCamera) {
 			super(world, rect, PhysicsState.NONE);
 			this.tracker = new HashMap<Box, PortalTrackerEntry>();
 			this.otherSide = otherSide;
+			this.teleportCamera = teleportCamera;
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
-			s.drawRect(getColor(brightness), drawRect, (int)(drawRect.size() / 10));
+			s.drawRect(getColor(brightness), drawRect, 10);
 		}
 		public boolean touchingBox(Rect r) {
 			return this.rect.colliderect_strict(r);
@@ -548,8 +550,7 @@ public class Boxes {
 			// 1. Add entries to boxes that need them
 			for (var i = 0; i < this.world.size(); i++) {
 				Box b = this.world.get(i);
-				if (b instanceof Portal) continue;
-				if (b instanceof Shadow) continue;
+				if (b.physics != PhysicsState.PHYSICS) continue;
 				if (this.touchingBox(b.rect) && !this.tracker.containsKey(b)) {
 					Shadow shadow = new Shadow(this.otherSide.world, b, getTransformX(), getTransformY(), this.otherSide.rect);
 					shadow.spawn();
@@ -583,16 +584,24 @@ public class Boxes {
 					Shadow reverseShadow = new Shadow(this.world, b, -getTransformX(), -getTransformY(), this.rect);
 					reverseShadow.spawn();
 					this.otherSide.tracker.put(b, new PortalTrackerEntry(reverseShadow, true));
+					// Teleport camera
+					if (b instanceof Player player && player.game.getPlayer() == b && teleportCamera) {
+						player.game.cameraX += this.getTransformX() * player.game.screen.boxCoordScale;
+						player.game.cameraY += this.getTransformY() * player.game.screen.boxCoordScale;
+					}
 				}
 			}
 		}
-		public static void createPair(List<Box> world1, Rect rect1, List<Box> world2, Rect rect2) {
-			Portal portal1 = new Portal(world1, rect1, null);
-			Portal portal2 = new Portal(world2, rect2, portal1);
+		public static void createPair(List<Box> world1, Rect rect1, List<Box> world2, Rect rect2, boolean teleportCamera) {
+			Portal portal1 = new Portal(world1, rect1, null, teleportCamera);
+			Portal portal2 = new Portal(world2, rect2, portal1, teleportCamera);
 			portal1.otherSide = portal2;
 			// Spawn
 			portal1.spawn();
 			portal2.spawn();
+		}
+		public static void createPair(List<Box> world1, Rect rect1, List<Box> world2, Rect rect2) {
+			createPair(world1, rect1, world2, rect2, false);
 		}
 		public static class PortalTrackerEntry {
 			public Shadow shadow;

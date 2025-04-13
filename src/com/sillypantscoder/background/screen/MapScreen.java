@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.sillypantscoder.background.Box;
 import com.sillypantscoder.background.Boxes;
 import com.sillypantscoder.background.Drawable3D;
-import com.sillypantscoder.background.Game;
 import com.sillypantscoder.background.Level;
 import com.sillypantscoder.background.Levels;
 import com.sillypantscoder.background.MainWindow;
@@ -174,7 +173,7 @@ public class MapScreen extends Abstract3DScene {
 	}
 	public void selectLevel() {
 		if (this.window.screen instanceof EndingAnimation) return;
-		if ((! isLevelLocked(targetCameraX)) || Game.CHEAT) {
+		if ((! isLevelLocked(targetCameraX)) || Abstract3DScene.DEBUG_MODE) {
 			LevelTitleScreen newScreen = new LevelTitleScreen(window, this.targetCameraX);
 			navigate(new EndingAnimation(window, this, newScreen));
 		}

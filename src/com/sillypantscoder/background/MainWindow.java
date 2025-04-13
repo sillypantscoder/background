@@ -2,7 +2,8 @@ package com.sillypantscoder.background;
 
 import java.awt.Color;
 
-import com.sillypantscoder.background.screen.GameScreen;
+import com.sillypantscoder.background.screen.Abstract3DScene;
+import com.sillypantscoder.background.screen.EditorScreen;
 import com.sillypantscoder.background.screen.MapScreen;
 import com.sillypantscoder.background.screen.OpeningAnimation;
 import com.sillypantscoder.background.screen.Screen;
@@ -52,8 +53,8 @@ public class MainWindow extends Window {
 		Screen targetScreen = new MapScreen(this, Math.min(Levels.levels.length - 1, targetLevel)); // map screen by default
 		if (targetLevel < Levels.levels.length) {
 			// If cheating, switch directly to game screen
-			if (Game.CHEAT) {
-				targetScreen = new GameScreen(this, targetLevel);
+			if (Abstract3DScene.DEBUG_MODE) {
+				targetScreen = new EditorScreen(this, targetLevel);
 			}
 		}
 		OpeningAnimation anim = new OpeningAnimation(this, targetScreen);
