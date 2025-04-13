@@ -1,17 +1,14 @@
 package com.sillypantscoder.background;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.sillypantscoder.background.Box.PhysicsState;
-import com.sillypantscoder.background.screen.Abstract3DScene;
-import com.sillypantscoder.background.screen.GameScreen;
-import com.sillypantscoder.utils.ListCombination;
-import com.sillypantscoder.utils.Rect;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.sillypantscoder.background.screen.GameScreen;
+import com.sillypantscoder.utils.ListCombination;
 
 /**
  * This class contains all of the data needed to run the game.
@@ -188,61 +185,6 @@ public class Game {
 		if (keys.contains("Right") || keys.contains("D") || keys.contains("→")) {
 			player.vx += 0.014;
 		}
-	}
-	/**
-	 * If cheating mode is enabled, stores the currently selected box.
-	 * Planning to move this to EditorScreen.
-	 */
-	public Box mouseCarrying = null;
-	public void mouseMoved(int x, int y) {
-		if (mouseCarrying != null) {
-			mouseCarrying.vx = 0;
-			mouseCarrying.vy = 0;
-			// Find mouse pos
-			double precision = 4;
-			double realMouseX = (x + cameraX) / 50;
-			double realMouseY = (y + cameraY) / 50;
-			// Find new box pos
-			double targetX = realMouseX - (mouseCarrying.rect.w / 2);
-			double targetY = realMouseY - (mouseCarrying.rect.h / 2);
-			double newX = Math.round(targetX * precision) / precision;
-			double newY = Math.round(targetY * precision) / precision;
-			// update pos
-			if (newX != mouseCarrying.rect.x || newY != mouseCarrying.rect.y) {
-				mouseCarrying.rect.x = newX;
-				mouseCarrying.rect.y = newY;
-			}
-		}
-	}
-	public void mouseDown(int x, int y) {
-		if (! Abstract3DScene.DEBUG_MODE) return;
-		Rect mouseRect = new Rect((x + cameraX) / 50, (y + cameraY) / 50, 0.01, 0.01);
-		for (ArrayList<Box> list : this.layers) {
-			for (Box b : list) {
-				if (b.physics != PhysicsState.PHYSICS) continue;
-				if (b.rect.colliderect(mouseRect)) {
-					mouseCarrying = b;
-				}
-			}
-		}
-		// If still null check static objects
-		if (mouseCarrying == null) {
-			for (ArrayList<Box> list : this.layers) {
-				for (Box b : list) {
-					if (b.rect.colliderect(mouseRect)) {
-						mouseCarrying = b;
-					}
-				}
-			}
-		}
-	}
-	public void mouseUp(int x, int y) {
-		if (mouseCarrying != null) {
-			if (mouseCarrying.physics != PhysicsState.PHYSICS) {
-				System.out.println("moved object to x: " + mouseCarrying.rect.x + " y: " + mouseCarrying.rect.y);
-			}
-		}
-		mouseCarrying = null;
 	}
 	public void keyDown(String key) {
 		keys.add(key);

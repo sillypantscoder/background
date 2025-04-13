@@ -73,15 +73,8 @@ public class GameScreen extends Abstract3DScene {
 		if (e.equals("P") && TAS_MODE) this.continueTime = -1;
 		game.keyUp(e);
 	}
-	public void mouseMoved(int x, int y) {
-		super.mouseMoved(x, y);
-		game.mouseMoved(x, y);
-	}
-	public void mouseDown(int x, int y) {
-		game.mouseDown(x, y);
-	}
-	public void mouseUp(int x, int y) {
-		game.mouseUp(x, y);
-	}
+	public void mouseMoved(int x, int y) {}
+	public void mouseDown(int x, int y) {}
+	public void mouseUp(int x, int y) {}
 	public void mouseWheel(int amount) {}
 }
