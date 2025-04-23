@@ -9,7 +9,7 @@ import com.sillypantscoder.utils.Rect;
 import com.sillypantscoder.windowlib.Surface;
 
 public abstract class Abstract3DScene extends Screen {
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	public double boxCoordScale = 50;
 	public Abstract3DScene(MainWindow window) {
 		super(window);
