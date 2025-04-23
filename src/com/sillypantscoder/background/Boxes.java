@@ -432,13 +432,13 @@ public class Boxes {
 		}
 		public void draw(Surface s, Rect drawRect, double brightness) {
 			if (!updatedBrightness) {
-				bg = bg.scaleValues(getColor(brightness, 1/4d).getRed() / 255f);
+				bg = bg.scaleValues(getColor(brightness, 3/4d).getRed() / 255f);
 				updatedBrightness = true;
 			}
 			s.blit(
 				bg.crop((int)(offsetX + gridSize), (int)(offsetY + gridSize), (int)(drawRect.w), (int)(drawRect.h))
 			, (int)(drawRect.x), (int)(drawRect.y));
-			s.drawRect(getColor(brightness, 2/4d), drawRect, 3);
+			s.drawRect(getColor(brightness), drawRect, 3);
 		}
 		public void tick() {
 			super.tick();

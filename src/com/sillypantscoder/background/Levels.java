@@ -35,8 +35,10 @@ public class Levels {
 		new Level15(),
 		new Level16(),
 		new Level17(),
-		new Level18()
+		new Level18(),
+		new Level19()
 	};
+	// TODO: Fix/standardize spawn points for all levels
 	public static class LevelIntro extends Level {
 		public String getName() { return "Introduction"; }
 		public String getTagline() { return "how it works"; }
@@ -982,7 +984,7 @@ public class Levels {
 		public String getName() { return "Packaging Cycle"; }
 		public String getTagline() { return "includes portals for added efficiency"; }
 		public void build(Game game) {
-			new Boxes.Text(game.getLayer(1), 0, 6, "17", 80, false).spawn();
+			new Boxes.Text(game.getLayer(1), 0, 6, "18", 80, false).spawn();
 			// Floor
 			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, 5, 8, 1)).spawn(); // floor main
 			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(4, 5, 1, 4)).spawn(); // hole bottom, left half
@@ -1031,6 +1033,117 @@ public class Levels {
 			game.player1.spawn(); game.player1.setrespawn();
 			game.player2 = new Boxes.Player(game, game.getMultilayer(new int[] { 1, 2 }), 2, 2.25);
 			game.player2.spawn(); game.player2.setrespawn();
+		}
+	}
+	public static class Level19 extends Level {
+		public String getName() { return "Tall Groceries"; }
+		public String getTagline() { return "you can save up to 15% or more"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(0), 1, -12, "19", 80, true).spawn();
+			new Boxes.Wall(game.getLayer(2), new Rect(-3, -11, 13, 31)).spawn(); // tower main background
+			// Tower skeleton
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, 19, 13, 1)).spawn(); // floor 0
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, 13, 13, 1)).spawn(); // floor 1
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, 7, 13, 1)).spawn(); // floor 2
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, 1, 13, 1)).spawn(); // floor 3
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, -5, 13, 1)).spawn(); // floor 4
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, -11, 13, 1)).spawn(); // roof
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, -11, 1, 31)).spawn(); // wall left
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(9, -11, 1, 31)).spawn(); // wall right
+			// Floor 4 (top)
+			new Boxes.Wall(game.getLayer(1), new Rect(6, -7.5, 1, 2.5)).spawn(); // wall for block to be on top of
+			new Boxes.PhysicsObject(game.getLayer(1), new Rect(5.5, -9, 1, 1)).spawn(); // block
+			{
+				// back button / front door
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(2, -9.5, 1, 4), 2, -3.5);
+				door.spawn();
+				new Boxes.Button(game.getLayer(1), 4, -5, door).spawn();
+			}
+			new Boxes.Wind(game.getLayer(1), new Rect(4.75, -6.25, 1, 1.25), 0, -0.02).spawn(); // wind right
+			new Boxes.Wind(game.getLayer(1), new Rect(2.25, -6, 1, 1), 0, -0.02).spawn(); // wind left
+			{
+				// front button / back door
+				Boxes.Door door = new Boxes.Door(game.getLayer(1), new Rect(1, -9.5, 1, 4), 1, -3.5);
+				door.spawn();
+				new Boxes.Button(game.getLayer(0), 5, -5, door).spawn();
+			}
+			// Portals 4-3
+			Boxes.Portal.createPair(game.getLayer(1), new Rect(-2, -7, 2, 2), game.getLayer(0), new Rect(-2, -4, 2, 2)); // left
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(7, -7, 2, 2), game.getLayer(1), new Rect(7, -4, 2, 2)); // right
+			// Floor 3 (top middle)
+			new Boxes.Wind(game.getLayer(0), new Rect(-2, 0, 2, 1), 0.01, 0).spawn();
+			new Boxes.Wind(game.getLayer(0), new Rect(2, -2, 1, 3), 0, -0.02).spawn();
+			new Boxes.Wall(game.getLayer(0), new Rect(3, -1.25, 2, 1)).spawn();
+			{
+				// front button / back door
+				Boxes.Door door = new Boxes.Door(game.getLayer(1), new Rect(5, -3.5, 1, 4), 5, -9.5);
+				door.spawn();
+				new Boxes.Button(game.getLayer(0), 4, -1.25, door).spawn();
+			}
+			{
+				// back button / front door
+				Boxes.Door door = new Boxes.Door(game.getLayer(0), new Rect(5.5, -3.5, 1, 4), 5.5, -9.5);
+				door.spawn();
+				new Boxes.Button(game.getLayer(1), 4.5, 1, door).spawn();
+			}
+			new Boxes.PhysicsObject(game.getLayer(1), new Rect(2.5, -1, 1, 1)).spawn();
+			// Portals 3-2
+			Boxes.Portal.createPair(game.getLayer(1), new Rect(-2, -1, 2, 2), game.getLayer(0), new Rect(-2, 2, 2, 2)); // left
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(7, -1, 2, 2), game.getLayer(1), new Rect(7, 2, 2, 2)); // right
+			// Floor 2 (bottom middle)
+			new Boxes.Wind(game.getLayer(0), new Rect(-2, 6, 2, 1), 0.01, 0).spawn(); // left wind 1
+			new Boxes.Wind(game.getLayer(1), new Rect(7, 6, 2, 1), -0.01, 0).spawn(); // right wind 1
+			new Boxes.Wind(game.getLayer(0), new Rect(0, 6, 1, 1), 0, -0.02).spawn(); // left wind 2
+			new Boxes.Wind(game.getLayer(1), new Rect(6, 6, 1, 1), 0, -0.02).spawn(); // right wind 2
+			new Boxes.Wind(game.getLayer(0), new Rect(2, 6, 1, 1), -0.02, -0.02).spawn(); // left wind 3
+			new Boxes.Wind(game.getLayer(1), new Rect(4, 6, 1, 1), 0.02, -0.02).spawn(); // right wind 3
+			{
+				// front button
+				Boxes.Door door = new Boxes.Door(game.getMultilayer(new int[] { 0, 1 }), new Rect(3.5, 2.5, 0.5, 4), 3.5, 8.5);
+				door.spawn();
+				new Boxes.Button(game.getLayer(0), 1.5, 7, door).spawn();
+			}
+			{
+				// back button
+				Boxes.Door door = new Boxes.Door(game.getMultilayer(new int[] { 0, 1 }), new Rect(3, 2.5, 0.5, 4), 3, 8.5);
+				door.spawn();
+				new Boxes.Button(game.getLayer(1), 5, 7, door).spawn();
+			}
+			// Portals 2-1
+			Boxes.Portal.createPair(game.getLayer(1), new Rect(-2, 5, 2, 2), game.getLayer(0), new Rect(-2, 8, 2, 2)); // left
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(7, 5, 2, 2), game.getLayer(1), new Rect(7, 8, 2, 2)); // right
+			// Floor 1 (bottom)
+			new Boxes.End(game, game.getLayer(0), 2.5, 9).spawn();
+			// Player Setup
+			game.player1 = new Boxes.Player(game, game.getLayer(0), -1.5, -9.5);
+			game.player1.spawn(); game.player1.setrespawn();
+			game.player2 = new Boxes.Player(game, game.getLayer(1), 7.5, -9.5);
+			game.player2.spawn(); game.player2.setrespawn();
+		}
+	}
+	public static class Level21 extends Level {
+		public String getName() { return "21"; }
+		public String getTagline() { return "this is a work in progress... the idea just seems cool"; }
+		public void build(Game game) {
+			new Boxes.Text(game.getLayer(1), 0, 6, "21", 80, false).spawn();
+			// Floor
+			new Boxes.Wall(game.getMultilayer(new int[] { 0, 1 }), new Rect(-3, 5, 8, 1)).spawn();
+			// Global
+			Boxes.Portal.createPair(game.getLayer(0), new Rect(-30, 18, 60, 2), game.getLayer(0), new Rect(-30, -5, 60, 2), true);
+			// Player Setup
+			game.player1 = new LowGravityPlayer(game, game.getLayer(0), 0, 2.25);
+			game.player1.spawn(); game.player1.setrespawn();
+			game.player2 = new LowGravityPlayer(game, game.getLayer(0), 2, 2.25);
+			game.player2.spawn(); game.player2.setrespawn();
+		}
+		public static class LowGravityPlayer extends Boxes.Player {
+			public LowGravityPlayer(Game game, List<Box> world, double x, double y) {
+				super(game, world, x, y);
+			}
+			public void tick() {
+				this.vy -= 0.01;
+				super.tick();
+			}
 		}
 	}
 }
